@@ -1,5 +1,5 @@
 # CueLoc
-
+![Android CI](https://github.com/Kalaiz/CueLoc/workflows/Android%20CI/badge.svg)
 ## Table of Content:
 - [Description](#-description)
 - [Tools Used](#%EF%B8%8F-tools-used)
