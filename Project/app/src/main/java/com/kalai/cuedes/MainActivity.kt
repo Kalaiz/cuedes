@@ -1,10 +1,12 @@
 package com.kalai.cuedes
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.kalai.cuedes.alarm.PagerAdapter
 import com.kalai.cuedes.databinding.ActivityMainBinding
 
 
@@ -28,19 +30,27 @@ class MainActivity : FragmentActivity() {
 
         tabLayout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
+             if(viewPager.currentItem != tab?.position ?: 0 )
              viewPager.currentItem = tab?.position ?: 0
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-
             }
 
         })
 
 
+        viewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                tabLayout.selectTab(tabLayout.getTabAt(position))
+            }
+        })
+
+
     }
+
+
 }

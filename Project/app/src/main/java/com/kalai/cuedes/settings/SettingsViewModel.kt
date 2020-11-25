@@ -1,4 +1,4 @@
-package com.kalai.cuedes
+package com.kalai.cuedes.settings
 
 import androidx.lifecycle.ViewModel
 

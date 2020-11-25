@@ -4,6 +4,6 @@
     <string name="main_location_name">Location:</string>
     <string name="main_radius_name">Radius:</string>
     <string name="tab_dashboard">Dashboard</string>
-    <string name="tab_bookmarks">Bookmarks</string>
+    <string name="tab_alarms">Alarms</string>
     <string name="tab_settings">Settings</string>
 </resources>

@@ -1,7 +1,7 @@
-package com.kalai.cuedes
+package com.kalai.cuedes.dashboard
 
 import androidx.lifecycle.ViewModel
 
-class ListViewModel : ViewModel() {
+class DashboardViewModel : ViewModel() {
     // TODO: Implement the ViewModel
 }

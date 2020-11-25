@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.kalai.cuedes.ListFragment">
+    tools:context="com.kalai.cuedes.alarm.AlarmListFragment">
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -14,4 +14,17 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:clickable="true"
+        android:src="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

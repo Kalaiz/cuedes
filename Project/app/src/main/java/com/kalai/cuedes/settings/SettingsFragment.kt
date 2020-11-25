@@ -1,4 +1,4 @@
-package com.kalai.cuedes
+package com.kalai.cuedes.settings
 
 
 import android.os.Bundle
@@ -7,29 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.kalai.cuedes.databinding.ListFragmentBinding
+import com.kalai.cuedes.R
 
 
-class ListFragment : Fragment() {
+class SettingsFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ListFragment()
+        fun newInstance() = SettingsFragment()
     }
 
-    private val fakeData = arrayOf("Hello","Aloha")
-    private val viewModel: ListViewModel by viewModels()
+    private val viewModel: SettingsViewModel by viewModels()
 
-
-
-    private lateinit var binding: ListFragmentBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ListFragmentBinding.inflate(inflater,container,false)
-        binding.listRecyclerView.adapter = ListAdapter(fakeData)
-        return binding.root
+        return inflater.inflate(R.layout.fragment_settings, container, false)
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

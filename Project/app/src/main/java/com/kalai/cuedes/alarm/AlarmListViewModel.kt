@@ -1,7 +1,7 @@
-package com.kalai.cuedes
+package com.kalai.cuedes.alarm
 
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class AlarmListViewModel : ViewModel() {
     // TODO: Implement the ViewModel
 }

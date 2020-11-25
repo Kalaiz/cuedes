@@ -18,6 +18,7 @@
  - Kotlin
 
 ### ✍️ Reflection:
+Challenges - Package organisation - went with Packaging via feature after having a skim through [this](https://proandroiddev.com/package-by-type-by-layer-by-feature-vs-package-by-layered-feature-e59921a4dffa).
 
 
 ### ⚙️ Installation:
