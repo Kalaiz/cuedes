@@ -1,4 +1,4 @@
-# CueLoc
+# CueDes
 ![Android CI](https://github.com/Kalaiz/CueLoc/workflows/Android%20CI/badge.svg)
 ## Table of Content:
 - [Description](#-description)
@@ -14,7 +14,8 @@
 </p>
 
 ### 🛠️ Tools Used:
-
+ - ViewPager2,TabLayout,FragmentStateAdapter,Co-ordinator Layout
+ - Kotlin
 
 ### ✍️ Reflection:
 

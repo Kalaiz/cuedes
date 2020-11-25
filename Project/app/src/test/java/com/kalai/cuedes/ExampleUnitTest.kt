@@ -1,4 +1,4 @@
-package com.kalai.cueloc
+package com.kalai.cuedes
 
 import org.junit.Test
 

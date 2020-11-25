@@ -1,4 +1,4 @@
-package com.kalai.cueloc
+package com.kalai.cuedes
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class MainAdapter (private val data:Array<String>):
-    RecyclerView.Adapter<MainAdapter.ViewHolder>(){
+class ListAdapter (private val data:Array<String>):
+    RecyclerView.Adapter<ListAdapter.ViewHolder>(){
     val TAG = "MainAdapter"
 
 
