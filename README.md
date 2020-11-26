@@ -27,4 +27,11 @@ Challenges - Package organisation - went with Packaging via feature after having
 
 
 ### ⚙️ Installation:
+Note: It will be easier to do the following via a phone (web browser in desktop mode).   
+1) Login on to github if you arent logged on.
+2) Click on the green tick on commit and file panel.
+3) A dialog box with the hyperlink details should appear. Click on the hyperlink.
+4) Click on artifacts, and you will be able to download the APK.
+5) Install the APK. Allow App Installations from Unknown Sources, if requested.
+
 
