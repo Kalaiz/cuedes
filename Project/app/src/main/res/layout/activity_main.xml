@@ -12,42 +12,52 @@
 
 
         <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/mainPager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:id="@+id/viewPager"
             android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/mainTabLayout"
-            app:layout_constraintVertical_weight="925" />
+            app:layout_constraintBottom_toTopOf="@id/tabLayout"
+            app:layout_constraintVertical_weight="0.925" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/mainTabLayout"
-            android:layout_width="0dp"
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorPrimaryLight"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
+            app:tabMaxWidth="0dp"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mainPager"
-            app:layout_constraintVertical_weight="75"
+            app:layout_constraintTop_toBottomOf="@id/viewPager"
+            app:layout_constraintVertical_weight="0.075"
             app:tabIndicatorColor="#FFFFFF">
 
             <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tab_dashboard" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:icon="@drawable/ic_dashboard"
+                android:text="@string/tab_dashboard"
+                android:layout="@layout/item_tab"/>
 
             <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tab_alarms" />
-
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/tab_alarms"
+                android:icon="@drawable/ic_bell"
+                android:layout="@layout/item_tab"/>
+r
             <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tab_settings" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout="@layout/item_tab"
+                android:icon="@drawable/ic_settings"
+                android:text="@string/tab_settings"/>
 
         </com.google.android.material.tabs.TabLayout>
 

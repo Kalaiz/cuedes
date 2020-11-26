@@ -2,6 +2,13 @@
 <resources>
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
     <color name="colorPrimaryLight">#2196F3</color>
+
+
+    <color name="switch_normal_track">#ED7C7C</color>
+    <color name="switch_activated">#03DAC5</color>
+    <color name="switch_normal_button">#FF0000</color>
+
+    <color name="fab_background">#03DAC5</color>
+    <color name="fab_icon">#000000</color>
 </resources>

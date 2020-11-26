@@ -29,7 +29,7 @@ class AlarmListAdapter (private val data:Array<String>):
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        val textView: TextView = view.findViewById(R.id.alarmTextView)
+        val textView: TextView = view.findViewById(R.id.textViewLocation)
     }
 
 }

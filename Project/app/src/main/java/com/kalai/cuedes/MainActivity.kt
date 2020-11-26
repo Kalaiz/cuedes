@@ -23,8 +23,8 @@ class MainActivity : FragmentActivity() {
         val view = binding.root
         setContentView(view)
 
-        viewPager = binding.mainPager
-        tabLayout = binding.mainTabLayout
+        viewPager = binding.viewPager
+        tabLayout = binding.tabLayout
         pagerAdapter = PagerAdapter(this,tabLayout.tabCount)
         viewPager.adapter = pagerAdapter
 

@@ -8,12 +8,12 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listRecyclerView"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
     </androidx.recyclerview.widget.RecyclerView>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
@@ -21,10 +21,13 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:clickable="true"
+        android:focusable="true"
+        android:soundEffectsEnabled="true"
         android:src="@android:drawable/ic_input_add"
+        android:backgroundTint="@color/fab_background"
+        android:tint="@color/fab_icon"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:focusable="true" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.kalai.cuedes.alarm.AlarmAdditionActivity">
+
+<!--TODO -->
+    <ImageView
+        android:id="@+id/imageViewLocation"
+        android:layout_width="102dp"
+        android:layout_height="109dp"
+        android:layout_marginTop="68dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/img_placeholder" />
+
+    <Button
+        android:id="@+id/buttonGetDestination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Destination Co-ordinates"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageViewLocation" >
+    </Button>
+    <EditText
+        android:id="@+id/editTextLocationName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/alarm_addition_location_name"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonGetDestination"
+        android:importantForAutofill="no" />
+
+    <EditText
+        android:id="@+id/editTextLatitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/alarm_addition_latitude"
+        android:inputType="number|numberDecimal"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLocationName"
+        android:importantForAutofill="no"/>
+
+    <EditText
+        android:id="@+id/editTextLongitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/alarm_addition_longitude"
+        android:inputType="number|numberDecimal"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLatitude"
+        android:importantForAutofill="no"/>
+
+    <EditText
+        android:id="@+id/editTextRadius"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/alarm_addition_radius"
+        android:inputType="number|numberDecimal"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLongitude"
+        android:importantForAutofill="no"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
