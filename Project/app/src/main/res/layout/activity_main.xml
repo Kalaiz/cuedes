@@ -41,23 +41,17 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:icon="@drawable/ic_dashboard"
-                android:text="@string/tab_dashboard"
-                android:layout="@layout/item_tab"/>
+                android:icon="@drawable/ic_dashboard" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/tab_alarms"
-                android:icon="@drawable/ic_bell"
-                android:layout="@layout/item_tab"/>
+                android:icon="@drawable/ic_bell" />
 r
             <com.google.android.material.tabs.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout="@layout/item_tab"
-                android:icon="@drawable/ic_settings"
-                android:text="@string/tab_settings"/>
+                android:icon="@drawable/ic_settings" />
 
         </com.google.android.material.tabs.TabLayout>
 

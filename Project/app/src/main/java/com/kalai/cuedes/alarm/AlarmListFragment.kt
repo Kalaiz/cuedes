@@ -21,7 +21,7 @@ class AlarmListFragment : Fragment() {
         fun newInstance() = AlarmListFragment()
     }
 
-    private val fakeData = arrayOf("Hello","Aloha")
+    private val fakeData = arrayOf("Hello","Aloha","Test","Test2")
     private val viewModelAlarm: AlarmListViewModel by viewModels()
     private lateinit var binding: FragmentAlarmListBinding
     private lateinit var alarmRecyclerView: RecyclerView
@@ -30,7 +30,7 @@ class AlarmListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAlarmListBinding.inflate(inflater,container,false)
+        binding = FragmentAlarmListBinding.inflate(inflater)
         alarmRecyclerView = binding.recyclerView
         alarmRecyclerView.adapter = AlarmListAdapter(fakeData)
 

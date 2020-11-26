@@ -1,16 +1,15 @@
 package com.kalai.cuedes
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
-import androidx.fragment.app.FragmentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.kalai.cuedes.alarm.PagerAdapter
 import com.kalai.cuedes.databinding.ActivityMainBinding
 
 
-class MainActivity : FragmentActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewPager : ViewPager2
     private lateinit var pagerAdapter: PagerAdapter
