@@ -6,15 +6,24 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    def secretsProperties = new Properties()
+    if (rootProject.file("secrets.properties").exists()) {
+        rootProject.file("secrets.properties")?.withInputStream {
+            secretsProperties.load(it)
+        }
+    }
+
     defaultConfig {
         applicationId "com.kalai.cueloc"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "google_maps_key", (secretsProperties["GOOGLE_MAPS_API_KEY"] ?: "")
+
     }
+
 
     buildTypes {
         release {
@@ -44,6 +53,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

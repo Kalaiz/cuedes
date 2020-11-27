@@ -44,7 +44,7 @@
         android:id="@+id/linearLayoutGetDestinationButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop ="10dp"
+        android:layout_marginTop ="5dp"
         android:weightSum="100"
         android:gravity="center"
         android:orientation="horizontal"
@@ -60,7 +60,6 @@
         <Button
             android:id="@+id/buttonGetDestination"
             android:layout_weight="50"
-
             android:background="@color/button_get_destination"
             android:drawableStart="@drawable/ic_search"
             android:text="@string/alarm_addition_get_destination"
@@ -81,13 +80,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linearLayoutGetDestinationButton"
-        app:layout_constraintVertical_weight="0.55">
+        android:focusableInTouchMode="true"
+        app:layout_constraintVertical_weight="0.65">
 
         <EditText
             android:id="@+id/editTextLocationName"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:ems="10"
             android:hint="@string/alarm_addition_location_name"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
@@ -100,7 +99,6 @@
             android:id="@+id/editTextLatitude"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:ems="10"
             android:hint="@string/alarm_addition_latitude"
             android:importantForAutofill="no"
             android:inputType="number|numberDecimal"
@@ -114,7 +112,7 @@
             android:id="@+id/editTextLongitude"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:ems="10"
+
             android:hint="@string/alarm_addition_longitude"
             android:importantForAutofill="no"
             android:inputType="number|numberDecimal"
@@ -129,7 +127,7 @@
             android:id="@+id/editTextRadius"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:ems="10"
+
             android:hint="@string/alarm_addition_radius"
             android:importantForAutofill="no"
             android:inputType="number|numberDecimal"
@@ -144,6 +142,7 @@
             android:id="@+id/spinner"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="0.3"
@@ -154,13 +153,13 @@
 
     <Button
         android:id="@+id/buttonCancel"
-        android:layout_margin="15dp"
         android:drawableStart="@drawable/ic_cancel"
         android:text="@string/alarm_addition_close"
+        android:layout_marginTop ="5dp"
         android:textColor="@color/button_text_cancel"
         android:background="@color/button_cancel"
         app:layout_constraintTop_toBottomOf="@id/constraintLayoutEditTexts"
-        app:layout_constraintVertical_weight="0.2"
+        app:layout_constraintVertical_weight="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/buttonAdd"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -168,14 +167,14 @@
 
     <Button
         android:id="@+id/buttonAdd"
-        android:layout_margin="15dp"
         app:layout_constraintStart_toEndOf="@id/buttonCancel"
         android:drawableStart="@drawable/ic_add"
+        android:layout_marginTop ="5dp"
         android:text="@string/alarm_addition_add"
         android:textColor="@color/button_text_add"
         android:background="@color/button_add"
         app:layout_constraintTop_toBottomOf="@id/constraintLayoutEditTexts"
-        app:layout_constraintVertical_weight="0.2"
+        app:layout_constraintVertical_weight="0.5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         style="@style/alarm_img_button" />

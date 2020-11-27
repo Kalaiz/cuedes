@@ -28,17 +28,16 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter = pagerAdapter
 
         tabLayout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-             if(viewPager.currentItem != tab?.position ?: 0 )
-             viewPager.currentItem = tab?.position ?: 0
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                val selectedTabPosition = tab.position
+                if(viewPager.currentItem !=  selectedTabPosition)
+                    viewPager.currentItem = selectedTabPosition
             }
-
             override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
-
         })
 
 
@@ -47,6 +46,8 @@ class MainActivity : AppCompatActivity() {
                 tabLayout.selectTab(tabLayout.getTabAt(position))
             }
         })
+
+
 
 
     }

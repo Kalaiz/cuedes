@@ -21,13 +21,7 @@ jobs:
     - name: Giving Permission for Access
       run: chmod +x ./Project/gradlew 
 
-    - name: Build with Gradle
+    - name: Compiling Project using Gradle
       run: ./Project/gradlew build
 
-    - name: Building CueDes APK artifact
-      run: ./Project/gradlew assembleDebug -b Project/app/build.gradle 
    
-    - uses: actions/upload-artifact@v1
-      with:
-        name: CueDes_APK
-        path: ./Project/app/build/outputs/apk/debug/app-debug.apk

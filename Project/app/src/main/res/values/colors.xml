@@ -11,7 +11,7 @@
     <color name="switch_normal_button">#FF0000</color>
 
     <color name="fab_background">#0062F6</color>
-    <color name="fab_icon">#000000</color>
+    <color name="fab_icon">#FFFFFF</color>
 
 
     <color name="button_get_destination">#03DAC5</color>
