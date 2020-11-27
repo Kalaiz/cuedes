@@ -34,7 +34,7 @@ Learned a gradle way to hide API key from this [google codelab](https://codelabs
 
 ### ⚙️ Installation:
 Note: It will be easier to do the following via a phone. 
-1) Install the [APK](/app/build/debug/apk-debug.apk).
+1) Install the [APK](Project/app/build/debug/apk-debug.apk).
 2) Allow App Installations from Unknown Sources, if requested.
 
 
