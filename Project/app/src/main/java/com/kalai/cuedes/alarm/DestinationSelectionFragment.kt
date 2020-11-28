@@ -9,7 +9,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentDestinationSelectionBinding
 
 class DestinationSelectionFragment : Fragment() {
@@ -36,7 +35,7 @@ class DestinationSelectionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentDestinationSelectionBinding.inflate(inflater,container,false)
-        return inflater.inflate(R.layout.fragment_destination_selection, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

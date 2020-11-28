@@ -19,42 +19,24 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tabLayout"
-            app:layout_constraintVertical_weight="0.925" />
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+            app:layout_constraintVertical_weight="0.925" >
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/colorPrimaryLight"
-            app:tabGravity="fill"
-            app:tabMode="fixed"
-            app:tabMaxWidth="0dp"
-            android:orientation="horizontal"
+            app:itemIconTint="@color/botton_navigation_bar_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewPager"
             app:layout_constraintVertical_weight="0.075"
-            app:tabIndicatorColor="#FFFFFF">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:icon="@drawable/ic_dashboard" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:icon="@drawable/ic_bell" />
-r
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:icon="@drawable/ic_settings" />
-
-        </com.google.android.material.tabs.TabLayout>
-
+            app:menu="@menu/navigation_item"
+            app:labelVisibilityMode="unlabeled"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

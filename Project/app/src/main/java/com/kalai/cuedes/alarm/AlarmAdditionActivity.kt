@@ -1,10 +1,9 @@
 package com.kalai.cuedes.alarm
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.ArrayAdapter
-import com.google.android.material.internal.ContextUtils.getActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.ActivityAlarmAdditionBinding
 
@@ -21,8 +20,13 @@ class AlarmAdditionActivity : AppCompatActivity() {
         binding.spinner.adapter= spinnerAdapter
 
 
-        binding.buttonAdd.setOnClickListener {
-   supportFragmentManager
+        binding.buttonGetDestination.setOnClickListener {
+
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                // Replace whatever is in the fragment_container view with this fragment
+                add(R.id.frameLayoutContainer,DestinationSelectionFragment())
+            }
         }
 
     }

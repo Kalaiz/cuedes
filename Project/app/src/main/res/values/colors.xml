@@ -3,7 +3,8 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#0062F6</color>
     <color name="colorPrimaryLight">#2196F3</color>
-    <color name="navbar">#000000</color>
+    <color name="colorLight">#FFFFFF</color>
+
 
 
     <color name="switch_normal_track">#ED7C7C</color>
@@ -22,5 +23,10 @@
 
     <color name="button_add">#03DAC5</color>
     <color name="button_text_add">#FFFFFF</color>
+
+    <color name="nav_bar_icon_unselected">#FFFFFF</color>
+    <color name="nav_bar_icon_selected">#575757</color>
+
+
 
 </resources>

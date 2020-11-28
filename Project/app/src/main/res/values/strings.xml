@@ -11,9 +11,11 @@
     <string name="alarm_addition_longitude">Longitude</string>
     <string name="alarm_addition_radius">Radius</string>
 
-    <string name="tab_dashboard">Dashboard</string>
-    <string name="tab_alarms">Alarms</string>
-    <string name="tab_settings">Settings</string>
+    <string name="menu_locate">Dashboard</string>
+    <string name="menu_alarms">Alarms</string>
+    <string name="menu_settings">Settings</string>
+
+
     <string name="alarm_addition_get_destination">Get Destination</string>
     <string name="alarm_addition_location_pin_image_description">Location Pin Image</string>
     <string name="alarm_addition_close">Close</string>

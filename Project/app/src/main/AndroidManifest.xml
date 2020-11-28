@@ -10,6 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
+
         android:theme="@style/AppTheme">
 
         <meta-data
@@ -17,7 +18,9 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".alarm.AlarmAdditionActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustNothing">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -4,16 +4,16 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kalai.cuedes.alarm.PagerAdapter
 import com.kalai.cuedes.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var viewPager : ViewPager2
+    private lateinit var viewPager: ViewPager2
     private lateinit var pagerAdapter: PagerAdapter
-    private lateinit var tabLayout: TabLayout
+    private lateinit var bottomNavigationView: BottomNavigationView
     private val viewModel: SharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,34 +23,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         viewPager = binding.viewPager
-        tabLayout = binding.tabLayout
-        pagerAdapter = PagerAdapter(this,tabLayout.tabCount)
+        bottomNavigationView = binding.bottomNavigationView
+        pagerAdapter = PagerAdapter(this, bottomNavigationView.menu.size())
         viewPager.adapter = pagerAdapter
+        viewPager.isUserInputEnabled = false
 
-        tabLayout.addOnTabSelectedListener(object :TabLayout.OnTabSelectedListener{
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                val selectedTabPosition = tab.position
-                if(viewPager.currentItem !=  selectedTabPosition)
-                    viewPager.currentItem = selectedTabPosition
+        bottomNavigationView.setOnNavigationItemSelectedListener { selectedItem ->
+            viewPager.currentItem = when (selectedItem.itemId) {
+                R.id.action_locate -> 0
+                R.id.action_alarms -> 1
+                else -> 2
             }
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
-
-
-        viewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                tabLayout.selectTab(tabLayout.getTabAt(position))
-            }
-        })
-
-
-
+            return@setOnNavigationItemSelectedListener true
+        }
 
     }
-
-
 }
+
+
