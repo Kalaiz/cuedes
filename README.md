@@ -12,11 +12,14 @@
 A simple Android App which rings an alarm when one is about to reach a destination.
 
 <p align="center">
-
-Preview of work done till now. <br>
-<img src="/Resources/App_Overview.gif" width="25%" height="25%" /> <br>
-Note: I am still working on this personal project. 
+Preview of work done till now. 
+ </p>
+<p align="center">
+<img src="/Resources/App_Overview.gif" width="25%" height="25%" /> 
 </p>
+<p align="center">
+Note: I am still working on this personal project. 
+ </p>
 
 
 ### 🛠️ Tools Used:
