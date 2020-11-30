@@ -1,4 +1,4 @@
-### ✍️ Reflection
+## ✍️ Reflection
 
 - Package organisation - went with Packaging via feature after having a skim through [this](https://proandroiddev.com/package-by-type-by-layer-by-feature-vs-package-by-layered-feature-e59921a4dffa).
 - Learned a few things about styles and themes. I learned it for the SwitchCompat, and mad it such that it is red when unchecked and green when checked. 
