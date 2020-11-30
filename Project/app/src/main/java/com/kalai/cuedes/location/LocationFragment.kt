@@ -1,5 +1,6 @@
 package com.kalai.cuedes.location
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,10 +12,14 @@ import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.kalai.cuedes.R
 import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.databinding.FragmentLocationBinding
 
+
+private const val TAG = "LocationFragment"
 
 class LocationFragment : Fragment() ,OnMapReadyCallback{
 
@@ -22,19 +27,21 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         fun newInstance() = LocationFragment()
     }
 
-    private val TAG = "LocationFragment"
+
     private val viewModel: LocationViewModel by viewModels()
-    private lateinit var map: GoogleMap
+    private lateinit var map: SupportMapFragment
     private lateinit var binding:FragmentLocationBinding
     private val sharedViewModel: SharedViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         binding = FragmentLocationBinding.inflate(layoutInflater, container, false)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        map = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+        map.getMapAsync(this)
 
         return binding.root
     }
@@ -42,10 +49,24 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // TODO: Use the ViewModel
+
     }
 
-    override fun onMapReady(p0: GoogleMap?) {
+    @SuppressLint("MissingPermission")
+    override fun onMapReady(googleMap: GoogleMap?) {
         Log.d(TAG,"Map Ready")
+
+        googleMap?.isMyLocationEnabled = true
+
+
+
+
+        googleMap?.setOnMapLongClickListener {
+                lonLat -> Log.d(TAG,lonLat.toString());
+            googleMap.addMarker(MarkerOptions().position(lonLat))}
+
     }
+
+
 
 }

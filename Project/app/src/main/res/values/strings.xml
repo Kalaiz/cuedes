@@ -20,4 +20,5 @@
     <string name="alarm_addition_location_pin_image_description">Location Pin Image</string>
     <string name="alarm_addition_close">Close</string>
     <string name="alarm_addition_add">Add</string>
+    <string name="main_permission_msg">Please give location based permission for the app in order to proceed</string>
 </resources>
