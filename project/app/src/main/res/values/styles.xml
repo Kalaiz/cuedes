@@ -1,0 +1,25 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
+    <!-- Alarm Switch theme overlay-->
+    <style name="ThemeOverlay.AlarmSwitchCompat" parent="">
+        <item name="colorControlActivated">@color/switch_activated</item>
+        <item name="colorSwitchThumbNormal">@color/switch_normal_button</item>
+        <item name="android:colorForeground">@color/switch_normal_track</item>
+    </style>
+
+    <!--Alarm Buttons with images-->
+    <style name="alarm_img_button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+
+</resources>

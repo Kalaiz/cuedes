@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/frameLayoutContainer"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.kalai.cuedes.alarm.AlarmAdditionActivity">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayoutLocationImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop ="10dp"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        app:layout_constraintBottom_toTopOf="@id/linearLayoutGetDestinationButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="0.2">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="33" />
+
+        <ImageView
+            android:id="@+id/imageViewLocation"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="34"
+            android:contentDescription="@string/alarm_addition_location_pin_image_description"
+            app:srcCompat="@drawable/img_placeholder" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="33" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayoutGetDestinationButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop ="5dp"
+        android:weightSum="100"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/constraintLayoutEditTexts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutLocationImage"
+        app:layout_constraintVertical_weight="0.15">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25" />
+        <Button
+            android:id="@+id/buttonGetDestination"
+            android:layout_weight="50"
+            android:background="@color/button_get_destination"
+            android:drawableStart="@drawable/ic_search"
+            android:text="@string/alarm_addition_get_destination"
+            android:textColor="@color/button_text_get_destination"
+            style="@style/alarm_img_button" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25" />
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutEditTexts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/buttonCancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayoutGetDestinationButton"
+        android:focusableInTouchMode="true"
+        app:layout_constraintVertical_weight="0.65">
+
+        <EditText
+            android:id="@+id/editTextLocationName"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:hint="@string/alarm_addition_location_name"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@id/editTextLatitude"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextLatitude"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:hint="@string/alarm_addition_latitude"
+            android:importantForAutofill="no"
+            android:inputType="number|numberDecimal"
+            android:singleLine="true"
+            app:layout_constraintBottom_toTopOf="@id/editTextLongitude"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextLocationName" />
+
+        <EditText
+            android:id="@+id/editTextLongitude"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:hint="@string/alarm_addition_longitude"
+            android:importantForAutofill="no"
+            android:inputType="number|numberDecimal"
+            android:singleLine="true"
+            app:layout_constraintBottom_toTopOf="@id/editTextRadius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextLatitude" />
+
+
+        <EditText
+            android:id="@+id/editTextRadius"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:hint="@string/alarm_addition_radius"
+            android:importantForAutofill="no"
+            android:inputType="number|numberDecimal"
+            android:singleLine="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/spinner"
+            app:layout_constraintHorizontal_weight="0.7"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editTextLongitude" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="0.3"
+            app:layout_constraintStart_toEndOf="@id/editTextRadius"
+            app:layout_constraintTop_toBottomOf="@id/editTextLongitude" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <Button
+        android:id="@+id/buttonCancel"
+        android:drawableStart="@drawable/ic_cancel"
+        android:text="@string/alarm_addition_close"
+        android:layout_marginTop ="5dp"
+        android:textColor="@color/button_text_cancel"
+        android:background="@color/button_cancel"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayoutEditTexts"
+        app:layout_constraintVertical_weight="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/buttonAdd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/alarm_img_button" />
+
+    <Button
+        android:id="@+id/buttonAdd"
+        app:layout_constraintStart_toEndOf="@id/buttonCancel"
+        android:drawableStart="@drawable/ic_add"
+        android:layout_marginTop ="5dp"
+        android:text="@string/alarm_addition_add"
+        android:textColor="@color/button_text_add"
+        android:background="@color/button_add"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayoutEditTexts"
+        app:layout_constraintVertical_weight="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/alarm_img_button" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

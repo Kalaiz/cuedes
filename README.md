@@ -15,7 +15,7 @@ A simple Android App which rings an alarm when one is about to reach a destinati
 Preview of work done till now. 
  </p>
 <p align="center">
-<img src="/Resources/App_Overview.gif" width="25%" height="25%" /> 
+<img src="/resources/App_Overview.gif" width="25%" height="25%" /> 
 </p>
 <p align="center">
 Note: I am still working on this personal project. 
