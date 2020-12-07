@@ -28,7 +28,7 @@ Note: I am still working on this personal project.
  - Views: Co-ordinator,Constraint,Linear and Frame Layouts ,Spinner, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompat
   - Kotlin
 
-### ✍️ [Reflection](/Resources/Reflection.md)
+### ✍️ [Reflection](/resources/Reflection.md)
 
 
 ### 🔖 References:
