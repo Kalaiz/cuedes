@@ -1,20 +1,26 @@
 package com.kalai.cuedes
 
 import android.annotation.SuppressLint
-import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
+import androidx.lifecycle.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.maps.model.LatLng
 
 
-class CueDesService: Service() {
+private const val TAG = "CueDesService"
+
+class CueDesService: LifecycleService() {
 
    private lateinit var  currentLocation:LatLng
 
-   private val fusedLocationClient: FusedLocationProviderClient by lazy{
+   /*Temporary*/
+   private val alarms by lazy { MutableLiveData<ArrayList<String>>() }
+
+
+    private val fusedLocationClient: FusedLocationProviderClient by lazy{
        LocationServices.getFusedLocationProviderClient(this)
    }
 
@@ -27,15 +33,22 @@ class CueDesService: Service() {
         fusedLocationClient.lastLocation.addOnCompleteListener {
 
         }
+
+        alarms.observe(this,
+            Observer<ArrayList<String>> {
+                list -> if(list.isEmpty()){
+                    Log.d(TAG,"There isn't any alarms")
+                  /*this.stopSelf() */
+                }
+            })
         return super.onStartCommand(intent, flags, startId)
 
     }
 
-    override fun onBind(p0: Intent?): IBinder? {
-         TODO("Not yet implemented")
-
-     }
- }
+    override fun onBind(intent: Intent): IBinder? {
+        return super.onBind(intent)
+    }
+}
 
 
 
