@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         /*Disabling Swipes*/
         viewPager.isUserInputEnabled = false
 
+
         bottomNavigationView.setOnNavigationItemSelectedListener { selectedItem ->
             viewPager.currentItem = when (selectedItem.itemId) {
                 R.id.action_locate -> 0
@@ -53,14 +54,14 @@ class MainActivity : AppCompatActivity() {
 
         /*Getting  Relevant Permissions*/
         if ((PERMISSION_CODES.fold(false,
-                {acc,it-> acc || ActivityCompat.checkSelfPermission(this,it)!=PackageManager.PERMISSION_GRANTED})))
+                {acc,it-> acc || ActivityCompat.checkSelfPermission(this,it)!= PackageManager.PERMISSION_GRANTED})))
         {
            getPermissions()
             return
         }
 
-        /*TODO: Handle lifecycle properly*/
-    //    startCueDesService()
+        /*TODO: Need to handle lifecycle properly*/
+        /*startCueDesService()*/
 
     }
 
@@ -83,9 +84,9 @@ class MainActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this,PERMISSION_CODES,REQ_CODE)
     }
 
+
     private fun startCueDesService(){
         val cueDesServiceIntent= Intent(this,CueDesService::class.java)
-
         ContextCompat.startForegroundService(this,cueDesServiceIntent)
     }
 }

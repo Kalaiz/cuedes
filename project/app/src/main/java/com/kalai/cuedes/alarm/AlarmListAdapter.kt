@@ -42,6 +42,7 @@ class AlarmListAdapter (private val data:Array<String>,private val context:Conte
             with(mapView) {
                 onCreate(null)
                 getMapAsync(this@ViewHolder)
+                isClickable=false
             }
         }
 

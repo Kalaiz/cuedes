@@ -23,10 +23,10 @@ Note: I am still working on this personal project.
 
 
 ### 🛠️ Tools Used:
- - ViewBinding, LiveData , ViewModels, FragmentStateAdapter , Foreground and Bound Service
+ - ViewBinding, LiveData, ViewModels, FragmentStateAdapter, Foreground and Bound Service, 
  - Google Maps SDK
  - Views: Co-ordinator, Constraint,Linear and Frame Layouts, Spinner, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompat
-  - Kotlin : Scope function
+  - Kotlin : Scope functions, Flow 
 
 
 ### ✍️ [Reflection](/resources/reflection.md)

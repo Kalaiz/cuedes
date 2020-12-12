@@ -1,6 +1,7 @@
 package com.kalai.cuedes.alarm
 
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,11 +37,10 @@ class AlarmListFragment : Fragment() {
     ): View? {
         binding = FragmentAlarmListBinding.inflate(inflater)
         alarmRecyclerView = binding.recyclerView.apply {
-            val layoutManager:LinearLayoutManager =layoutManager as LinearLayoutManager
-            addItemDecoration(DividerItemDecoration(context,layoutManager.orientation))
             adapter=context?.let { AlarmListAdapter(fakeData, it) }
             setRecyclerListener(recycleListener)
         }
+
         return binding.root
     }
 

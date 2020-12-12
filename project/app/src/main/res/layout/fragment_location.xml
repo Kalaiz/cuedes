@@ -14,7 +14,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+       />
 
     <SearchView
         android:layout_marginTop="5dp"
@@ -26,6 +27,21 @@
         app:layout_constraintTop_toTopOf="parent"
         android:iconifiedByDefault="false"
         android:queryBackground="@android:color/transparent"
-        android:background="@color/colorLight"/>
+        android:background="@color/colorLight">
+
+    </SearchView>
+
+    <ImageButton
+        android:background="@color/colorLight"
+        android:id="@+id/currentLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_current_location"
+        android:contentDescription="Current Location" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
