@@ -11,8 +11,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-  />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -23,6 +22,7 @@
         android:clickable="true"
         android:focusable="true"
         android:soundEffectsEnabled="true"
+        app:borderWidth="0dp"
         android:src="@android:drawable/ic_input_add"
         android:backgroundTint="@color/fab_background"
         android:tint="@color/fab_icon"

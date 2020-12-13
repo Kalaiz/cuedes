@@ -7,9 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
@@ -18,6 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.kalai.cuedes.R
 import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.databinding.FragmentLocationBinding
+import com.kalai.cuedes.location.selectlocation.BottomSheetFragment
 
 
 private const val TAG = "LocationFragment"
@@ -53,7 +52,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
         /* Due to Default Location Button being displaced*/
         binding.currentLocationButton.setOnClickListener {
-           setCurrentLocation()
+            setCurrentLocation(animated = true)
         }
 
         return binding.root
@@ -65,6 +64,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
     }
 
+
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap?) {
         Log.d(TAG,"Map Ready")
@@ -72,23 +72,36 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         if (googleMap != null) {
             this.googleMap = googleMap
         }
+
         googleMap?.isMyLocationEnabled = true
         googleMap?.uiSettings?.isMyLocationButtonEnabled=false
-        setCurrentLocation()
+        setCurrentLocation(animated = false)
+
         googleMap?.setOnMapLongClickListener {
-                lonLat -> Log.d(TAG,lonLat.toString());
-            googleMap.addMarker(MarkerOptions().position(lonLat))}
+                latLng -> Log.d(TAG,latLng.toString());
+            googleMap.addMarker(MarkerOptions().position(latLng))
+
+            val selectLocation = BottomSheetFragment()
+            activity?.supportFragmentManager?.let {selectLocation.show(it,"SelectLocation")}
+
+        }
 
     }
 
     @SuppressLint("MissingPermission")
-    fun setCurrentLocation(){
+    fun setCurrentLocation(animated:Boolean){
         fusedLocationClient.lastLocation.addOnCompleteListener {
             it.result.apply { currentLocation = LatLng(latitude,longitude) }
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation,13.0f)
-            if (this::googleMap.isInitialized) googleMap.animateCamera(cameraUpdate)
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation,11.0f)
+            if (this::googleMap.isInitialized)
+                if(animated)
+                {googleMap.animateCamera(cameraUpdate)}
+                else
+                {googleMap.moveCamera(cameraUpdate)}
         }
     }
+
+
 
 
 

@@ -5,15 +5,15 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.Window
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.kalai.cuedes.alarm.PagerAdapter
 import com.kalai.cuedes.databinding.ActivityMainBinding
 
 
@@ -56,28 +56,30 @@ class MainActivity : AppCompatActivity() {
         if ((PERMISSION_CODES.fold(false,
                 {acc,it-> acc || ActivityCompat.checkSelfPermission(this,it)!= PackageManager.PERMISSION_GRANTED})))
         {
-           getPermissions()
+            getPermissions()
             return
         }
 
         /*TODO: Need to handle lifecycle properly*/
         /*startCueDesService()*/
 
+
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-      when(requestCode){
-          REQ_CODE -> if(grantResults.isEmpty() || (grantResults.any { it == PackageManager.PERMISSION_DENIED }))
-          {
-              Snackbar.make(binding.root,getString(R.string.main_permission_msg),Snackbar.LENGTH_LONG).show()
-              getPermissions()
-          }
+        when(requestCode){
+            REQ_CODE -> if(grantResults.isEmpty() || (grantResults.any { it == PackageManager.PERMISSION_DENIED }))
+            {
+                Snackbar.make(binding.root,getString(R.string.main_permission_msg),Snackbar.LENGTH_LONG).show()
+                getPermissions()
+            }
 
-      }
+        }
     }
 
     private fun getPermissions(){

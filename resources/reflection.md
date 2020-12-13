@@ -10,4 +10,8 @@
 - I had to make sure the application rings an alarm even when the user is not interacting with the application. This seemed like a long running task  which  1) constantly check the location 2) use that location to check whether it is going to cause an alarm. I went with [Services](https://developer.android.com/guide/components/services) in order to achieve this. I also needed to gain information about the location so that the application is informed as well and hence went with a bound service. By making it a bound service, the service will run as long 
 - I was going with MVVM architecture, however I was confused on which level would Services would be placed.[TODO]
 - The default positioning of the current location button is being overlapped by my `SearchView`. In order to overcome this, I tried a [recomendation](https://stackoverflow.com/a/43971145/11200630) of setting padding, however, this makes the location to be at a offset from the center of the screen. I also tried to [manually set](https://stackoverflow.com/a/48277931/11200630) the `LayoutParams` of the button, howvever, upon clicking it, nothing happens. Eventually, I made my own current location button using `FusedClientLocation` API and used `animateCamera` and `CameraUpdate` in accordance.
+- Learned that [`Shape`](https://stackoverflow.com/a/50619479/11200630) s/ [`ShapeDrawable`](https://developer.android.com/guide/topics/graphics/drawables#shape-drawable) s can be applied to a `View`'s background, so to make the `View` of the relevant shape, while attempting to get rounded corners for my `BottomSheetDialogFragment`.
+
+
+
 [:arrow_backward: Back](https://github.com/Kalaiz/cuedes#%EF%B8%8F-reflection)
