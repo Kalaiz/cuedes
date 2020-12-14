@@ -10,12 +10,15 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 
 
-private const val TAG = "CueDesService"
-
 class CueDesService: LifecycleService() {
 
    private lateinit var  currentLocation:LatLng
 
+   companion object{
+
+       private const val TAG = "CueDesService"
+
+   }
    /*Temporary*/
    private val alarms by lazy { MutableLiveData<ArrayList<String>>() }
 

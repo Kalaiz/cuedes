@@ -17,8 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kalai.cuedes.databinding.ActivityMainBinding
 
 
-private val PERMISSION_CODES = arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
-private const val REQ_CODE = 1
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -27,6 +26,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private val sharedViewModel: SharedViewModel by viewModels()
 
+    companion object{
+        private val PERMISSION_CODES = arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
+        private const val REQ_CODE = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

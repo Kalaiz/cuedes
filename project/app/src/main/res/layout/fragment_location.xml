@@ -18,7 +18,7 @@
        />
 
     <SearchView
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:queryHint="Search or Long Press"
@@ -29,8 +29,9 @@
         android:queryBackground="@android:color/transparent"
         android:background="@color/colorLight"
         android:elevation="10dp">
-
     </SearchView>
+
+
 
     <ImageButton
         android:background="@color/colorLight"

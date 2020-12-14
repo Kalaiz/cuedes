@@ -11,7 +11,7 @@
 - I was going with MVVM architecture, however I was confused on which level would Services would be placed.[TODO]
 - The default positioning of the current location button is being overlapped by my `SearchView`. In order to overcome this, I tried a [recomendation](https://stackoverflow.com/a/43971145/11200630) of setting padding, however, this makes the location to be at a offset from the center of the screen. I also tried to [manually set](https://stackoverflow.com/a/48277931/11200630) the `LayoutParams` of the button, howvever, upon clicking it, nothing happens. Eventually, I made my own current location button using `FusedClientLocation` API and used `animateCamera` and `CameraUpdate` in accordance.
 - Learned that [`Shape`](https://stackoverflow.com/a/50619479/11200630) s/ [`ShapeDrawable`](https://developer.android.com/guide/topics/graphics/drawables#shape-drawable) s can be applied to a `View`'s background, so to make the `View` of the relevant shape, while attempting to get rounded corners for my `BottomSheetDialogFragment`.
-
+- Fragments using same container backstack dilemma [TODO]
 
 
 [:arrow_backward: Back](https://github.com/Kalaiz/cuedes#%EF%B8%8F-reflection)

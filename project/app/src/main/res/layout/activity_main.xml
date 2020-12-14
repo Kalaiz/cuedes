@@ -20,8 +20,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
-            app:layout_constraintVertical_weight="0.940" >
-        </androidx.viewpager2.widget.ViewPager2>
+            app:layout_constraintVertical_weight="0.940" />
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
@@ -29,15 +29,13 @@
             android:layout_height="0dp"
             app:itemIconSize="17.5dp"
             android:background="@color/colorPrimaryLight"
-            app:itemIconTint="@color/botton_navigation_bar_icon"
+            app:itemIconTint="@color/bottom_navigation_bar_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/viewPager"
             app:layout_constraintVertical_weight="0.06"
             app:menu="@menu/navigation_item"
-            android:elevation="10dp"
             app:labelVisibilityMode="unlabeled"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

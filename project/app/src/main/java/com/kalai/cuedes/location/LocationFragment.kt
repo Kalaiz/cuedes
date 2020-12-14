@@ -16,15 +16,16 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.kalai.cuedes.R
 import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.databinding.FragmentLocationBinding
-import com.kalai.cuedes.location.selectlocation.BottomSheetFragment
+import com.kalai.cuedes.location.selection.SelectionFragment
 
 
-private const val TAG = "LocationFragment"
+
 
 class LocationFragment : Fragment() ,OnMapReadyCallback{
 
     companion object {
         fun newInstance() = LocationFragment()
+        private const val TAG = "LocationFragment"
     }
 
 
@@ -81,8 +82,12 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
                 latLng -> Log.d(TAG,latLng.toString());
             googleMap.addMarker(MarkerOptions().position(latLng))
 
-            val selectLocation = BottomSheetFragment()
-            activity?.supportFragmentManager?.let {selectLocation.show(it,"SelectLocation")}
+            val selectLocation = SelectionFragment()
+            selectLocation.isCancelable = true
+            childFragmentManager.commit {
+                setReorderingAllowed(true)
+                add(selectLocation,"SelectLocation")
+            }
 
         }
 
