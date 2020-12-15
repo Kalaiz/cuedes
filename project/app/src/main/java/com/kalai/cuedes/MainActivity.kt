@@ -5,8 +5,6 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Window
-import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -15,8 +13,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.kalai.cuedes.databinding.ActivityMainBinding
-
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -57,7 +53,12 @@ class MainActivity : AppCompatActivity() {
 
         /*Getting  Relevant Permissions*/
         if ((PERMISSION_CODES.fold(false,
-                {acc,it-> acc || ActivityCompat.checkSelfPermission(this,it)!= PackageManager.PERMISSION_GRANTED})))
+                { acc, it ->
+                    acc || ActivityCompat.checkSelfPermission(
+                        this,
+                        it
+                    ) != PackageManager.PERMISSION_GRANTED
+                })))
         {
             getPermissions()
             return
@@ -76,9 +77,12 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         when(requestCode){
-            REQ_CODE -> if(grantResults.isEmpty() || (grantResults.any { it == PackageManager.PERMISSION_DENIED }))
-            {
-                Snackbar.make(binding.root,getString(R.string.main_permission_msg),Snackbar.LENGTH_LONG).show()
+            REQ_CODE -> if (grantResults.isEmpty() || (grantResults.any { it == PackageManager.PERMISSION_DENIED })) {
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.onboard_permission_msg),
+                    Snackbar.LENGTH_LONG
+                ).show()
                 getPermissions()
             }
 
@@ -86,13 +90,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getPermissions(){
-        ActivityCompat.requestPermissions(this,PERMISSION_CODES,REQ_CODE)
+        ActivityCompat.requestPermissions(this, PERMISSION_CODES, REQ_CODE)
     }
 
 
     private fun startCueDesService(){
-        val cueDesServiceIntent= Intent(this,CueDesService::class.java)
-        ContextCompat.startForegroundService(this,cueDesServiceIntent)
+        val cueDesServiceIntent= Intent(this, CueDesService::class.java)
+        ContextCompat.startForegroundService(this, cueDesServiceIntent)
     }
 }
 

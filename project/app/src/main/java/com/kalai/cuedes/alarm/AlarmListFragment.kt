@@ -37,8 +37,8 @@ class AlarmListFragment : Fragment() {
     ): View? {
         binding = FragmentAlarmListBinding.inflate(inflater)
         alarmRecyclerView = binding.recyclerView.apply {
-            adapter=context?.let { AlarmListAdapter(fakeData, it) }
-            setRecyclerListener(recycleListener)
+            adapter = context?.let { AlarmListAdapter(fakeData, it) }
+            addRecyclerListener(recycleListener)
         }
 
         return binding.root

@@ -61,18 +61,32 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
+
+    def leanback_version = "1.0.0"
+
+    implementation "androidx.leanback:leanback:$leanback_version"
+
+    // leanback-preference is an add-on that provides a settings UI for TV apps.
+    implementation "androidx.leanback:leanback-preference:$leanback_version"
+
+    // leanback-paging is an add-on that simplifies adding paging support to a RecyclerView Adapter.
+    implementation "androidx.leanback:leanback-paging:1.1.0-alpha06"
+
+    // leanback-tab is an add-on that provides customized TabLayout to be used as the top navigation bar.
+    implementation "androidx.leanback:leanback-tab:1.1.0-beta01"
 
 
 
-        def room_version = "2.2.5"
+    def room_version = "2.2.5"
 
-        implementation "androidx.room:room-runtime:$room_version"
-        kapt "androidx.room:room-compiler:$room_version"
-        // optional - Kotlin Extensions and Coroutines support for Room
-        implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
 
-        // optional - Test helpers
-        testImplementation "androidx.room:room-testing:$room_version"
+    // optional - Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
 
 
 }

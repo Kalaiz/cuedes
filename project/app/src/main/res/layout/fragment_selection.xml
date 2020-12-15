@@ -34,10 +34,9 @@
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
+        android:id="@+id/selectionFragmentContainerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/navigationLinearLayout" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

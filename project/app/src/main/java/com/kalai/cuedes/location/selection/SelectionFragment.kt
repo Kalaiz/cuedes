@@ -32,9 +32,10 @@ class SelectionFragment : BottomSheetDialogFragment(){
     ): View? {
         binding = FragmentSelectionBinding.inflate(inflater,container,false)
 
+
         childFragmentManager.commit {
             setReorderingAllowed(true)
-            add(R.id.fragmentContainerView,LocationNameFragment(),"LocationFragment")
+            add(R.id.selectionFragmentContainerView,LocationNameFragment(),"LocationFragment")
             addToBackStack(null)
         }
         return binding.root
@@ -51,7 +52,7 @@ class SelectionFragment : BottomSheetDialogFragment(){
         bottomSheetDialogFragment.setCanceledOnTouchOutside(false)
 
         bottomSheetDialogFragment.setOnKeyListener{ dialogInterface, i, keyEvent ->
-            if(keyEvent!=null && keyEvent.keyCode == KEYCODE_BACK && keyEvent.action == KeyEvent.ACTION_DOWN) {
+            if(keyEvent != null && keyEvent.keyCode == KEYCODE_BACK && keyEvent.action == KeyEvent.ACTION_DOWN) {
                 Log.d(TAG, "onBackPressed()" + childFragmentManager.backStackEntryCount + i)
                 if (childFragmentManager.fragments.size == 1) {
                     dialogInterface.dismiss()
@@ -67,7 +68,7 @@ class SelectionFragment : BottomSheetDialogFragment(){
         return bottomSheetDialogFragment
     }
 
-    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
+    override fun getTheme(): Int = R.style.ThemeOverlay_BottomSheetDialog
 
 
 

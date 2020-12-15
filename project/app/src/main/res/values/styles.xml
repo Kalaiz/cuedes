@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:statusBarColor">@color/colorPrimaryLight</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryLight</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <!-- Alarm Switch theme overlay-->
@@ -25,14 +25,38 @@
 
 
     <!--BottomSheetDialogFragment-->
-    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
+    <style name="ThemeOverlay.BottomSheetDialog" parent="ThemeOverlay.BaseBottomSheetDialog" />
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/background_bottom_sheet</item>
     </style>
 
-    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+    <style name="ThemeOverlay.BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+
+    <!--OnBoardFragment-->
+    <style name="ThemeOverlay.OnBoardFragment" parent="@style/Theme.AppCompat.Leanback.Onboarding">
+        <item name="onboardingTitleStyle">@style/onBoardTitle</item>
+        <item name="onboardingDescriptionStyle">@style/onBoardDescription</item>
+        <item name="onboardingPageIndicatorStyle">@style/onBoardPageIndication</item>
+        <item name="onboardingStartButtonStyle">@style/onBoardGetStarted</item>
+    </style>
+
+    <style name="onBoardDescription" parent="@style/Widget.Leanback.OnboardingDescriptionStyle">
+        <item name="android:textColor">@color/colorSurface</item>
+    </style>
+    <style name="onBoardTitle" parent="@style/Widget.Leanback.OnboardingTitleStyle">
+        <item name="android:textColor">@color/colorSurfaceDark</item>
+    </style>
+    <style name="onBoardPageIndication" parent="@style/Widget.Leanback.OnboardingPageIndicatorStyle">
+        <item name="dotBgColor">@color/colorSurfaceDark</item>
+        <item name="arrowColor">@color/colorSurfaceDark</item>
+    </style>
+
+    <style name="onBoardGetStarted" parent="@style/Widget.Leanback.OnboardingStartButtonStyle">
+        <item name="android:textColor">@color/colorSurfaceDark</item>
     </style>
 
 </resources>

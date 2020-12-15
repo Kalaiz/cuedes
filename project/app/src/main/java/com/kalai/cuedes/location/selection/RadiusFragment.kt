@@ -22,7 +22,7 @@ class RadiusFragment:Fragment() {
             parentFragmentManager.commit {
                 setReorderingAllowed(true)
                 hide(parentFragmentManager.fragments.last())
-                add(R.id.fragmentContainerView,NotificationMethodFragment(),"NotificationMethodFragment")
+                add(R.id.selectionFragmentContainerView,NotificationMethodFragment(),"NotificationMethodFragment")
                 addToBackStack(null)
             }
         }
