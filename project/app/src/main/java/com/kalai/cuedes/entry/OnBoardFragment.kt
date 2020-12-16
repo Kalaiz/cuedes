@@ -9,14 +9,14 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.leanback.app.OnboardingSupportFragment
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.kalai.cuedes.*
 import com.kalai.cuedes.databinding.ViewBackgroundOnboardBinding
 import com.kalai.cuedes.databinding.ViewOnboardBinding
-import kotlinx.android.synthetic.main.view_onboard.*
 
 
 class OnBoardFragment :OnboardingSupportFragment()  {
@@ -27,6 +27,7 @@ class OnBoardFragment :OnboardingSupportFragment()  {
     private lateinit var descriptions:Array<String>
     private lateinit var pageNavigatorView: View
     private lateinit var getStartedButton: View
+    private lateinit var googleApiAvailability: GoogleApiAvailability
 
 
 
@@ -62,20 +63,19 @@ class OnBoardFragment :OnboardingSupportFragment()  {
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         titles = inflater.context?.resources?.getStringArray(R.array.onboard_titles)?: arrayOf()
         descriptions = inflater.context?.resources?.getStringArray(R.array.onboard_description) ?: arrayOf()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+
     override fun onCreateContentView(inflater: LayoutInflater?, container: ViewGroup?): View? {
         if(inflater!=null){
+            googleApiAvailability = GoogleApiAvailability.getInstance()
             contentBinding =  ViewOnboardBinding.inflate(inflater, container, false)
             contentBinding.getDeviceLocationPermissionButton.setOnClickListener { getDevicePermission() }
+            contentBinding.getServiceRequirement.setOnClickListener{ googleApiAvailability.makeGooglePlayServicesAvailable(activity)}
         }
         return if(this::contentBinding.isInitialized) contentBinding.root else null
     }
@@ -103,50 +103,99 @@ class OnBoardFragment :OnboardingSupportFragment()  {
                 }
             }
         }
-        else if(context?.isDevicePermissionGranted(PERMISSION_CODES)==true){
-            doneImageView.show()
-            getDeviceLocationPermissionButton.hide()
-            pageNavigatorView.show()
+        else {
+            with(contentBinding){
+                if (context.isDevicePermissionGranted(PERMISSION_CODES)) {
+                    doneImageView.show()
+                    getDeviceLocationPermissionButton.hide()
+                    pageNavigatorView.show()
+                }
+                if (googleApiAvailability.isGooglePlayServicesCompatible(context)) {
+                    doneImageView.show()
+                    getServiceRequirement.hide()
+                }
+            }
         }
-
-
     }
 
     override fun onPageChanged(newPage: Int, previousPage: Int) {
         super.onPageChanged(newPage, previousPage)
         val isPageIncrement = previousPage < newPage
 
-        if(isPageIncrement){
+        if (isPageIncrement) {
             backgroundBinding.backImageView.show()
         }
-        else if(newPage == 0){
-            backgroundBinding.backImageView.hide()
-            pageNavigatorView.show()
+        when (newPage) {
+            0 -> {/*Intro Page*/
+                backgroundBinding.backImageView.hide()
+                pageNavigatorView.show()
+            }
+            1 -> { /*Device Location Page*/
+                with(contentBinding) {
+                    if (context?.isDevicePermissionGranted(PERMISSION_CODES) != true) {
+                        getDeviceLocationPermissionButton.show()
+                        pageNavigatorView.hide()
+                    } else {
+                        getDeviceLocationPermissionButton.hide()
+                        doneImageView.show()
+                    }
+                }
+            }
 
         }
+    }
 
-        /*Device Location Page*/
+
+
+    private fun showPage(pageIndex: Int){
+        with(contentBinding) {
+            when (pageIndex) {
+                0 -> {
+                    backgroundBinding.backImageView.hide()
+                    pageNavigatorView.show()
+                }
+                1 -> {
+                    if (context?.isDevicePermissionGranted(PERMISSION_CODES) != true) {
+                        getDeviceLocationPermissionButton.show()
+                        pageNavigatorView.hide()
+                    } else {
+                        getDeviceLocationPermissionButton.hide()
+                        doneImageView.show()
+                    }
+                }
+                2 -> {
+                    with(googleApiAvailability) {
+                        if (isGooglePlayServicesAvailable(context) != ConnectionResult.SUCCESS) {
+                            getServiceRequirement.show()
+                            doneImageView.show()
+                            pageNavigatorView.hide()
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
+
+
+
+    private fun hidePage(pageIndex:Int){
         with(contentBinding){
-            if(newPage == 1){
-                if(context?.isDevicePermissionGranted(PERMISSION_CODES) != true) {
-                    getDeviceLocationPermissionButton.show()
-                    pageNavigatorView.hide()
-                }
-                else{
-                    getDeviceLocationPermissionButton.hide()
-                    doneImageView.show()
-                }
-            }
-            else{
-                doneImageView.hide()
-            }
-
-
-            if(!isPageIncrement){
-                getDeviceLocationPermissionButton.hide()
+            when(pageIndex){
+                0 -> backgroundBinding.backImageView.hide()
+                1 -> {doneImageView.hide()
+                    getDeviceLocationPermissionButton.hide()}
+                2 -> { doneImageView.hide()
+                    getServiceRequirement.hide()}
             }
         }
     }
+
+
+
 
     private fun getDevicePermission(){
         /*Getting  Relevant Permissions*/
@@ -172,7 +221,6 @@ class OnBoardFragment :OnboardingSupportFragment()  {
                 }
             }
             else{
-
                 pageNavigatorView.show()
             }
 

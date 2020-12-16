@@ -11,8 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.GoogleApi
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -65,12 +67,19 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
         activity?.let {
             fusedLocationClient= LocationServices.getFusedLocationProviderClient(it) }
-        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(activity)
+
 
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
 
+
+
+
+
+    }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         Log.d(TAG,"onMapReady called")
@@ -105,7 +114,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
             }
             if(it==null){
                 Log.d(TAG,"LastLocation null")
-
             }
 
             if (this::currentLocation.isInitialized && this::googleMap.isInitialized) {
