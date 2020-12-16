@@ -1,11 +1,13 @@
 package com.kalai.cuedes.entry
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
+import com.kalai.cuedes.MainActivity
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.ActivityEntryBinding
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +34,11 @@ class EntryActivity : AppCompatActivity() {
                 add(R.id.entryFragmentContainerView,onBoardFragment)
             }
         }
+            else{
+                val intent = Intent(this@EntryActivity,MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
 
     }

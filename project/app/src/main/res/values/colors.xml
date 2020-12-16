@@ -33,6 +33,7 @@
 
     <color name="transparent">#6F000000</color>
 
+    <color name="done_board_image_tint">#8BC34A</color>
 
 
 </resources>

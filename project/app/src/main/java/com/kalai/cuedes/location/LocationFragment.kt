@@ -1,23 +1,32 @@
 package com.kalai.cuedes.location
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.IntentSender
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.kalai.cuedes.R
 import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.databinding.FragmentLocationBinding
 import com.kalai.cuedes.location.selection.SelectionFragment
-
 
 
 @SuppressLint("MissingPermission")
@@ -37,10 +46,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     private lateinit var googleMap: GoogleMap
     private lateinit var currentLocation:LatLng
     private var fusedLocationClientInitiated = false
-    private val fusedLocationClient: FusedLocationProviderClient by lazy{
-        LocationServices.getFusedLocationProviderClient(this.activity as Activity)
-    }
-
+    private lateinit  var fusedLocationClient:FusedLocationProviderClient
 
 
     override fun onCreateView(
@@ -57,20 +63,17 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
             setCurrentLocation(animated = true)
         }
 
+        activity?.let {
+            fusedLocationClient= LocationServices.getFusedLocationProviderClient(it) }
+        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(activity)
+
         return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-
     }
 
 
 
     override fun onMapReady(googleMap: GoogleMap?) {
-        Log.d(TAG,"Map Ready")
-
+        Log.d(TAG,"onMapReady called")
         if (googleMap != null) {
             this.googleMap = googleMap
         }
@@ -91,15 +94,18 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
             }
 
         }
-
     }
 
 
     private fun setCurrentLocation(animated:Boolean){
-        startLocationUpdates()
+        Log.d(TAG,"setCurrentLocation  called")
         fusedLocationClient.lastLocation.addOnSuccessListener {
             it?.apply {
                 currentLocation = LatLng(latitude,longitude)
+            }
+            if(it==null){
+                Log.d(TAG,"LastLocation null")
+
             }
 
             if (this::currentLocation.isInitialized && this::googleMap.isInitialized) {
@@ -111,34 +117,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
                 }
 
             }
-            else{
-
-            }
         }
-    }
-
-
-    private fun startLocationUpdates() {
-        val locationRequest = LocationRequest().apply {
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval=10000
-            fastestInterval=1000
-        }
-
-        val locationCallback = object: LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                fusedLocationClientInitiated = locationResult!=null
-            }
-
-        }
-
-        fusedLocationClient.requestLocationUpdates(locationRequest,
-            locationCallback,
-            Looper.getMainLooper())
-    }
-    override fun onResume() {
-        super.onResume()
-
     }
 
 

@@ -21,19 +21,18 @@
     <string name="alarm_addition_close">Close</string>
     <string name="alarm_addition_add">Add</string>
 
+
     <string-array name="onboard_titles">
         <item>Hi!</item>
         <item>Device Permission</item>
-        <item>Location Permission</item>
         <item>That\'s it!</item>
     </string-array>
 
     <string-array name="onboard_description">
         <item>Just a few things before you can start using the app</item>
-        <item>Please give location based permission for the app</item>
-        <item>Please give service based permission for the app</item>
+        <item>This is a location based app. Please give location based permission for the app</item>
         <item>Enjoy using the App!</item>
     </string-array>
 
-    <string name="onboard_permission_msg">Please give location based permission for the app in order to proceed</string>
+    <string name="onboard_permission_msg">Please provide the relevant permission </string>
 </resources>
