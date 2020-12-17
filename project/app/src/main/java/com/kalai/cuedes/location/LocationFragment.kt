@@ -1,7 +1,6 @@
 package com.kalai.cuedes.location
 
 import android.annotation.SuppressLint
-import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,11 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.GoogleApi
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,8 +20,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.kalai.cuedes.R
 import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.databinding.FragmentLocationBinding
@@ -47,8 +42,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     private lateinit var binding:FragmentLocationBinding
     private lateinit var googleMap: GoogleMap
     private lateinit var currentLocation:LatLng
-    private var fusedLocationClientInitiated = false
-    private lateinit  var fusedLocationClient:FusedLocationProviderClient
+    private lateinit var fusedLocationClient:FusedLocationProviderClient
 
 
     override fun onCreateView(
@@ -57,7 +51,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     ): View {
 
         binding = FragmentLocationBinding.inflate(layoutInflater, container, false)
-        map = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
+        map = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         map.getMapAsync(this)
 
         /* Due to Default Location Button being displaced*/
@@ -72,14 +66,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-
-
-
-
-    }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         Log.d(TAG,"onMapReady called")
@@ -108,11 +94,12 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
     private fun setCurrentLocation(animated:Boolean){
         Log.d(TAG,"setCurrentLocation  called")
-        fusedLocationClient.lastLocation.addOnSuccessListener {
-            it?.apply {
+        fusedLocationClient.lastLocation.addOnCompleteListener  {
+            it.result?.apply {
                 currentLocation = LatLng(latitude,longitude)
+                Log.d(TAG,"latitude $latitude longitude $longitude")
             }
-            if(it==null){
+            if(it.result==null){
                 Log.d(TAG,"LastLocation null")
             }
 

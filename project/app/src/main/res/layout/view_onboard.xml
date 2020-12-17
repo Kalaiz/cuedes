@@ -9,11 +9,11 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/getDeviceLocationPermissionButton"
+            android:id="@+id/device_permission_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="Get Location Permission"
+            android:text="Get Device Location Permission"
             android:theme="@style/ThemeOverlay.MaterialButton"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ImageView
-            android:id="@+id/doneImageView"
+            android:id="@+id/ok_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
@@ -46,11 +46,30 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/getServiceRequirement"
+            android:id="@+id/play_service_requirement_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
             android:text="Get Play Service"
+            android:theme="@style/ThemeOverlay.MaterialButton"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/google_location_permission_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Get Google Location Service Permission"
             android:theme="@style/ThemeOverlay.MaterialButton"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"

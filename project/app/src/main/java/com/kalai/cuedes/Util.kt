@@ -29,4 +29,4 @@ fun Context?.isDevicePermissionGranted(permissionCodes: Array<String>):Boolean =
         ) == PackageManager.PERMISSION_GRANTED
     })) else false
 
-fun GoogleApiAvailability.isGooglePlayServicesCompatible(context: Context?) = if (context!=null) isGooglePlayServicesAvailable(context) != ConnectionResult.SUCCESS else false
+fun GoogleApiAvailability.isGooglePlayServicesCompatible(context: Context?) = if (context!=null) isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS else false

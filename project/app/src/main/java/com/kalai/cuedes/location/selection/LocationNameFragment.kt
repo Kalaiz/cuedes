@@ -29,7 +29,7 @@ class LocationNameFragment :Fragment(){
                 Log.d(TAG,parentFragmentManager.fragments.toString())
                 setReorderingAllowed(true)
                 hide(parentFragmentManager.fragments.last())
-                add(R.id.selectionFragmentContainerView,RadiusFragment(),"RadiusFragment")
+                add(R.id.selection_fragment_container_view,RadiusFragment(),"RadiusFragment")
                 addToBackStack(null)
             }
         }

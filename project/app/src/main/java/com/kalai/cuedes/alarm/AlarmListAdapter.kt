@@ -33,8 +33,8 @@ class AlarmListAdapter (private val data:Array<String>,private val context:Conte
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),OnMapReadyCallback{
-        private val textView: TextView = view.findViewById(R.id.textViewLocation)
-        private val mapView: MapView = view.findViewById(R.id.mapView)
+        private val textView: TextView = view.findViewById(R.id.location_text_view)
+        private val mapView: MapView = view.findViewById(R.id.map_view)
         private lateinit var map: GoogleMap
         private lateinit var latLng: LatLng
 

@@ -21,8 +21,6 @@ class SelectionFragment : BottomSheetDialogFragment(){
         private const val TAG = "BottomSheetFragment"
     }
 
-
-
     private lateinit var binding:FragmentSelectionBinding
 
     override fun onCreateView(
@@ -35,7 +33,7 @@ class SelectionFragment : BottomSheetDialogFragment(){
 
         childFragmentManager.commit {
             setReorderingAllowed(true)
-            add(R.id.selectionFragmentContainerView,LocationNameFragment(),"LocationFragment")
+            add(R.id.selection_fragment_container_view,LocationNameFragment(),"LocationFragment")
             addToBackStack(null)
         }
         return binding.root
