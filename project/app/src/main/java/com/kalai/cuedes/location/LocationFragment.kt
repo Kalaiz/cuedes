@@ -1,7 +1,9 @@
 package com.kalai.cuedes.location
 
 import android.annotation.SuppressLint
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -32,6 +31,10 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     companion object {
         fun newInstance() = LocationFragment()
         private const val TAG = "LocationFragment"
+        val locationRequestHighAccuracy = LocationRequest().apply {  priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval=5000}
+        val locationRequestBalanced = LocationRequest().apply { fastestInterval = 60*1000
+            interval=60*1000*60}
     }
 
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -41,8 +44,9 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     private lateinit var map: SupportMapFragment
     private lateinit var binding:FragmentLocationBinding
     private lateinit var googleMap: GoogleMap
-    private lateinit var currentLocation:LatLng
+    private lateinit var currentLocation: Location
     private lateinit var fusedLocationClient:FusedLocationProviderClient
+
 
 
     override fun onCreateView(
@@ -71,11 +75,12 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         Log.d(TAG,"onMapReady called")
         if (googleMap != null) {
             this.googleMap = googleMap
+            requestLocation()
         }
 
         googleMap?.isMyLocationEnabled = true
         googleMap?.uiSettings?.isMyLocationButtonEnabled=false
-        setCurrentLocation(animated = false)
+
 
         googleMap?.setOnMapLongClickListener {
                 latLng -> Log.d(TAG,latLng.toString());
@@ -92,19 +97,36 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     }
 
 
-    private fun setCurrentLocation(animated:Boolean){
-        Log.d(TAG,"setCurrentLocation  called")
-        fusedLocationClient.lastLocation.addOnCompleteListener  {
-            it.result?.apply {
-                currentLocation = LatLng(latitude,longitude)
-                Log.d(TAG,"latitude $latitude longitude $longitude")
-            }
-            if(it.result==null){
-                Log.d(TAG,"LastLocation null")
+    private fun requestLocation(){
+        Log.d(TAG,"requesting Location")
+        val locationRequest = LocationRequest().apply { priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 5000 }
+
+        val locationCallback =  object:LocationCallback(){
+            override fun onLocationAvailability(locationAvailability: LocationAvailability?) {
+                super.onLocationAvailability(locationAvailability)
+                Log.d(TAG,"Location available? ${locationAvailability?.isLocationAvailable}")
+                fusedLocationClient.lastLocation.addOnSuccessListener {location ->
+                    Log.d(TAG,"Success")
+                    location?.let {
+                        currentLocation = it
+                        Log.d(TAG,"Current Location is  $it")
+                        setCurrentLocation(false)
+                    }
+                    fusedLocationClient.removeLocationUpdates(this)
+                }
             }
 
+        }
+        fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback, Looper.myLooper())
+    }
+
+    private fun setCurrentLocation(animated:Boolean){
+        Log.d(TAG,"setCurrentLocation  called")
+
             if (this::currentLocation.isInitialized && this::googleMap.isInitialized) {
-                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 11.0f)
+                val latLng = LatLng(currentLocation.latitude,currentLocation.longitude)
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 11.0f)
                 if (animated) {
                     googleMap.animateCamera(cameraUpdate)
                 } else {
@@ -115,5 +137,3 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         }
     }
 
-
-}

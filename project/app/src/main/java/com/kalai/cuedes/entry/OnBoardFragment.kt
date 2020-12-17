@@ -29,6 +29,8 @@ import com.kalai.cuedes.databinding.ViewBackgroundOnboardBinding
 import com.kalai.cuedes.databinding.ViewOnboardBinding
 
 import com.kalai.cuedes.entry.OnBoardFragment.PageContent.*
+import com.kalai.cuedes.location.LocationFragment.Companion.locationRequestBalanced
+import com.kalai.cuedes.location.LocationFragment.Companion.locationRequestHighAccuracy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
 import kotlin.coroutines.coroutineContext
@@ -232,9 +234,12 @@ class OnBoardFragment :OnboardingSupportFragment()  {
     }
 
     private suspend fun isLocationServicePermissionGranted(): Boolean{
-        val locationRequest = LocationRequest()
-        val locationSettingsRequestBuilder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-        val task = activity?.let { LocationServices.getSettingsClient(it).checkLocationSettings(locationSettingsRequestBuilder.build()) }
+        val locationSettingsRequestBuilder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequestHighAccuracy)
+            .addLocationRequest(locationRequestBalanced)
+            .setAlwaysShow(true)
+        val task = activity?.let { LocationServices.getSettingsClient(it)
+            .checkLocationSettings(locationSettingsRequestBuilder.build()) }
         val isLocationServicePermissionGranted = CompletableDeferred<Boolean>()
         task?.addOnCompleteListener {
             try{
