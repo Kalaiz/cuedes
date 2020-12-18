@@ -19,7 +19,7 @@
 
 ### What I could have done better/will be doing
 
-- My `OnBoardFragment` extends `OnBoardSupportFragment` which provides animations of titles, description etc by default. However, I am currently showing and hiding `View`s so to accomodate content (Initially, when I planned of the onboarding process, I didnt account for/expect it to scale up). I realise that this **does not scale** up very well. I could replace with 1) multiple fragments, `Viewpager` + `MotionLayout` + Jetpack Navgiation Component or 2) Current Implementation(Instead of showing and hiding views) + `ViewPager` + `Fragment`. 
+- My `OnBoardFragment` extends `OnBoardSupportFragment` which provides animations of titles, description etc by default. However, I am currently showing and hiding `View`s so to accomodate content (Initially, when I planned of the onboarding process, I didnt account for/expect it to scale up). I realise that this **does not scale** up very well. I could replace with 1) multiple fragments, Jetpack Navigation Component ( will provide animations as well) or 2) Current Implementation(Instead of showing and hiding views) + `ViewPager` + `Fragment`.   `MotionLayout` could be used to enchance the visual effect(optional)
 
 - I am planning to make use of [Geofencing API](https://developers.google.com/location-context/geofencing) to know when the user is within an area of interest.
 
