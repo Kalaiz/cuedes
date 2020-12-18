@@ -40,7 +40,7 @@ Note: I am still working on this personal project.
 - Prevented the dismissal of `BottomSheetDialogFragment` upon touching outside/pulling it down via this [method](https://stackoverflow.com/a/50734566/11200630).
 ### ⚙️ Installation:
 Note: It will be easier to do the following via a phone. 
-1) Install the [APK](Project/app/build/debug/apk-debug.apk).
+1) Install the [APK](project/app/build/debug/apk-debug.apk).
 2) Allow App Installations from Unknown Sources, if requested.
 
 
