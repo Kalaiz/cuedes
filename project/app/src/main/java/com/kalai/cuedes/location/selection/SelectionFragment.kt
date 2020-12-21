@@ -9,17 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.commit
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
 
 
-class SelectionFragment : BottomSheetDialogFragment(){
+class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(){
 
     companion object{
         private const val TAG = "BottomSheetFragment"
     }
+
 
     private lateinit var binding:FragmentSelectionBinding
 
@@ -29,11 +31,9 @@ class SelectionFragment : BottomSheetDialogFragment(){
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSelectionBinding.inflate(inflater,container,false)
-
-
         childFragmentManager.commit {
             setReorderingAllowed(true)
-            add(R.id.selection_fragment_container_view,LocationNameFragment(),"LocationFragment")
+            add(R.id.selection_fragment_container_view,LocationNameFragment(latLng),"LocationFragment")
             addToBackStack(null)
         }
         return binding.root
@@ -48,6 +48,11 @@ class SelectionFragment : BottomSheetDialogFragment(){
             }
         }
         bottomSheetDialogFragment.setCanceledOnTouchOutside(false)
+        childFragmentManager.addOnBackStackChangedListener {
+            if(childFragmentManager.backStackEntryCount == 0){
+                dialog?.dismiss()
+            }
+        }
 
         bottomSheetDialogFragment.setOnKeyListener{ dialogInterface, i, keyEvent ->
             if(keyEvent != null && keyEvent.keyCode == KEYCODE_BACK && keyEvent.action == KeyEvent.ACTION_DOWN) {
@@ -61,6 +66,7 @@ class SelectionFragment : BottomSheetDialogFragment(){
                     }
                 }
             }
+
             true
         }
         return bottomSheetDialogFragment

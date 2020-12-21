@@ -29,7 +29,6 @@ import com.kalai.cuedes.location.selection.SelectionFragment
 class LocationFragment : Fragment() ,OnMapReadyCallback{
 
     companion object {
-        fun newInstance() = LocationFragment()
         private const val TAG = "LocationFragment"
         val locationRequestHighAccuracy = LocationRequest().apply {  priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             interval=5000}
@@ -40,7 +39,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private val viewModel: LocationViewModel by viewModels()
 
-
+    private lateinit var geoFencingClient: GeofencingClient
     private lateinit var map: SupportMapFragment
     private lateinit var binding:FragmentLocationBinding
     private lateinit var googleMap: GoogleMap
@@ -66,6 +65,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         activity?.let {
             fusedLocationClient= LocationServices.getFusedLocationProviderClient(it) }
 
+       activity?.let {  geoFencingClient = LocationServices.getGeofencingClient(it) }
 
         return binding.root
     }
@@ -85,14 +85,14 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         googleMap?.setOnMapLongClickListener {
                 latLng -> Log.d(TAG,latLng.toString());
             googleMap.addMarker(MarkerOptions().position(latLng))
-
-            val selectLocation = SelectionFragment()
-            selectLocation.isCancelable = true
-            childFragmentManager.commit {
-                setReorderingAllowed(true)
-                add(selectLocation,"SelectLocation")
+            if(latLng!=null) {
+                val selectLocation = SelectionFragment(latLng)
+                selectLocation.isCancelable = true
+                childFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    add(selectLocation, "SelectLocation")
+                }
             }
-
         }
     }
 

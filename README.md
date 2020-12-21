@@ -11,21 +11,21 @@
 ### 📜 Description:
 A simple Android App which rings an alarm when one is about to reach a destination.
 
-<!-- <p align="center">
-Preview of work done till now. 
+<p align="center">
+A slight peek at the progress so far.
  </p>
 <p align="center">
-<img src="/resources/app_overview.gif" width="25%" height="25%" /> 
+<img src="resources/app_overview.gif" width="25%" height="25%" /> 
 </p>
 <p align="center">
 Note: I am still working on this personal project. 
- </p> -->
+ </p>
 
 
 ### 🛠️ Tools Used:
- - ViewBinding, LiveData, ViewModels, FragmentStateAdapter, Foreground and Bound Service, OnBoardSupportFragment, DataStore
- - Google Maps SDK
- - Views: Co-ordinator, Constraint,Linear and Frame Layouts, Spinner, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompat
+ - ViewBinding, ~~LiveData~~, ViewModel, FragmentStateAdapter, Foreground and Bound Service, OnBoardSupportFragment, DataStore , Room
+ - Views: Co-ordinator, Constraint, Linear and Frame Layouts, Spinner, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompat
+  - Google Maps SDK
   - Kotlin : Scope functions, Flow , Co-routines
 
 

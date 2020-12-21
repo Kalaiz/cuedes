@@ -14,5 +14,17 @@
     </style>
 
 
+    <!--BottomSheetDialogFragment-->
+    <style name="ThemeOverlay.BottomSheetDialog" parent="ThemeOverlay.BaseBottomSheetDialog" />
+    <style name="ThemeOverlay.BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryLight</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/background_bottom_sheet</item>
+    </style>
+
 
 </resources>

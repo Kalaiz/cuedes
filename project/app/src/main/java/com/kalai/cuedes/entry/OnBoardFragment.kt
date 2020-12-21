@@ -62,6 +62,7 @@ class OnBoardFragment :OnboardingSupportFragment()  {
         private const val GOOGLE_LOCATION_SERVICE_REQ_CODE = 2
     }
 
+
     private val deviceSnackBarCallback =  object:BaseTransientBottomBar.BaseCallback<Snackbar>(){
         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             super.onDismissed(transientBottomBar, event)

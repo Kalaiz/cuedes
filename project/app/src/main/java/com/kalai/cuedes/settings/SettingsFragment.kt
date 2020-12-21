@@ -8,13 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.kalai.cuedes.R
+import com.kalai.cuedes.location.LocationFragment
+import java.util.*
 
 
 class SettingsFragment : Fragment() {
 
     companion object {
+
         fun newInstance() = SettingsFragment()
     }
+
 
     private val viewModel: SettingsViewModel by viewModels()
 
