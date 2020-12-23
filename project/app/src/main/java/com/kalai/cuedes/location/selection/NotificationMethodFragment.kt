@@ -22,6 +22,8 @@ class NotificationMethodFragment :Fragment(){
         binding.nextButton.setOnClickListener{
             parentFragmentManager.popBackStack(null, POP_BACK_STACK_INCLUSIVE)
         }
+
+
         return binding.root
     }
 }

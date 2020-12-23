@@ -8,12 +8,15 @@ import android.view.KeyEvent.KEYCODE_BACK
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
+import com.kalai.cuedes.location.LocationViewModel
 
 
 class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(){
@@ -24,7 +27,7 @@ class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(
 
 
     private lateinit var binding:FragmentSelectionBinding
-
+    private val locationViewModel: LocationViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,8 +49,8 @@ class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(
                 bottomSheetDialogFragment.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.let { BottomSheetBehavior.from(bottomSheet).apply { isHideable = false }
             }
+            bottomSheetDialogFragment.setCanceledOnTouchOutside(false)
         }
-        bottomSheetDialogFragment.setCanceledOnTouchOutside(false)
         childFragmentManager.addOnBackStackChangedListener {
             if(childFragmentManager.backStackEntryCount == 0){
                 dialog?.dismiss()
@@ -59,9 +62,11 @@ class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(
                 Log.d(TAG, "onBackPressed()" + childFragmentManager.backStackEntryCount + i)
                 if (childFragmentManager.fragments.size == 1) {
                     dialogInterface.dismiss()
+                    locationViewModel.clear()
                 } else {
                     childFragmentManager.popBackStack()
                     childFragmentManager.commit {
+                        setTransition(TRANSIT_FRAGMENT_FADE)
                         show(childFragmentManager.fragments.last())
                     }
                 }
@@ -71,6 +76,7 @@ class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(
         }
         return bottomSheetDialogFragment
     }
+
 
     override fun getTheme(): Int = R.style.ThemeOverlay_BottomSheetDialog
 

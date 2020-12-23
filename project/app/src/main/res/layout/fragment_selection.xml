@@ -33,6 +33,7 @@
             app:srcCompat="@drawable/ic_sound" />
     </LinearLayout>
 
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/selection_fragment_container_view"
         android:layout_width="match_parent"

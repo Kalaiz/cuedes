@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         pagerAdapter = PagerAdapter(this, bottomNavigationView.menu.size())
         viewPager.adapter = pagerAdapter
 
+        /*Pre - fetching Fragments in advance */
+        viewPager.offscreenPageLimit = 1
+
         /*Disabling Swipes*/
         viewPager.isUserInputEnabled = false
 

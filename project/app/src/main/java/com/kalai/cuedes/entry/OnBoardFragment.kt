@@ -2,6 +2,7 @@ package com.kalai.cuedes.entry
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,33 +12,33 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
-import androidx.fragment.app.FragmentActivity
 import androidx.leanback.app.OnboardingSupportFragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.kalai.cuedes.*
-import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.ViewBackgroundOnboardBinding
 import com.kalai.cuedes.databinding.ViewOnboardBinding
-
 import com.kalai.cuedes.entry.OnBoardFragment.PageContent.*
 import com.kalai.cuedes.location.LocationFragment.Companion.locationRequestBalanced
 import com.kalai.cuedes.location.LocationFragment.Companion.locationRequestHighAccuracy
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.map
-import kotlin.coroutines.coroutineContext
 
 
 class OnBoardFragment :OnboardingSupportFragment()  {
 
+    /*TODO need to use ViewPager2 instead*/
     private lateinit var contentBinding: ViewOnboardBinding
     private lateinit var backgroundBinding:ViewBackgroundOnboardBinding
     private lateinit var titles:Array<String>
@@ -215,9 +216,33 @@ class OnBoardFragment :OnboardingSupportFragment()  {
     }
 
 
-    private fun getGoogleLocationServicesPermission(){
-        if(this::locationServiceResolvable.isInitialized)
-            locationServiceResolvable.startResolutionForResult(activity , GOOGLE_LOCATION_SERVICE_REQ_CODE)
+    private fun getGoogleLocationServicesPermission() {
+        if (this::locationServiceResolvable.isInitialized) {
+            Log.d(TAG, "getGoogleLocationServicesPermission")
+            val contract = object: ActivityResultContract<Unit,Int>(){
+                override fun parseResult(resultCode: Int, intent: Intent?):Int{
+                    return resultCode
+                }
+
+                override fun createIntent(context: Context, input: Unit?): Intent =
+                    ActivityResultContracts.StartIntentSenderForResult()
+                        .createIntent(context,IntentSenderRequest.Builder(locationServiceResolvable.resolution.intentSender).build())
+            }
+
+            registerForActivityResult(contract){
+                    requestCode->
+                Log.d(TAG,"Callback called and it returned $requestCode")
+                if(requestCode==Activity.RESULT_OK){
+                    when(requestCode){
+                        GOOGLE_LOCATION_SERVICE_REQ_CODE ->{
+                            Log.d(TAG,"Location Service Permission Granted")
+                            isLocationServicePermissionGrantedAsync = CompletableDeferred(true)
+                        }
+                    }
+
+                }
+            }.launch(null)
+        }
     }
 
 
@@ -231,7 +256,6 @@ class OnBoardFragment :OnboardingSupportFragment()  {
                 }
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private suspend fun isLocationServicePermissionGranted(): Boolean{
@@ -274,7 +298,8 @@ class OnBoardFragment :OnboardingSupportFragment()  {
     private fun getDevicePermissions(){
         /*Getting  Relevant Permissions*/
         if(!context.isDevicePermissionGranted(PERMISSION_CODES)){
-            requestPermissions(PERMISSION_CODES, DEVICE_PERMISSION_REQ_CODE)
+           val requestPermission =  registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){}
+            requestPermission.launch(PERMISSION_CODES)
         }
     }
 
@@ -308,6 +333,7 @@ class OnBoardFragment :OnboardingSupportFragment()  {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
         val uri= Uri.fromParts("package", context?.packageName, null)
         intent.data = uri
+        /*TODO need to use the new new Activity Result API*/
         startActivityForResult(intent, DEVICE_PERMISSION_REQ_CODE)
     }
 

@@ -1,9 +1,8 @@
 package com.kalai.cuedes.entry
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.commit
@@ -30,9 +29,9 @@ class EntryActivity : AppCompatActivity() {
 
         val dataStore = applicationContext?.createDataStore("settings")
         val isOnBoardingKey = preferencesKey<Boolean>("isOnBoard")
-        val isOnBoardFlow = dataStore?.data?.map { preferences -> preferences[isOnBoardingKey] ?: true }
+        val isOnBoard = dataStore?.data?.map { preferences -> preferences[isOnBoardingKey] ?: true }
         lifecycleScope.launch {
-            if(isOnBoard(isOnBoardFlow)){
+            if(isOnBoard(isOnBoard)){
             supportFragmentManager.commit {
                 val onBoardFragment = OnBoardFragment()
                 add(R.id.entry_fragment_container_view,onBoardFragment)
@@ -47,13 +46,6 @@ class EntryActivity : AppCompatActivity() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        /*OnBoardFragment's startResolutionForResult (of Play Service API) not calling the fragment's onActivityResult,
-        despite the fragment onActivityResult calling it's superclass's onActivityResult */
-        supportFragmentManager.fragments.forEach { fragment-> fragment.onActivityResult(requestCode,resultCode,data) }
-        Log.d(TAG,"onActivityResult")
-    }
 
     private suspend fun isOnBoard(isOnBoardFlow: Flow<Boolean>?): Boolean = isOnBoardFlow?.first()?:true
 }

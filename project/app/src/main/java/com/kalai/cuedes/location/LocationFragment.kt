@@ -11,16 +11,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.kalai.cuedes.R
-import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.databinding.FragmentLocationBinding
 import com.kalai.cuedes.location.selection.SelectionFragment
 
@@ -36,8 +36,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
             interval=60*1000*60}
     }
 
-    private val sharedViewModel: SharedViewModel by activityViewModels()
-    private val viewModel: LocationViewModel by viewModels()
+
+    private val locationViewModel: LocationViewModel by activityViewModels()
 
     private lateinit var geoFencingClient: GeofencingClient
     private lateinit var map: SupportMapFragment
@@ -45,7 +45,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     private lateinit var googleMap: GoogleMap
     private lateinit var currentLocation: Location
     private lateinit var fusedLocationClient:FusedLocationProviderClient
-
+    private lateinit var currentSelectedMarker: Marker
 
 
     override fun onCreateView(
@@ -81,18 +81,24 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         googleMap?.isMyLocationEnabled = true
         googleMap?.uiSettings?.isMyLocationButtonEnabled=false
 
+        /*Overriding default behaviour*/
+        googleMap?.setOnMarkerClickListener { true }
 
         googleMap?.setOnMapLongClickListener {
-                latLng -> Log.d(TAG,latLng.toString());
-            googleMap.addMarker(MarkerOptions().position(latLng))
+                latLng -> Log.d(TAG,latLng.toString())
+          currentSelectedMarker = googleMap.addMarker(MarkerOptions().position(latLng))
             if(latLng!=null) {
                 val selectLocation = SelectionFragment(latLng)
-                selectLocation.isCancelable = true
                 childFragmentManager.commit {
                     setReorderingAllowed(true)
                     add(selectLocation, "SelectLocation")
                 }
             }
+
+        }
+
+        locationViewModel.selectedLocation.observe(requireActivity()) {
+            latLng -> if(latLng == null){ currentSelectedMarker.remove()}
         }
     }
 
