@@ -84,12 +84,12 @@ class DevicePermissionFragment : Fragment() {
         if (context.isDevicePermissionGranted(PERMISSION_CODES)) {
             binding.devicePermissionButton.hide()
             binding.okImageView.show()
-            if(viewModel.getIsPageNavigationViewable().value?.get(DEVICE_PERMISSION) != true)
+            if(viewModel.isPageNavigationViewable.value?.get(DEVICE_PERMISSION) != true)
                 viewModel.updateIsPageNavigationViewable(DEVICE_PERMISSION,true)
         }
         else {
             binding.devicePermissionButton.show()
-            if(viewModel.getIsPageNavigationViewable().value?.get(DEVICE_PERMISSION) != false)
+            if(viewModel.isPageNavigationViewable.value?.get(DEVICE_PERMISSION) != false)
                 viewModel.updateIsPageNavigationViewable(DEVICE_PERMISSION,false)
 
         }

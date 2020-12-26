@@ -6,13 +6,18 @@
     android:layout_height="match_parent"
     android:background="@color/colorLight">
 
+
     <LinearLayout
         android:id="@+id/navigation_linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="0dp"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/selection_fragment_container_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="0.1">
 
         <ImageView
             android:id="@+id/add_alarm_image_view"
@@ -37,7 +42,12 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/selection_fragment_container_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/navigation_linear_layout" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/navigation_linear_layout"
+        app:layout_constraintVertical_weight="0.9"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

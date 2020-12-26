@@ -5,6 +5,4 @@
     android:layout_height="match_parent"
     tools:context=".entry.onboard.IntroFragment">
 
-
-
 </FrameLayout>

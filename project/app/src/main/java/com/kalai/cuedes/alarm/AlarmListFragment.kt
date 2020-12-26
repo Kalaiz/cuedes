@@ -1,15 +1,12 @@
 package com.kalai.cuedes.alarm
 
 
-import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kalai.cuedes.databinding.FragmentAlarmListBinding
 
@@ -48,9 +45,6 @@ class AlarmListFragment : Fragment() {
         super.onStart()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
-    }
 
 }

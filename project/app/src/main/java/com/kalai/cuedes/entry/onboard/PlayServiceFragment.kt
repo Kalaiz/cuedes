@@ -43,12 +43,12 @@ class PlayServiceFragment : Fragment() {
         if (googleApiAvailability.isGooglePlayServicesCompatible(context)) {
             binding.playServiceRequirementButton.hide()
             binding.okImageView.show()
-            if(viewModel.getIsPageNavigationViewable().value?.get(PLAY_SERVICE) != true)
+            if(viewModel.isPageNavigationViewable.value?.get(PLAY_SERVICE) != true)
                 viewModel.updateIsPageNavigationViewable(PLAY_SERVICE,true)
         }
         else{
             binding.playServiceRequirementButton.show()
-            if(viewModel.getIsPageNavigationViewable().value?.get(PLAY_SERVICE) != false)
+            if(viewModel.isPageNavigationViewable.value?.get(PLAY_SERVICE) != false)
                 viewModel.updateIsPageNavigationViewable(PLAY_SERVICE, false)
         }
     }

@@ -3,20 +3,20 @@ package com.kalai.cuedes.location.selection
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
+import android.view.*
 import android.view.KeyEvent.KEYCODE_BACK
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import com.google.android.gms.maps.model.LatLng
+
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
-import com.kalai.cuedes.location.LocationViewModel
 
 
 class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(){
@@ -27,7 +27,7 @@ class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(
 
 
     private lateinit var binding:FragmentSelectionBinding
-    private val locationViewModel: LocationViewModel by activityViewModels()
+    private val selectionViewModel: SelectionViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,14 +42,20 @@ class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(
         return binding.root
     }
 
+
+
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val bottomSheetDialogFragment = super.onCreateDialog(savedInstanceState)
         bottomSheetDialogFragment.setOnShowListener {
-            val bottomSheet =
-                bottomSheetDialogFragment.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.let { BottomSheetBehavior.from(bottomSheet).apply { isHideable = false }
-            }
+            val bottomSheet = bottomSheetDialogFragment.findViewById<View>(R.id.design_bottom_sheet)
+            bottomSheet?.let { BottomSheetBehavior.from(bottomSheet).apply { isHideable = false } }
+            val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from<FrameLayout?>(bottomSheet as FrameLayout)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
             bottomSheetDialogFragment.setCanceledOnTouchOutside(false)
+            val layoutParams = bottomSheet.layoutParams
+            layoutParams.height =  context?.resources?.displayMetrics?.heightPixels?.div(2.5f)?.toInt() ?: WindowManager.LayoutParams.MATCH_PARENT
+            bottomSheet.layoutParams = layoutParams
         }
         childFragmentManager.addOnBackStackChangedListener {
             if(childFragmentManager.backStackEntryCount == 0){
@@ -62,7 +68,7 @@ class SelectionFragment(private var latLng: LatLng) : BottomSheetDialogFragment(
                 Log.d(TAG, "onBackPressed()" + childFragmentManager.backStackEntryCount + i)
                 if (childFragmentManager.fragments.size == 1) {
                     dialogInterface.dismiss()
-                    locationViewModel.clear()
+                    selectionViewModel.clear()
                 } else {
                     childFragmentManager.popBackStack()
                     childFragmentManager.commit {

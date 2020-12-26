@@ -99,13 +99,13 @@ class LocationServicePermissionFragment : Fragment() {
     private fun locationPermissionGranted(){
         binding.okImageView.show()
         binding.googleLocationPermissionButton.hide()
-        if(viewModel.getIsPageNavigationViewable().value?.get(GOOGLE_LOCATION_SERVICE_PERMISSION) != true)
+        if(viewModel.isPageNavigationViewable.value?.get(GOOGLE_LOCATION_SERVICE_PERMISSION) != true)
             viewModel.updateIsPageNavigationViewable(GOOGLE_LOCATION_SERVICE_PERMISSION,true)
     }
 
     private fun locationPermissionNotGranted(){
         binding.googleLocationPermissionButton.show()
-        if (viewModel.getIsPageNavigationViewable().value?.get(
+        if (viewModel.isPageNavigationViewable.value?.get(
                 GOOGLE_LOCATION_SERVICE_PERMISSION
             ) != false)
             viewModel.updateIsPageNavigationViewable(
@@ -116,7 +116,7 @@ class LocationServicePermissionFragment : Fragment() {
 
 
     private fun permissionUpdate() {
-        if(viewModel.getIsPageNavigationViewable().value?.get(GOOGLE_LOCATION_SERVICE_PERMISSION) == true|| isLocationServicePermissionGranted){
+        if(viewModel.isPageNavigationViewable.value?.get(GOOGLE_LOCATION_SERVICE_PERMISSION) == true|| isLocationServicePermissionGranted){
             locationPermissionGranted()
         }
         else if(!isLocationServicePermissionGranted && this::job.isInitialized&&!job.isActive || !this::job.isInitialized )

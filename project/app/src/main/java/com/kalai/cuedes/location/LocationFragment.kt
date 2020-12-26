@@ -3,17 +3,17 @@ package com.kalai.cuedes.location
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
-import androidx.lifecycle.observe
-import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
+import androidx.lifecycle.Observer
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -38,13 +38,10 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
 
     private val locationViewModel: LocationViewModel by activityViewModels()
-
     private lateinit var geoFencingClient: GeofencingClient
     private lateinit var map: SupportMapFragment
     private lateinit var binding:FragmentLocationBinding
     private lateinit var googleMap: GoogleMap
-    private lateinit var currentLocation: Location
-    private lateinit var fusedLocationClient:FusedLocationProviderClient
     private lateinit var currentSelectedMarker: Marker
 
 
@@ -57,25 +54,96 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         map = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         map.getMapAsync(this)
 
-        /* Due to Default Location Button being displaced*/
-        binding.currentLocationButton.setOnClickListener {
-            setCurrentLocation(animated = true)
-        }
-
-        activity?.let {
-            fusedLocationClient= LocationServices.getFusedLocationProviderClient(it) }
-
 /*       activity?.let {  geoFencingClient = LocationServices.getGeofencingClient(it) }*/
 
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        /* Due to Default Location Button being displaced*/
+        binding.currentLocationButton.setOnClickListener {
+            locationViewModel.getCurrentLocationUpdate()
+        }
+
+        locationViewModel.cameraMovement.observe(viewLifecycleOwner, Observer {cameraMovement->
+            Log.d(TAG,"Camera Movement changed")
+            if (this::googleMap.isInitialized) {
+                cameraMovement?.run{
+                    if(animated && duration!=null){
+                        Log.d(TAG,"Camera Movement with animation and duration")
+                        googleMap.animateCamera(cameraUpdate,duration as Int,null)
+                    }
+                    else if (animated){
+                        Log.d(TAG,"Camera Movement with animation ")
+                        googleMap.animateCamera(cameraUpdate)
+                    }
+                    else{
+                        Log.d(TAG,"Camera Movement ")
+                        googleMap.moveCamera(cameraUpdate)
+                    }
+                }
+            }
+        })
+
+        locationViewModel.isCameraIdle.observe(viewLifecycleOwner,Observer{
+            Log.d(TAG,"TEST: CameraIdle changed")
+        })
+
+        locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer { latLng->
+            if(latLng != null) {
+                Log.d(TAG,"SelectedLatLng Changed")
+                /*cannot use Lambda cause of Kotlin SAM not giving a "this" reference to the observer instance*/
+                locationViewModel.isCameraIdle.observe(viewLifecycleOwner,object:Observer<Boolean> {
+                    override fun onChanged(isCameraIdle: Boolean?) {
+                        Log.d(TAG,"cameraIdle Changed")
+                        if (isCameraIdle == true) {
+                            val selectLocation = SelectionFragment(latLng)
+                            childFragmentManager.commit {
+                                setReorderingAllowed(true)
+                                add(selectLocation, "SelectLocation")
+                            }
+                            locationViewModel.isCameraIdle.removeObserver(this)
+                        }
+                    }
+                })
+            }
+        })
+
+        locationViewModel.currentLocation.observe(viewLifecycleOwner, object :
+            Observer< Location> {
+            override fun onChanged(location: Location?) {
+                if(location!=null){
+                    locationViewModel.setupCurrentLocation()
+                }
+            }
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG,"onResume")
+        if(childFragmentManager.fragments.isEmpty()){
+            setNormalMode()
+        }
+   }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         Log.d(TAG,"onMapReady called")
         if (googleMap != null) {
             this.googleMap = googleMap
-            requestLocation()
+            locationViewModel.requestLocation()
+            googleMap.setOnCameraIdleListener {
+                Log.d(TAG,"Camera Idle")
+                locationViewModel.cameraIdle()
+            }
+
+            googleMap.setOnCameraMoveStartedListener {
+                Log.d(TAG,"camera move started $it")
+                locationViewModel.setCameraMoveAction(it)
+                locationViewModel.cameraMoving()
+
+            }
         }
 
         googleMap?.isMyLocationEnabled = true
@@ -86,60 +154,33 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
         googleMap?.setOnMapLongClickListener {
                 latLng -> Log.d(TAG,latLng.toString())
-          currentSelectedMarker = googleMap.addMarker(MarkerOptions().position(latLng))
+            currentSelectedMarker = googleMap.addMarker(MarkerOptions().position(latLng))
             if(latLng!=null) {
-                val selectLocation = SelectionFragment(latLng)
-                childFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    add(selectLocation, "SelectLocation")
+                setSelectionMode(latLng)
+            }
+            val callback  = object:
+                FragmentManager.FragmentLifecycleCallbacks(){
+                override fun onFragmentDetached(fm: FragmentManager, f: Fragment) {
+                    super.onFragmentDetached(fm, f)
+                    setNormalMode()
                 }
             }
-
-        }
-
-        locationViewModel.selectedLocation.observe(requireActivity()) {
-            latLng -> if(latLng == null){ currentSelectedMarker.remove()}
+            childFragmentManager.registerFragmentLifecycleCallbacks(callback,false)
         }
     }
 
 
-    private fun requestLocation(){
-        Log.d(TAG,"requesting Location")
+    private fun setSelectionMode(latLng: LatLng){
+        locationViewModel.setSelectionMode(latLng)
+        binding.searchView
+            .animate()?.translationYBy(-binding.searchView.height*2f)?.duration = 1000
 
-
-        val locationCallback =  object:LocationCallback(){
-            override fun onLocationAvailability(locationAvailability: LocationAvailability?) {
-                super.onLocationAvailability(locationAvailability)
-                Log.d(TAG,"Location available? ${locationAvailability?.isLocationAvailable}")
-                fusedLocationClient.lastLocation.addOnSuccessListener {location ->
-                    Log.d(TAG,"Success")
-                    location?.let {
-                        currentLocation = it
-                        Log.d(TAG,"Current Location is  $it")
-                        setCurrentLocation(false)
-                        fusedLocationClient.removeLocationUpdates(this)
-                    }
-
-                }
-            }
-
-        }
-        fusedLocationClient.requestLocationUpdates(locationRequestHighAccuracy,locationCallback, Looper.myLooper())
     }
 
-    private fun setCurrentLocation(animated:Boolean){
-        Log.d(TAG,"setCurrentLocation  called")
-
-            if (this::currentLocation.isInitialized && this::googleMap.isInitialized) {
-                val latLng = LatLng(currentLocation.latitude,currentLocation.longitude)
-                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 11.0f)
-                if (animated) {
-                    googleMap.animateCamera(cameraUpdate)
-                } else {
-                    googleMap.moveCamera(cameraUpdate)
-                }
-
-            }
-        }
+    private fun setNormalMode(){
+        binding.searchView
+            .animate()?.translationYBy(binding.searchView.height*2f)?.duration = 1000
     }
+
+}
 

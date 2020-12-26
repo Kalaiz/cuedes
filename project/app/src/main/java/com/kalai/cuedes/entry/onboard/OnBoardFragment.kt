@@ -25,7 +25,7 @@ import com.kalai.cuedes.entry.onboard.OnBoardPagerAdapter.Companion.PAGE
 import com.kalai.cuedes.entry.onboard.PageContent.*
 import kotlinx.coroutines.launch
 
-
+/*TODO need to follow MVVM */
 class OnBoardFragment :OnboardingSupportFragment()  {
 
     companion object{ private const val TAG = "OnBoardFragment" }
@@ -40,7 +40,7 @@ class OnBoardFragment :OnboardingSupportFragment()  {
     private lateinit var getStartedButton: View
     private lateinit var viewPagerAnimator: Animator
 
-    private val viewModel: OnBoardViewModel by activityViewModels()
+    private val onBoardViewModel: OnBoardViewModel by activityViewModels()
 
     override fun getPageCount(): Int = titles.size
 
@@ -115,7 +115,7 @@ class OnBoardFragment :OnboardingSupportFragment()  {
             lifecycleScope.launch { setOnBoardCompleted() }
             startMainActivity() }
 
-        viewModel.getIsPageNavigationViewable().observe(viewLifecycleOwner, Observer { updatedMap ->
+        onBoardViewModel.isPageNavigationViewable.observe(viewLifecycleOwner, Observer { updatedMap ->
             PAGE[currentPageIndex]
             updatedMap?.run {
                 Log.d(TAG, PAGE[currentPageIndex].toString())
@@ -161,7 +161,7 @@ class OnBoardFragment :OnboardingSupportFragment()  {
         if(newPage == 0){ backgroundBinding.backImageView.hide() }
         else{ backgroundBinding.backImageView.show() }
 
-        val isPageNavigatorNeeded = viewModel.getIsPageNavigationViewable().value?.get(PAGE[newPage])
+        val isPageNavigatorNeeded = onBoardViewModel.isPageNavigationViewable.value?.get(PAGE[newPage])
 
         if(isPageNavigatorNeeded == true || isPageNavigatorNeeded == null){// null for pages like intro
             pageNavigatorView.show() }

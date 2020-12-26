@@ -8,7 +8,7 @@ import java.util.*
 class OnBoardViewModel :ViewModel(){
     private val  _isPageNavigationViewable = MutableLiveData<EnumMap<PageContent,Boolean>>(EnumMap(PageContent::class.java))
 
-    fun getIsPageNavigationViewable(): LiveData<EnumMap<PageContent,Boolean>> = _isPageNavigationViewable
+    val isPageNavigationViewable: LiveData<EnumMap<PageContent,Boolean>>get() = _isPageNavigationViewable
 
     fun updateIsPageNavigationViewable(fragmentKey:PageContent,value:Boolean){
         val map = _isPageNavigationViewable.value
