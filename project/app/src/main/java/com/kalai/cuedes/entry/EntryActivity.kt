@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.kalai.cuedes.MainActivity
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.ActivityEntryBinding
+import com.kalai.cuedes.entry.onboard.OnBoardFragment
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -17,11 +18,10 @@ import kotlinx.coroutines.launch
 
 class EntryActivity : AppCompatActivity() {
 
+    companion object{ private const val TAG = "EntryActivity" }
+
     private lateinit var binding: ActivityEntryBinding
 
-    companion object{
-        private const val TAG = "EntryActivity"
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEntryBinding.inflate(layoutInflater)
@@ -29,11 +29,12 @@ class EntryActivity : AppCompatActivity() {
 
         val dataStore = applicationContext?.createDataStore("settings")
         val isOnBoardingKey = preferencesKey<Boolean>("isOnBoard")
-        val isOnBoard = dataStore?.data?.map { preferences -> preferences[isOnBoardingKey] ?: true }
+        val isOnBoardFlow = dataStore?.data?.map { preferences -> preferences[isOnBoardingKey] ?: true }
         lifecycleScope.launch {
-            if(isOnBoard(isOnBoard)){
+            if(isOnBoard(isOnBoardFlow)){
             supportFragmentManager.commit {
-                val onBoardFragment = OnBoardFragment()
+                val onBoardFragment =
+                    OnBoardFragment()
                 add(R.id.entry_fragment_container_view,onBoardFragment)
             }
         }
@@ -43,9 +44,7 @@ class EntryActivity : AppCompatActivity() {
                 finish()
             }
         }
-
     }
-
 
     private suspend fun isOnBoard(isOnBoardFlow: Flow<Boolean>?): Boolean = isOnBoardFlow?.first()?:true
 }

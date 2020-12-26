@@ -38,5 +38,7 @@
         <item>Enjoy using the App!</item>
     </string-array>
 
-    <string name = "onboard_permission_msg">Please provide the relevant permission </string>
+    <string name="onboard_permission_msg">Please provide the relevant permission </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

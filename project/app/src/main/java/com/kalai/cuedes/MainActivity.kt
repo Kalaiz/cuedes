@@ -13,10 +13,9 @@ import com.kalai.cuedes.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewPager: ViewPager2
-    private lateinit var pagerAdapter: PagerAdapter
+    private lateinit var mainPagerAdapter: MainPagerAdapter
     private lateinit var bottomNavigationView: BottomNavigationView
     private val sharedViewModel: SharedViewModel by viewModels()
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,15 +26,14 @@ class MainActivity : AppCompatActivity() {
 
         viewPager = binding.viewPager
         bottomNavigationView = binding.bottomNavigationView
-        pagerAdapter = PagerAdapter(this, bottomNavigationView.menu.size())
-        viewPager.adapter = pagerAdapter
+        mainPagerAdapter = MainPagerAdapter(this, bottomNavigationView.menu.size())
+        viewPager.adapter = mainPagerAdapter
 
         /*Pre - fetching Fragments in advance */
         viewPager.offscreenPageLimit = 1
 
         /*Disabling Swipes*/
         viewPager.isUserInputEnabled = false
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener { selectedItem ->
             viewPager.currentItem = when (selectedItem.itemId) {
@@ -46,13 +44,10 @@ class MainActivity : AppCompatActivity() {
             return@setOnNavigationItemSelectedListener true
         }
 
-
-
         /*TODO: Need to handle lifecycle properly*/
         /*startCueDesService()*/
-
-
     }
+
 
     private fun startCueDesService(){
         val cueDesServiceIntent= Intent(this, CueDesService::class.java)

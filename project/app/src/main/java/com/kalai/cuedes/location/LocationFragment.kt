@@ -65,7 +65,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         activity?.let {
             fusedLocationClient= LocationServices.getFusedLocationProviderClient(it) }
 
-       activity?.let {  geoFencingClient = LocationServices.getGeofencingClient(it) }
+/*       activity?.let {  geoFencingClient = LocationServices.getGeofencingClient(it) }*/
 
         return binding.root
     }
@@ -105,8 +105,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
     private fun requestLocation(){
         Log.d(TAG,"requesting Location")
-        val locationRequest = LocationRequest().apply { priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            interval = 5000 }
+
 
         val locationCallback =  object:LocationCallback(){
             override fun onLocationAvailability(locationAvailability: LocationAvailability?) {
@@ -118,13 +117,14 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
                         currentLocation = it
                         Log.d(TAG,"Current Location is  $it")
                         setCurrentLocation(false)
+                        fusedLocationClient.removeLocationUpdates(this)
                     }
-                    fusedLocationClient.removeLocationUpdates(this)
+
                 }
             }
 
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest,locationCallback, Looper.myLooper())
+        fusedLocationClient.requestLocationUpdates(locationRequestHighAccuracy,locationCallback, Looper.myLooper())
     }
 
     private fun setCurrentLocation(animated:Boolean){

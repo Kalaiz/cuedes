@@ -23,7 +23,7 @@ Note: I am still working on this personal project.
 
 
 ### 🛠️ Tools Used:
- - ViewBinding, ~~LiveData~~, ViewModel, FragmentStateAdapter, Foreground and Bound Service, OnBoardSupportFragment, DataStore , Room
+ - ViewBinding, LiveData, ViewModel, FragmentStateAdapter, Foreground and Bound Service, OnBoardSupportFragment, DataStore , Room
  - Views: Co-ordinator, Constraint, Linear and Frame Layouts, Spinner, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompat
   - Google Maps SDK
   - Kotlin : Scope functions, Flow , Co-routines
@@ -38,6 +38,8 @@ Note: I am still working on this personal project.
 - [Google Map ApiDemos repository](https://developers.google.com/maps/documentation/android-sdk/lite) by Google; Although some parts were obsolete, it gave me gotchas on the usage of the API alongside with `ViewGroup`s such as `RecyclerView`.
 - XML style for making `BottomSheetDialog` have rounded corners is adapted from this SO [answer](https://stackoverflow.com/a/50619479/11200630).
 - Prevented the dismissal of `BottomSheetDialogFragment` upon touching outside/pulling it down via this [method](https://stackoverflow.com/a/50734566/11200630).
+- Used a Custom ViewPager2 Transition  via this [answer](https://stackoverflow.com/a/59235979/11200630). 
+
 ### ⚙️ Installation:
 Note: It will be easier to do the following via a phone. 
 1) Install the [APK](project/app/build/outputs/apk/debug/app-debug.apk).
