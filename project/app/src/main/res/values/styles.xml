@@ -27,7 +27,7 @@
     <!--BottomSheetDialogFragment-->
     <style name="ThemeOverlay.BottomSheetDialog" parent="ThemeOverlay.BaseBottomSheetDialog" />
     <style name="ThemeOverlay.BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsFloating">true</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
     </style>
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
@@ -63,5 +63,10 @@
     <style name="ThemeOverlay.MaterialButton" parent="Theme.MaterialComponents">
         <item name="colorPrimary">@color/colorPrimaryLight</item>
         <item name="android:textColor">@color/colorSurfaceDark</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_in</item>
+        <item name="android:windowExitAnimation">@anim/slide_out</item>
     </style>
 </resources>

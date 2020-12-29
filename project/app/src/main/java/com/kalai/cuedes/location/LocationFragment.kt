@@ -7,10 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.commit
+import androidx.fragment.app.*
 import androidx.lifecycle.Observer
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationRequest
@@ -22,7 +19,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentLocationBinding
-import com.kalai.cuedes.location.selection.SelectionFragment
+import com.kalai.cuedes.location.selection.SelectionBottomFragment
 
 
 @SuppressLint("MissingPermission")
@@ -38,7 +35,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
 
     private val locationViewModel: LocationViewModel by activityViewModels()
-    private lateinit var geoFencingClient: GeofencingClient
     private lateinit var map: SupportMapFragment
     private lateinit var binding:FragmentLocationBinding
     private lateinit var googleMap: GoogleMap
@@ -98,7 +94,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
                     override fun onChanged(isCameraIdle: Boolean?) {
                         Log.d(TAG,"cameraIdle Changed")
                         if (isCameraIdle == true) {
-                            val selectLocation = SelectionFragment(latLng)
+                            val selectLocation = SelectionBottomFragment(latLng)
                             childFragmentManager.commit {
                                 setReorderingAllowed(true)
                                 add(selectLocation, "SelectLocation")
@@ -115,9 +111,18 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
             override fun onChanged(location: Location?) {
                 if(location!=null){
                     locationViewModel.setupCurrentLocation()
+                    locationViewModel.currentLocation.removeObserver(this)
                 }
             }
         })
+
+        setFragmentResultListener("LocationFragmentReqKey") { _, bundle ->
+            if(!bundle.getBoolean("Successful")){
+                currentSelectedMarker.remove()
+            }
+
+        }
+
     }
 
     override fun onResume() {
