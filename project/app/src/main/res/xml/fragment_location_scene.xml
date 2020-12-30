@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Transition
+        app:constraintSetEnd="@id/end"
+        app:constraintSetStart="@+id/start"
+        app:duration="400"/>
+
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@id/fragment_map_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="100"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/fragment_selection"
+            app:layout_constraintEnd_toEndOf="parent">
+        </Constraint>
+
+    <!--    <Constraint
+            android:id="@+id/view_map_overlay"
+            android:alpha="1">
+
+
+    </Constraint>-->
+<!--<CustomAttribute app:attributeName="background"
+    app:customColorValue="@color/colorSurface">
+
+</CustomAttribute>-->
+
+        <Constraint
+            android:id="@+id/fragment_selection"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_map_container"
+            >
+        </Constraint>
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@id/fragment_map_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="70"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/fragment_selection"
+            app:layout_constraintEnd_toEndOf="parent">
+        </Constraint>
+
+
+   <!--     <Constraint
+            android:id="@+id/view_map_overlay"
+            android:alpha="0">
+
+        </Constraint>-->
+        <Constraint
+            android:id="@+id/fragment_selection"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_map_container"
+            />
+    </ConstraintSet>
+
+
+</MotionScene>

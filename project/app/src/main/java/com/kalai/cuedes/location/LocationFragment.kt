@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.*
 import androidx.lifecycle.Observer
-import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -19,7 +18,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentLocationBinding
-import com.kalai.cuedes.location.selection.SelectionBottomFragment
+import com.kalai.cuedes.location.selection.SelectionFragment
 
 
 @SuppressLint("MissingPermission")
@@ -47,7 +46,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
     ): View {
 
         binding = FragmentLocationBinding.inflate(layoutInflater, container, false)
-        map = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
+        map = childFragmentManager.findFragmentById(R.id.fragment_map) as SupportMapFragment
         map.getMapAsync(this)
 
 /*       activity?.let {  geoFencingClient = LocationServices.getGeofencingClient(it) }*/
@@ -94,12 +93,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
                     override fun onChanged(isCameraIdle: Boolean?) {
                         Log.d(TAG,"cameraIdle Changed")
                         if (isCameraIdle == true) {
-                            val selectLocation = SelectionBottomFragment(latLng)
-                            childFragmentManager.commit {
-                                setReorderingAllowed(true)
-                                add(selectLocation, "SelectLocation")
-                            }
                             locationViewModel.isCameraIdle.removeObserver(this)
+                            binding.motionLayoutContainer.transitionToEnd()
                         }
                     }
                 })
@@ -179,7 +174,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         locationViewModel.setSelectionMode(latLng)
         binding.searchView
             .animate()?.translationYBy(-binding.searchView.height*2f)?.duration = 1000
-
+        /*TODO launch fragment lazily via viewstub*/
     }
 
     private fun setNormalMode(){

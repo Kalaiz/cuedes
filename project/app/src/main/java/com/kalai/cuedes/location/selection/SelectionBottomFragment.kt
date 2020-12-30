@@ -1,25 +1,19 @@
 package com.kalai.cuedes.location.selection
 
-import android.animation.Animator
+
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.transition.Transition
 import android.util.Log
 import android.view.*
 import android.view.KeyEvent.KEYCODE_BACK
-import android.widget.FrameLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
-import androidx.fragment.app.setFragmentResult
 import com.google.android.gms.maps.model.LatLng
-
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
@@ -28,7 +22,7 @@ import com.kalai.cuedes.databinding.FragmentSelectionBinding
 class SelectionBottomFragment(private var latLng: LatLng) : BottomSheetDialogFragment(){
 
     companion object{
-        private const val TAG = "BottomSheetFragment"
+        private const val TAG = "SelectionFragment"
     }
 
 
@@ -42,7 +36,7 @@ class SelectionBottomFragment(private var latLng: LatLng) : BottomSheetDialogFra
         binding = FragmentSelectionBinding.inflate(inflater,container,false)
         childFragmentManager.commit {
             setReorderingAllowed(true)
-            add(R.id.selection_fragment_container_view,LocationNameFragment(latLng),"LocationFragment")
+            add(R.id.selection_fragment_container_view,LocationNameFragment(),"LocationFragment")
             addToBackStack(null)
 
         }

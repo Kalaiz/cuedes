@@ -13,7 +13,7 @@ import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionLocationNameBinding
 
 
-class LocationNameFragment(private var latLng: LatLng) :Fragment(){
+class LocationNameFragment :Fragment(){
 
 
     companion object{
@@ -27,7 +27,7 @@ class LocationNameFragment(private var latLng: LatLng) :Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSelectionLocationNameBinding.inflate(layoutInflater, container, false)
-        binding.locationNameTextView.text = latLng.toString()
+        /*binding.locationNameTextView.text = latLng.toString()*/
         binding.nextButton.setOnClickListener{
             parentFragmentManager.commit {
                 Log.d(TAG,parentFragmentManager.fragments.toString())
