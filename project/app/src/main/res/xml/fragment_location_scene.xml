@@ -4,13 +4,13 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start"
-        app:duration="400"/>
+        app:duration="500"/>
 
 
     <ConstraintSet android:id="@+id/start">
         <Constraint
-            android:id="@id/fragment_map_container"
-            android:layout_width="match_parent"
+            android:id="@id/motion_layout_map_container"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintVertical_weight="100"
             app:layout_constraintStart_toStartOf="parent"
@@ -19,60 +19,59 @@
             app:layout_constraintEnd_toEndOf="parent">
         </Constraint>
 
-    <!--    <Constraint
-            android:id="@+id/view_map_overlay"
-            android:alpha="1">
-
-
-    </Constraint>-->
-<!--<CustomAttribute app:attributeName="background"
-    app:customColorValue="@color/colorSurface">
-
-</CustomAttribute>-->
-
         <Constraint
             android:id="@+id/fragment_selection"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintVertical_weight="0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_map_container"
-            >
-        </Constraint>
+            app:layout_constraintTop_toBottomOf="@id/motion_layout_map_container"/>
 
+        <Constraint
+            android:id="@+id/search_view"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/motion_layout_map_container" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
-            android:id="@id/fragment_map_container"
-            android:layout_width="match_parent"
+            android:id="@id/motion_layout_map_container"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintVertical_weight="70"
+            app:layout_constraintVertical_weight="40"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/fragment_selection"
             app:layout_constraintEnd_toEndOf="parent">
         </Constraint>
 
-
-   <!--     <Constraint
-            android:id="@+id/view_map_overlay"
-            android:alpha="0">
-
-        </Constraint>-->
         <Constraint
             android:id="@+id/fragment_selection"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintVertical_weight="30"
+            app:layout_constraintVertical_weight="60"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragment_map_container"
-            />
+            app:layout_constraintTop_toBottomOf="@id/motion_layout_map_container" />
+
+
+        <Constraint
+            android:id="@+id/search_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/motion_layout_map_container" />
+
     </ConstraintSet>
+
 
 
 </MotionScene>

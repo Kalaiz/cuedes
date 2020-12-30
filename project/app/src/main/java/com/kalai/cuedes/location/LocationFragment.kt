@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.fragment.app.*
 import androidx.lifecycle.Observer
 import com.google.android.gms.location.LocationRequest
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentLocationBinding
+import com.kalai.cuedes.location.selection.SelectionBottomFragment
 import com.kalai.cuedes.location.selection.SelectionFragment
 
 
@@ -95,6 +97,31 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
                         if (isCameraIdle == true) {
                             locationViewModel.isCameraIdle.removeObserver(this)
                             binding.motionLayoutContainer.transitionToEnd()
+                            binding.motionLayoutMapContainer.transitionToEnd()
+
+                            binding.motionLayoutMapContainer.addTransitionListener(object:MotionLayout.TransitionListener{
+                                override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {
+
+                                }
+
+                                override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+
+                                }
+
+                                override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {
+
+                                }
+
+                                override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                                    binding.motionLayoutContainer.transitionToStart()
+                                    binding.motionLayoutMapContainer.transitionToStart()
+                                }
+                            })
+                         /*   val selectLocation = SelectionFragment()
+                            childFragmentManager.commit {
+                                setReorderingAllowed(true)
+                                add(selectLocation,"SelectLocation")
+                            }*/
                         }
                     }
                 })
@@ -114,6 +141,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
         setFragmentResultListener("LocationFragmentReqKey") { _, bundle ->
             if(!bundle.getBoolean("Successful")){
                 currentSelectedMarker.remove()
+                binding.motionLayoutContainer.transitionToStart()
+                binding.motionLayoutMapContainer.transitionToStart()
             }
 
         }
@@ -172,15 +201,14 @@ class LocationFragment : Fragment() ,OnMapReadyCallback{
 
     private fun setSelectionMode(latLng: LatLng){
         locationViewModel.setSelectionMode(latLng)
-        binding.searchView
-            .animate()?.translationYBy(-binding.searchView.height*2f)?.duration = 1000
         /*TODO launch fragment lazily via viewstub*/
     }
 
     private fun setNormalMode(){
-        binding.searchView
-            .animate()?.translationYBy(binding.searchView.height*2f)?.duration = 1000
+
     }
+
+
 
 }
 
