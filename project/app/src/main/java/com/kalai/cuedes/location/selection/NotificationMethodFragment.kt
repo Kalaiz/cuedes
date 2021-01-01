@@ -19,7 +19,7 @@ class NotificationMethodFragment :Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSelectionNotificationBinding.inflate(layoutInflater, container, false)
-        binding.nextButton.setOnClickListener{
+        binding.doneButton.setOnClickListener{
             parentFragmentManager.popBackStack(null, POP_BACK_STACK_INCLUSIVE)
         }
 

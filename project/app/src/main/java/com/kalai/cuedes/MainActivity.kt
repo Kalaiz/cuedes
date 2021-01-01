@@ -21,8 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val sharedViewModel: SharedViewModel by viewModels()
 
     companion object{
-        private const val TAG =  "MainActivity"
-    }
+        private const val TAG =  "MainActivity" }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         mainPagerAdapter = MainPagerAdapter(this, bottomNavigationView.menu.size())
         viewPager.adapter = mainPagerAdapter
 
-       /* Pre - fetching Fragments in advance */
+        /* Pre - fetching Fragments in advance */
         viewPager.offscreenPageLimit = 1
 
         /*Disabling Swipes*/
@@ -46,22 +45,18 @@ class MainActivity : AppCompatActivity() {
             val selectedId = when (selectedItem.itemId) {
                 R.id.action_locate -> 0
                 R.id.action_alarms -> 1
-                else -> 2
-            }
+                else -> 2 }
 
 
-            val animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.4f).apply {
-                duration = 150
-            }
-            val animatorReverse = ObjectAnimator.ofFloat(viewPager, "alpha", 1f).apply {
-                duration = 250
-            }
-            animator.start()
-            animator?.doOnEnd {
+            val fadeIn = ObjectAnimator.ofFloat(viewPager, "alpha", 0.4f).apply {
+                duration = 150 }
+            val fadeOut = ObjectAnimator.ofFloat(viewPager, "alpha", 1f).apply {
+                duration = 250 }
+
+            fadeIn.start()
+            fadeIn?.doOnEnd {
                 viewPager.setCurrentItem(selectedId,false)
-                animatorReverse?.start()
-            }
-
+                fadeOut?.start() }
 
             return@setOnNavigationItemSelectedListener true
         }

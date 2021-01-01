@@ -1,16 +1,21 @@
 package com.kalai.cuedes.location.selection
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import com.google.android.gms.maps.model.LatLng
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
 
-class SelectionFragment : Fragment() {
+
+class SelectionFragment : DialogFragment() {
 
 
     companion object {
@@ -40,52 +45,57 @@ class SelectionFragment : Fragment() {
 
 
 
-}
-
-
-
-/*
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dialog?.window?.setWindowAnimations(R.style.DialogAnimation)
-
-        dialog?.setCanceledOnTouchOutside(false)
-
         childFragmentManager.addOnBackStackChangedListener {
             if(childFragmentManager.backStackEntryCount == 0){
-                dialog?.dismiss()
+                val result = bundleOf("Successful" to true)
+                /*TODO need to make req key const*/
+
+                parentFragment?.parentFragmentManager?.setFragmentResult("LocationFragmentReqKey",result)
+                this@SelectionFragment.onDestroy()
             }
         }
 
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+            true
+        ) {
+            override fun handleOnBackPressed() {
+                Log.d(TAG,"OnBackPressed")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        dialog?.setOnKeyListener{ dialogInterface, i, keyEvent ->
-            if(keyEvent != null && keyEvent.keyCode == KeyEvent.KEYCODE_BACK && keyEvent.action == KeyEvent.ACTION_DOWN) {
-                Log.d(TAG, "onBackPressed()" + childFragmentManager.backStackEntryCount + i)
                 if (childFragmentManager.fragments.size == 1) {
                     Log.d(TAG,"Going to be dismissed")
                     val result = bundleOf("Successful" to false)
-                    */
-/*TODO need to make req key const*//*
+                    /*TODO need to make req key const*/
 
                     parentFragment?.parentFragmentManager?.setFragmentResult("LocationFragmentReqKey",result)
-                    dialogInterface.dismiss()
-                } else {
+                    this@SelectionFragment.onDestroy()
+                }
+                else {
                     childFragmentManager.popBackStack()
                     childFragmentManager.commit {
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         show(childFragmentManager.fragments.last())
                     }
                 }
-            }
 
-            true
+            }
         }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            callback
+        )
     }
-}*/
+
+
+}
+
+
+
+
+

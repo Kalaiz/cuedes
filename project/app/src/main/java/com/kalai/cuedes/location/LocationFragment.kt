@@ -88,44 +88,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback,GoogleMap.OnMapLoadedCal
             }
         })
 
-    /*    locationViewModel.isCameraIdle.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "TEST: CameraIdle changed")
-        })*/
-
-        locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer { latLng ->
-            if (latLng != null) {
-                Log.d(TAG, "SelectedLatLng Changed")
-                /*cannot use Lambda cause of Kotlin SAM not giving a "this" reference to the observer instance*/
-                locationViewModel.isCameraIdle.observe(viewLifecycleOwner, object : Observer<Boolean> {
-                    override fun onChanged(isCameraIdle: Boolean?) {
-                        Log.d(TAG, "cameraIdle Changed")
-                        if (isCameraIdle == true) {
-                            locationViewModel.isCameraIdle.removeObserver(this)
-                            locationViewModel.isMapLoaded.observe(viewLifecycleOwner, object : Observer<Boolean> {
-                                override fun onChanged(isMapLoaded: Boolean?) {
-                                    if (isMapLoaded == true) {
-                                        locationViewModel.isMapLoaded.removeObserver(this)
-                                        lifecycleScope.launch { delay(3000)
-                                            with(Dispatchers.Main){
-                                                binding.root.transitionToStart()
-                                                binding.motionLayoutContainer.transitionToStart()
-                                                mapLogoValueAnimator.reverse()
-
-                                            }
-                                   }
-
-
-
-                                    }
-                                }
-                            })
-
-                        }
-                    }
-                })
-            }
-        })
-
         locationViewModel.currentLocation.observe(viewLifecycleOwner, object :
                 Observer<Location> {
             override fun onChanged(location: Location?) {
@@ -140,6 +102,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback,GoogleMap.OnMapLoadedCal
             if (!bundle.getBoolean("Successful")) {
                 currentSelectedMarker.remove()
             }
+
+            setNormalMode()
 
         }
 
@@ -254,7 +218,9 @@ class LocationFragment : Fragment() ,OnMapReadyCallback,GoogleMap.OnMapLoadedCal
     }
 
     private fun setNormalMode(){
-
+        binding.root.transitionToStart()
+        binding.motionLayoutContainer.transitionToStart()
+        mapLogoValueAnimator.reverse()
     }
 
     override fun onMapLoaded() {
@@ -264,3 +230,37 @@ class LocationFragment : Fragment() ,OnMapReadyCallback,GoogleMap.OnMapLoadedCal
 
 }
 
+
+/*   locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer { latLng ->
+            if (latLng != null) {
+                Log.d(TAG, "SelectedLatLng Changed")
+                /*cannot use Lambda cause of Kotlin SAM not giving a "this" reference to the observer instance*/
+                locationViewModel.isCameraIdle.observe(viewLifecycleOwner, object : Observer<Boolean> {
+                    override fun onChanged(isCameraIdle: Boolean?) {
+                        Log.d(TAG, "cameraIdle Changed")
+                        if (isCameraIdle == true) {
+                            locationViewModel.isCameraIdle.removeObserver(this)
+                        /*    locationViewModel.isMapLoaded.observe(viewLifecycleOwner, object : Observer<Boolean> {
+                                override fun onChanged(isMapLoaded: Boolean?) {
+                                    if (isMapLoaded == true) {
+                                        locationViewModel.isMapLoaded.removeObserver(this)
+                                        lifecycleScope.launch { delay(3000)
+                                            with(Dispatchers.Main){
+                                                binding.root.transitionToStart()
+                                                binding.motionLayoutContainer.transitionToStart()
+                                                mapLogoValueAnimator.reverse()
+
+                                            }
+                                   }
+
+
+
+                                    }
+                                }
+                            })*/
+
+                        }
+                    }
+                })
+            }
+        })*/
