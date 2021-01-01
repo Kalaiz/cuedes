@@ -64,6 +64,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Log.d(TAG,"onBackPressed")
+        if(!onBackPressedDispatcher.hasEnabledCallbacks()){
+            finish()
+        }
+    }
 
     private fun startCueDesService(){
         val cueDesServiceIntent= Intent(this, CueDesService::class.java)

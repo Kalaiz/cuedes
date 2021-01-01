@@ -80,8 +80,6 @@
             app:layout_constraintTop_toBottomOf="@id/guideline_selection">
         </Constraint>
 
-
-
     </ConstraintSet>
 
 </MotionScene>

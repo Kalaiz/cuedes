@@ -14,6 +14,8 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.kalai.cuedes.location.Status.SELECTION
 import java.time.Duration
 
 
@@ -27,7 +29,6 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _selectedLatLng = MutableLiveData<LatLng>()
     val selectedLatLng:LiveData<LatLng> get() = _selectedLatLng
 
-
     private val _cameraMovement = MutableLiveData<CameraMovement>()
     val cameraMovement:LiveData<CameraMovement> get() =  _cameraMovement
 
@@ -39,6 +40,12 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
     private val _mapLoaded = MutableLiveData<Boolean>(false)
     val isMapLoaded:LiveData<Boolean> get() = _mapLoaded
+
+    private val _status = MutableLiveData<Status>()
+    val status:LiveData<Status> get() = _status
+
+    private val _selectedMarker = MutableLiveData<Marker?>()
+    val selectedMarker:LiveData<Marker?> get() = _selectedMarker
 
     companion object{ private const val TAG = "LocationViewModel" }
 
@@ -68,11 +75,10 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         currentLocationCameraMovement(true)
     }
 
-    fun setSelectionMode(latLng: LatLng){
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 11.0f)
+    fun setSelectionMode(){
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(_selectedLatLng.value, 11.0f)
         _cameraMovement.value =
             CameraMovement(cameraUpdate, true,500)
-        _selectedLatLng.value = latLng
     }
 
     fun cameraIdle() {
@@ -113,5 +119,21 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     fun mapLoaded() {
         _mapLoaded.value=true
     }
+
+
+    fun updateStatus(status:Status){
+        if(status != _status.value)
+        _status.value = status
+    }
+
+    fun setSelectedLocation(marker: Marker) {
+        if(_status.value == SELECTION){
+            _selectedMarker.value = null
+        }
+        _selectedMarker.value = marker
+        _selectedLatLng.value = marker.position
+
+    }
+
 
 }

@@ -11,8 +11,11 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
+import com.kalai.cuedes.location.LocationViewModel
 
 
 class SelectionFragment : DialogFragment() {
@@ -23,7 +26,10 @@ class SelectionFragment : DialogFragment() {
     }
 
 
+    private lateinit var onBackPressedCallback: OnBackPressedCallback
     private lateinit var binding: FragmentSelectionBinding
+    private val locationViewModel: LocationViewModel by viewModels({requireParentFragment()})
+    private val selectionViewModel: SelectionViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,7 +44,6 @@ class SelectionFragment : DialogFragment() {
                 "LocationFragment"
             )
             addToBackStack(null)
-
         }
         return binding.root
     }
@@ -54,15 +59,21 @@ class SelectionFragment : DialogFragment() {
                 /*TODO need to make req key const*/
 
                 parentFragment?.parentFragmentManager?.setFragmentResult("LocationFragmentReqKey",result)
-                this@SelectionFragment.onDestroy()
+                onBackPressedCallback.remove()
+
             }
         }
+        locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer {
+                updatedLatLng-> updatedLatLng?.let{selectionViewModel.updateSelectedLatLng(it)}
+        })
 
     }
 
+
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val callback: OnBackPressedCallback = object : OnBackPressedCallback(
+        onBackPressedCallback = object : OnBackPressedCallback(
             true
         ) {
             override fun handleOnBackPressed() {
@@ -74,6 +85,7 @@ class SelectionFragment : DialogFragment() {
                     /*TODO need to make req key const*/
 
                     parentFragment?.parentFragmentManager?.setFragmentResult("LocationFragmentReqKey",result)
+                    onBackPressedCallback.remove()
                     this@SelectionFragment.onDestroy()
                 }
                 else {
@@ -83,12 +95,12 @@ class SelectionFragment : DialogFragment() {
                         show(childFragmentManager.fragments.last())
                     }
                 }
-
             }
         }
+
         requireActivity().onBackPressedDispatcher.addCallback(
             this,
-            callback
+            onBackPressedCallback
         )
     }
 

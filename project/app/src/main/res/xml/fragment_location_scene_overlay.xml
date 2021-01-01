@@ -21,8 +21,6 @@
     </ConstraintSet>
 
     <ConstraintSet android:id="@id/end">
-
-
         <Constraint
             android:id="@id/search_view"
             android:layout_width="wrap_content"
