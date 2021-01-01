@@ -33,7 +33,8 @@
 
     <color name="transparent">#6F000000</color>
 
-    <color name="done_board_image_tint">#8BC34A</color>
+    <color name="img_done_board_tint">#8BC34A</color>
+    <color name="img_current_location_tint">#2196F3</color>
 
 
 </resources>

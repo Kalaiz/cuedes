@@ -1,10 +1,12 @@
 package com.kalai.cuedes
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,10 +20,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private val sharedViewModel: SharedViewModel by viewModels()
 
-
     companion object{
-        private const val TAG = "MainActivity"
+        private const val TAG =  "MainActivity"
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -33,36 +35,44 @@ class MainActivity : AppCompatActivity() {
         mainPagerAdapter = MainPagerAdapter(this, bottomNavigationView.menu.size())
         viewPager.adapter = mainPagerAdapter
 
-        /*Pre - fetching Fragments in advance */
+       /* Pre - fetching Fragments in advance */
         viewPager.offscreenPageLimit = 1
 
         /*Disabling Swipes*/
         viewPager.isUserInputEnabled = false
 
         bottomNavigationView.setOnNavigationItemSelectedListener { selectedItem ->
-            viewPager.currentItem = when (selectedItem.itemId) {
+            Log.d(TAG,"BottomNavBar Item $selectedItem ")
+            val selectedId = when (selectedItem.itemId) {
                 R.id.action_locate -> 0
                 R.id.action_alarms -> 1
                 else -> 2
             }
+
+
+            val animator = ObjectAnimator.ofFloat(viewPager, "alpha", 0.4f).apply {
+                duration = 150
+            }
+            val animatorReverse = ObjectAnimator.ofFloat(viewPager, "alpha", 1f).apply {
+                duration = 250
+            }
+            animator.start()
+            animator?.doOnEnd {
+                viewPager.setCurrentItem(selectedId,false)
+                animatorReverse?.start()
+            }
+
+
             return@setOnNavigationItemSelectedListener true
         }
 
-        /*TODO: Need to handle lifecycle properly*/
-        /*startCueDesService()*/
-    }
-
-    override fun onBackPressed() {
-            Log.d(TAG,"OnBack pressed")
-        Log.d(TAG,"Num of fragments in backstack ${supportFragmentManager.backStackEntryCount}")
-  /*      super.onBackPressed()*/
 
     }
+
 
     private fun startCueDesService(){
         val cueDesServiceIntent= Intent(this, CueDesService::class.java)
         ContextCompat.startForegroundService(this, cueDesServiceIntent)
     }
 }
-
 

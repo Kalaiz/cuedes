@@ -1,62 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-  <androidx.constraintlayout.motion.widget.MotionLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:id="@+id/motion_layout_container"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      app:layoutDescription="@xml/fragment_location_scene">
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:map="http://schemas.android.com/tools"
+    app:layoutDescription="@xml/fragment_location_scene_overlay">
+
+
+        <SearchView
+            android:id="@+id/search_view"
+            android:elevation="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:queryHint="Search or Long Press"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:iconifiedByDefault="false"
+            android:queryBackground="@android:color/transparent"
+            android:background="@color/colorLight" />
+
+        <ImageButton
+            android:elevation="10dp"
+            android:background="@color/colorLight"
+            android:id="@+id/current_location_button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:padding="15dp"
+            android:tint="@color/img_current_location_tint"
+            app:layout_constraintBottom_toBottomOf="@id/search_view"
+            app:layout_constraintEnd_toEndOf="@id/search_view"
+            app:layout_constraintTop_toTopOf="@id/search_view"
+            app:srcCompat="@drawable/ic_current_location"
+            android:contentDescription="Current Location" />
 
 
     <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/motion_layout_map_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layoutDescription="@xml/fragment_location_scene_dim">
-
-      <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/motion_layout_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/fragment_location_scene">
 
-      <ImageButton
-          android:background="@color/colorLight"
-          android:id="@+id/current_location_button"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginEnd="5dp"
-          android:layout_marginBottom="5dp"
-          android:padding="5dp"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:srcCompat="@drawable/ic_current_location"
-          android:contentDescription="Current Location" />
 
-      <View android:id="@+id/view_map_overlay"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:foreground="@color/colorSurface"
-          android:alpha="0"
-          android:translationZ="10dp"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fragment_map_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </androidx.fragment.app.FragmentContainerView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_selection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_selection"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_selection"
-        android:layout_width="0dp"
-        android:layout_height="0dp"/>
 
-    <SearchView
-        android:id="@+id/search_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:queryHint="Search or Long Press"
-        android:iconifiedByDefault="false"
-        android:queryBackground="@android:color/transparent"
-        android:background="@color/colorLight"
-        android:elevation="10dp" />
-  </androidx.constraintlayout.motion.widget.MotionLayout>
+
+
+
+
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
 
 
 

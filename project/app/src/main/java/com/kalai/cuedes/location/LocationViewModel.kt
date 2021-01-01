@@ -37,7 +37,8 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _mapCameraMoveAction = MutableLiveData<Int>()
     val mapCameraMoveAction:LiveData<Int> get() = _mapCameraMoveAction
 
-
+    private val _mapLoaded = MutableLiveData<Boolean>(false)
+    val isMapLoaded:LiveData<Boolean> get() = _mapLoaded
 
     companion object{ private const val TAG = "LocationViewModel" }
 
@@ -101,7 +102,16 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     fun cameraMoving() {
         Log.d(TAG,"CameraMoving")
         _isCameraIdle.value = false
+        _mapLoaded.value = false
     }
 
+
+    fun mapReady(){
+        _mapLoaded.value=true
+    }
+
+    fun mapLoaded() {
+        _mapLoaded.value=true
+    }
 
 }

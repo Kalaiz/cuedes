@@ -31,7 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/ic_done_board"
-            app:tint="@color/done_board_image_tint"/>
+            app:tint="@color/img_done_board_tint"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
