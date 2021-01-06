@@ -8,13 +8,14 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import kotlin.math.abs
 
-val TAG = "Util"
+const val TAG = "Util"
 fun View.hide() {
     if (visibility == View.VISIBLE || isEnabled) {
         visibility = View.INVISIBLE
@@ -38,7 +39,6 @@ fun Context?.isDevicePermissionGranted(permissionCodes: Array<String>):Boolean =
     })) else false
 
 fun GoogleApiAvailability.isGooglePlayServicesCompatible(context: Context?) = if (context!=null) isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS else false
-
 
 
 val fadeInFadeOutViewPagerTransformation =
@@ -73,5 +73,8 @@ fun ViewPager2.setCurrentItem(
     animator.duration = duration
     animator.start()
 return  animator}
+
+
+
 
 

@@ -1,14 +1,20 @@
 package com.kalai.cuedes
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
+import android.view.View
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.behavior.HideBottomViewOnScrollBehavior
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kalai.cuedes.databinding.ActivityMainBinding
 
@@ -28,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
         viewPager = binding.viewPager
         bottomNavigationView = binding.bottomNavigationView
         mainPagerAdapter = MainPagerAdapter(this, bottomNavigationView.menu.size())
@@ -42,24 +47,31 @@ class MainActivity : AppCompatActivity() {
 
         bottomNavigationView.setOnNavigationItemSelectedListener { selectedItem ->
             Log.d(TAG,"BottomNavBar Item $selectedItem ")
-            val selectedId = when (selectedItem.itemId) {
-                R.id.action_locate -> 0
-                R.id.action_alarms -> 1
-                else -> 2 }
+            if(selectedItem.itemId != bottomNavigationView.selectedItemId) {
+                val selectedId = when (selectedItem.itemId) {
+                    R.id.action_locate -> 0
+                    R.id.action_alarms -> 1
+                    else -> 2
+                }
 
 
-            val fadeIn = ObjectAnimator.ofFloat(viewPager, "alpha", 0.4f).apply {
-                duration = 150 }
-            val fadeOut = ObjectAnimator.ofFloat(viewPager, "alpha", 1f).apply {
-                duration = 250 }
+                val fadeIn = ObjectAnimator.ofFloat(viewPager, "alpha", 0.4f).apply {
+                    duration = 150
+                }
+                val fadeOut = ObjectAnimator.ofFloat(viewPager, "alpha", 1f).apply {
+                    duration = 250
+                }
 
-            fadeIn.start()
-            fadeIn?.doOnEnd {
-                viewPager.setCurrentItem(selectedId,false)
-                fadeOut?.start() }
-
+                fadeIn.start()
+                fadeIn?.doOnEnd {
+                    viewPager.setCurrentItem(selectedId, false)
+                    fadeOut?.start()
+                }
+            }
             return@setOnNavigationItemSelectedListener true
         }
+
+
 
 
     }
@@ -68,9 +80,11 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
         Log.d(TAG,"onBackPressed")
         if(!onBackPressedDispatcher.hasEnabledCallbacks()){
-            finish()
+            finishAndRemoveTask()
         }
     }
+
+
 
     private fun startCueDesService(){
         val cueDesServiceIntent= Intent(this, CueDesService::class.java)

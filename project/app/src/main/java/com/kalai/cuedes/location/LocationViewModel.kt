@@ -15,7 +15,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.kalai.cuedes.location.Status.SELECTION
+import com.kalai.cuedes.location.Status.*
 import java.time.Duration
 
 
@@ -26,8 +26,8 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _currentLocation = MutableLiveData<Location>()
     val currentLocation:LiveData<Location> get() = _currentLocation
 
-    private val _selectedLatLng = MutableLiveData<LatLng>()
-    val selectedLatLng:LiveData<LatLng> get() = _selectedLatLng
+    private val _selectedLatLng = MutableLiveData<LatLng?>()
+    val selectedLatLng:LiveData<LatLng?> get() = _selectedLatLng
 
     private val _cameraMovement = MutableLiveData<CameraMovement>()
     val cameraMovement:LiveData<CameraMovement> get() =  _cameraMovement
@@ -41,11 +41,14 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _mapLoaded = MutableLiveData<Boolean>(false)
     val isMapLoaded:LiveData<Boolean> get() = _mapLoaded
 
-    private val _status = MutableLiveData<Status>()
+    private val _status = MutableLiveData<Status>(NORMAL)
     val status:LiveData<Status> get() = _status
 
     private val _selectedMarker = MutableLiveData<Marker?>()
     val selectedMarker:LiveData<Marker?> get() = _selectedMarker
+
+    private val _selectedRadius = MutableLiveData<Float>()
+    val selectedRadius:LiveData<Float> get() = _selectedRadius
 
     companion object{ private const val TAG = "LocationViewModel" }
 
@@ -126,12 +129,24 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         _status.value = status
     }
 
-    fun setSelectedLocation(marker: Marker) {
-        if(_status.value == SELECTION){
+    fun setSelectedLocation(marker: Marker?) {
+        Log.d(TAG,"setSelectdLocation")
+        if(_status.value == SELECTION || _status.value == NORMAL && marker == null){
+            Log.d(TAG,"SELECTION MODE")
+            /* So that the removing animation occurs*/
             _selectedMarker.value = null
+            /*Removing for the record*/
+            _selectedLatLng.value = null
         }
+        /*If in SELECTION mode, need to assist in animating the removal of marker ( as did above) and then animate the new one */
+        if(marker!=null ){
+            Log.d(TAG,"marker not null $marker")
         _selectedMarker.value = marker
         _selectedLatLng.value = marker.position
+    }
+    }
+
+    fun setRadius(radius:Int){
 
     }
 

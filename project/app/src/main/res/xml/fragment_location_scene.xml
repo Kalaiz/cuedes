@@ -5,7 +5,7 @@
         android:id="@+id/transition_location"
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start"
-        app:duration="375"/>
+        app:duration="350"/>
 
 
     <ConstraintSet android:id="@+id/start">

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import com.google.android.gms.maps.model.LatLng
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionLocationNameBinding
 
@@ -39,6 +38,13 @@ class LocationNameFragment :Fragment(){
             }
         }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
     }
 
 }

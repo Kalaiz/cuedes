@@ -12,21 +12,22 @@ import com.kalai.cuedes.databinding.FragmentAlarmListBinding
 
 
 class AlarmListFragment : Fragment() {
-
+/*TODO Handle onBackPressed; Maybe something like onbackpress send to  home fragment*/
     companion object {
-        fun newInstance() = AlarmListFragment()
+        private const val TAG = "AlarmListFragment"
     }
 
     private val fakeData = arrayOf("Hello","Aloha","Test","Test2")
     private val viewModelAlarm: AlarmListViewModel by viewModels()
     private lateinit var binding: FragmentAlarmListBinding
     private lateinit var alarmRecyclerView: RecyclerView
-
+  /*  private lateinit var onBackPressedCallback: OnBackPressedCallback*/
 
     private val recycleListener = RecyclerView.RecyclerListener { holder ->
         val mapHolder = holder as AlarmListAdapter.ViewHolder
         mapHolder.clearView()
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +41,28 @@ class AlarmListFragment : Fragment() {
 
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+    }
+
+
+/*    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onBackPressedCallback = object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                    Log.d(TAG,"onBackPressed")
+
+                    onBackPressedCallback.remove()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            onBackPressedCallback
+        )
+    }*/
 
     override fun onStart() {
         super.onStart()

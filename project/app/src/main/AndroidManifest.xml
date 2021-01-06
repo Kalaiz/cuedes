@@ -17,6 +17,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true"
+        android:windowSoftInputMode="adjustPan"
         tools:replace="android:icon">
 
         <meta-data
@@ -34,7 +35,7 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait"
 
-            android:windowSoftInputMode="adjustNothing">
+           >
         </activity>
 
         <service

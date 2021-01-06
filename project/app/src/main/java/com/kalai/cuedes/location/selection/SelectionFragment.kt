@@ -55,6 +55,7 @@ class SelectionFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         childFragmentManager.addOnBackStackChangedListener {
             if(childFragmentManager.backStackEntryCount == 0){
+                /*Last child fragment will clear the backstack */
                 val result = bundleOf("Successful" to true)
                 /*TODO need to make req key const*/
 
@@ -62,9 +63,14 @@ class SelectionFragment : DialogFragment() {
                 onBackPressedCallback.remove()
 
             }
+
         }
         locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer {
                 updatedLatLng-> updatedLatLng?.let{selectionViewModel.updateSelectedLatLng(it)}
+        })
+
+        selectionViewModel.selectedRadius.observe(viewLifecycleOwner,Observer{
+            updatedRadius -> updatedRadius?.let { locationViewModel.setRadius(updatedRadius) }
         })
 
     }

@@ -36,5 +36,7 @@
     <color name="img_done_board_tint">#8BC34A</color>
     <color name="img_current_location_tint">#2196F3</color>
 
+    <color name="map_radius">#662196F3</color>
+
 
 </resources>

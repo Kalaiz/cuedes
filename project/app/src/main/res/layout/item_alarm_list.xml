@@ -18,7 +18,7 @@
         tools:ignore="RtlSymmetry">
 
         <TextView
-            android:id="@+id/location_name_text_view"
+            android:id="@+id/location_name_edit_text_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/alarm_item_location_name"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            app:layout_constraintStart_toEndOf="@+id/location_name_text_view"
+            app:layout_constraintStart_toEndOf="@+id/location_name_edit_text_container"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Alarm Text" />
 
@@ -44,7 +44,7 @@
             android:text="@string/alarm_item_radius_name"
             android:layout_marginStart="15dp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@+id/location_name_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/location_name_edit_text_container"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteX="5dp" />
 

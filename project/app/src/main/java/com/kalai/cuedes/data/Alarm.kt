@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.google.android.gms.maps.model.LatLng
 
 @Entity
-data class Alarm(@PrimaryKey var locationName:String,
+data class Alarm(@PrimaryKey var name:String,
                  @ColumnInfo(name = "longitude") var longitude:Double,
                  @ColumnInfo(name="latitude") var latitude:Double,
                  @ColumnInfo(name = "radius")var radius:Float)
