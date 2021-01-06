@@ -9,26 +9,23 @@ import com.kalai.cuedes.location.DistanceUnit
 class SelectionViewModel :ViewModel(){
 
     private var _selectedLocation =  MutableLiveData<LatLng?>()
-    private var _selectedRadius = MutableLiveData<Int>()
-    private var _selectedDistanceUnit = MutableLiveData<DistanceUnit>()
-
-
     val selectedLocation: LiveData<LatLng?>
         get() { return _selectedLocation}
 
+    private var _selectedRadius = MutableLiveData<Int>()
     val selectedRadius: LiveData<Int>
         get() { return _selectedRadius}
 
-
+    private var _selectedDistanceUnit = MutableLiveData<DistanceUnit>()
     val selectedDistanceUnit: LiveData<DistanceUnit>
         get() { return _selectedDistanceUnit}
 
 
-    fun updateSelectedLatLng(latLng: LatLng){
+    fun setLatLng(latLng: LatLng){
         _selectedLocation.value = latLng
     }
 
-    fun updateSelectedRadius(radius:Int){
+    fun setRadius(radius:Int){
         _selectedRadius.value=radius
     }
 

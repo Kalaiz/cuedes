@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
+import com.kalai.cuedes.location.LocationFragment
 import com.kalai.cuedes.location.LocationViewModel
 
 
@@ -22,7 +23,7 @@ class SelectionFragment : DialogFragment() {
 
 
     companion object {
-        private const val TAG = "SelectionFragment"
+        const val TAG = "SelectionFragment"
     }
 
 
@@ -49,28 +50,48 @@ class SelectionFragment : DialogFragment() {
     }
 
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG,"onViewCreated")
         childFragmentManager.addOnBackStackChangedListener {
             if(childFragmentManager.backStackEntryCount == 0){
                 /*Last child fragment will clear the backstack */
                 val result = bundleOf("Successful" to true)
                 /*TODO need to make req key const*/
 
-                parentFragment?.parentFragmentManager?.setFragmentResult("LocationFragmentReqKey",result)
+                parentFragment?.parentFragmentManager?.setFragmentResult(LocationFragment.REQ_KEY,result)
                 onBackPressedCallback.remove()
 
             }
 
         }
+
+        locationViewModel.selectedRadius.observe(viewLifecycleOwner, Observer {  radius ->
+
+
+        })
+
+        locationViewModel.selectedRadius.observe(viewLifecycleOwner,object :Observer< Int?> {
+            override fun onChanged(radius: Int?) {
+                Log.d(TAG,"Updating selectedRadius to $radius")
+                if (radius != null) {
+                    selectionViewModel.setRadius(radius)
+                    locationViewModel.selectedRadius.removeObserver(this)
+                }
+            }
+        }
+
+        )
+
         locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer {
-                updatedLatLng-> updatedLatLng?.let{selectionViewModel.updateSelectedLatLng(it)}
+                updatedLatLng-> updatedLatLng?.let{selectionViewModel.setLatLng(it)}
         })
 
         selectionViewModel.selectedRadius.observe(viewLifecycleOwner,Observer{
-            updatedRadius -> updatedRadius?.let { locationViewModel.setRadius(updatedRadius) }
+
+                updatedRadius ->
+            Log.d(TAG,"Updating selectedRadius in SelectionViewModel to $updatedRadius")
+            updatedRadius?.let { locationViewModel.setRadius(updatedRadius) }
         })
 
     }

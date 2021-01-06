@@ -5,15 +5,18 @@ import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.SphericalUtil
 import kotlin.math.abs
+import kotlin.math.sqrt
+
 
 const val TAG = "Util"
 fun View.hide() {
@@ -75,6 +78,18 @@ fun ViewPager2.setCurrentItem(
 return  animator}
 
 
+
+/* Based on  https://stackoverflow.com/a/31029389/11200630*/
+fun LatLng.toBounds(radius: Double): LatLngBounds? {
+    val distanceFromCenterToCorner = getBoundLength(radius)
+    val southwestCorner =
+        SphericalUtil.computeOffset(this, distanceFromCenterToCorner, 225.0)
+    val northeastCorner =
+        SphericalUtil.computeOffset(this, distanceFromCenterToCorner, 45.0)
+    return LatLngBounds(southwestCorner, northeastCorner)
+}
+
+fun getBoundLength(radius:Double) = radius * sqrt(2.0)
 
 
 

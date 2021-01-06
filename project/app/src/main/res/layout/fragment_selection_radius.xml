@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_minus"
-            app:layout_constraintBottom_toTopOf="@+id/radius_seek_bar"
+            app:layout_constraintBottom_toTopOf="@+id/radius_slider"
             app:layout_constraintEnd_toStartOf="@id/radius_text_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radius_name_text_view" />
@@ -34,9 +34,8 @@
             android:id="@+id/radius_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10"
             android:textSize="40sp"
-            app:layout_constraintBottom_toTopOf="@id/radius_seek_bar"
+            app:layout_constraintBottom_toTopOf="@id/radius_slider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radius_name_text_view" />
@@ -46,22 +45,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add"
-            app:layout_constraintBottom_toTopOf="@id/radius_seek_bar"
+            app:layout_constraintBottom_toTopOf="@id/radius_slider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/radius_text_view"
             app:layout_constraintTop_toBottomOf="@id/radius_name_text_view" />
 
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/radius_seek_bar"
+        <com.google.android.material.slider.Slider
+            android:id="@+id/radius_slider"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:thumbTint="@color/colorSurface"
             android:progressTint="@color/colorPrimary"
+            android:theme="@style/ThemeOverlay.MaterialSlider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/radius_text_view"
-            android:max="100" />
+            android:valueTo="@integer/max_radius_seek_bar"
+            android:valueFrom="@integer/min_radius_seek_bar"
+            app:labelBehavior="gone"/>
 
 
 

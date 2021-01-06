@@ -17,6 +17,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.kalai.cuedes.location.Status.*
 import java.time.Duration
+import kotlin.math.cos
+import kotlin.math.pow
 
 
 @SuppressLint("MissingPermission")
@@ -41,16 +43,30 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _mapLoaded = MutableLiveData<Boolean>(false)
     val isMapLoaded:LiveData<Boolean> get() = _mapLoaded
 
-    private val _status = MutableLiveData<Status>(NORMAL)
-    val status:LiveData<Status> get() = _status
+    private val _status = MutableLiveData<Status?>(null)
+    val status:LiveData<Status?> get() = _status
 
     private val _selectedMarker = MutableLiveData<Marker?>()
     val selectedMarker:LiveData<Marker?> get() = _selectedMarker
 
-    private val _selectedRadius = MutableLiveData<Float>()
-    val selectedRadius:LiveData<Float> get() = _selectedRadius
+    private val _selectedRadius = MutableLiveData<Int?>()
+    val selectedRadius:LiveData<Int?> get() = _selectedRadius
 
-    companion object{ private const val TAG = "LocationViewModel" }
+    companion object{ private const val TAG = "LocationViewModel"
+        const val DEFAULT_ZOOM = 13f
+        const val DEFAULT_SELECTION_ZOOM = 15f
+    }
+
+
+    /* Calculation logic from https://gis.stackexchange.com/a/127949*/
+    val meterPerPixel : Int
+        get() = selectedMarker.value?.position?.latitude.let { lat ->
+            if(lat != null){
+                (156543.03392 * cos((lat.times(Math.PI))/ 180) / 2.0.pow(DEFAULT_SELECTION_ZOOM.toDouble())).toInt() }
+            else{100}
+        }
+
+
 
 
     fun requestLocation(){
@@ -79,7 +95,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setSelectionMode(){
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(_selectedLatLng.value, 11.0f)
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(_selectedLatLng.value, DEFAULT_SELECTION_ZOOM)
         _cameraMovement.value =
             CameraMovement(cameraUpdate, true,500)
     }
@@ -94,15 +110,15 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         val location = _currentLocation.value
         location?.run {
             val latLng = LatLng(latitude,longitude)
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 11.0f)
-                _cameraMovement.value =
-                    CameraMovement(cameraUpdate, animated,duration)
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM)
+            _cameraMovement.value =
+                CameraMovement(cameraUpdate, animated,duration)
         }
     }
 
     fun setupCurrentLocation(){
         currentLocationCameraMovement(false)
-}
+    }
 
     fun setCameraMoveAction(action: Int) {
 
@@ -126,7 +142,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
     fun updateStatus(status:Status){
         if(status != _status.value)
-        _status.value = status
+            _status.value = status
     }
 
     fun setSelectedLocation(marker: Marker?) {
@@ -141,13 +157,13 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         /*If in SELECTION mode, need to assist in animating the removal of marker ( as did above) and then animate the new one */
         if(marker!=null ){
             Log.d(TAG,"marker not null $marker")
-        _selectedMarker.value = marker
-        _selectedLatLng.value = marker.position
-    }
+            _selectedMarker.value = marker
+            _selectedLatLng.value = marker.position
+        }
     }
 
-    fun setRadius(radius:Int){
-
+    fun setRadius(radius:Int?){
+        _selectedRadius.value = radius
     }
 
 

@@ -54,6 +54,13 @@
     </style>
 
 
+    <style name="ThemeOverlay.MaterialSlider" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorSurfaceDark</item>
+        <item name="colorOnSurface">@color/colorPrimary</item>
+
+    </style>
+
 
 
 </resources>

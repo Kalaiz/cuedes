@@ -12,8 +12,7 @@
 A simple Android App which rings an alarm when one is about to reach a destination.
 
 <p align="center">
-A slight peek at the progress so far.
- </p>
+A slight peek at the progress so far.</p>
 <p align="center">
 <img src="resources/app_overview.gif" width="25%" height="25%" /> 
 </p>
@@ -40,6 +39,7 @@ Note: I am still working on this personal project.
 - ~~Prevented the dismissal of `BottomSheetDialogFragment` upon touching outside/pulling it down via this [method](https://stackoverflow.com/a/50734566/11200630).~~
 - Used a Custom ViewPager2 Transition  via this [answer](https://stackoverflow.com/a/59235979/11200630). 
 - ~~Expanding `BottomSheetDialogFragment` to a custom height was done with the help of this [answer](https://stackoverflow.com/a/58067230/11200630)~~
+- The code for finding LatLng bounds of the area of interest from this [answer](https://stackoverflow.com/a/31029389/11200630) is used.
 
 ### ⚙️ Installation:
 Note: It will be easier to do the following via a phone. 
