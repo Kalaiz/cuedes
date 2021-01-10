@@ -66,15 +66,12 @@ class SelectionFragment : DialogFragment() {
 
         }
 
-        locationViewModel.selectedRadius.observe(viewLifecycleOwner, Observer {  radius ->
 
-
-        })
 
         locationViewModel.selectedRadius.observe(viewLifecycleOwner,object :Observer< Int?> {
             override fun onChanged(radius: Int?) {
                 Log.d(TAG,"Updating selectedRadius to $radius")
-                if (radius != null) {
+                if (radius != null && selectionViewModel.selectedRadius.value != radius) {
                     selectionViewModel.setRadius(radius)
                     locationViewModel.selectedRadius.removeObserver(this)
                 }
@@ -91,12 +88,16 @@ class SelectionFragment : DialogFragment() {
 
                 updatedRadius ->
             Log.d(TAG,"Updating selectedRadius in SelectionViewModel to $updatedRadius")
+            if(updatedRadius != locationViewModel.selectedRadius.value)
             updatedRadius?.let { locationViewModel.setRadius(updatedRadius) }
         })
 
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG,"onDestroy")
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

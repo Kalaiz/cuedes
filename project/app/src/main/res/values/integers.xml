@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="min_radius_seek_bar">50</integer>
+    <integer name="min_radius_seek_bar">25</integer>
     <integer name="max_radius_seek_bar">5000</integer>
 </resources>

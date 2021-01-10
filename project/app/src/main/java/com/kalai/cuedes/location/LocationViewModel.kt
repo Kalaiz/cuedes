@@ -13,16 +13,22 @@ import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.kalai.cuedes.location.Status.*
-import java.time.Duration
-import kotlin.math.cos
-import kotlin.math.pow
+import com.kalai.cuedes.toBounds
 
 
 @SuppressLint("MissingPermission")
 class LocationViewModel(application: Application) : AndroidViewModel(application) {
+
+
+    companion object{
+        private const val TAG = "LocationViewModel"
+        const val DEFAULT_ZOOM = 13f
+        const val DEFAULT_RADIUS = 250.0
+    }
 
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
     private val _currentLocation = MutableLiveData<Location>()
@@ -52,22 +58,6 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _selectedRadius = MutableLiveData<Int?>()
     val selectedRadius:LiveData<Int?> get() = _selectedRadius
 
-    companion object{ private const val TAG = "LocationViewModel"
-        const val DEFAULT_ZOOM = 13f
-        const val DEFAULT_SELECTION_ZOOM = 15f
-    }
-
-
-    /* Calculation logic from https://gis.stackexchange.com/a/127949*/
-    val meterPerPixel : Int
-        get() = selectedMarker.value?.position?.latitude.let { lat ->
-            if(lat != null){
-                (156543.03392 * cos((lat.times(Math.PI))/ 180) / 2.0.pow(DEFAULT_SELECTION_ZOOM.toDouble())).toInt() }
-            else{100}
-        }
-
-
-
 
     fun requestLocation(){
         Log.d(TAG,"requesting Location")
@@ -94,11 +84,6 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         currentLocationCameraMovement(true)
     }
 
-    fun setSelectionMode(){
-        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(_selectedLatLng.value, DEFAULT_SELECTION_ZOOM)
-        _cameraMovement.value =
-            CameraMovement(cameraUpdate, true,500)
-    }
 
     fun cameraIdle() {
         Log.d(TAG,"cameraIdle() called")
@@ -146,9 +131,10 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setSelectedLocation(marker: Marker?) {
-        Log.d(TAG,"setSelectdLocation")
-        if(_status.value == SELECTION || _status.value == NORMAL && marker == null){
-            Log.d(TAG,"SELECTION MODE")
+        Log.d(TAG,"setSelectedLocation")
+        val status = _status.value
+        if(status == SELECTION || status == INITIAL_SELECTION ||(status == NORMAL && marker == null)){
+            Log.d(TAG,"SELECTION or INITIAL_SELECTION or (NORMAL AND marker null)")
             /* So that the removing animation occurs*/
             _selectedMarker.value = null
             /*Removing for the record*/
@@ -166,5 +152,14 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         _selectedRadius.value = radius
     }
 
+
+   fun fitContent(circle: Circle){
+        val bounds = circle.center?.toBounds(circle.radius)
+        Log.d(TAG,bounds.toString())
+        /* int width, int height, int padding*/
+        Log.d(TAG,"CameraIdle")
+       val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,100)
+        _cameraMovement.value = CameraMovement(cameraUpdate,true,350)
+    }
 
 }

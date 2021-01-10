@@ -1,5 +1,5 @@
 package com.kalai.cuedes.location
 
 enum class Status {
-    SELECTION,NORMAL
+    SELECTION,NORMAL,INITIAL_SELECTION
 }
