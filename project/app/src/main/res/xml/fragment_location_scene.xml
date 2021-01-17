@@ -61,14 +61,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.725" />
+            app:layout_constraintGuide_percent="0.525" />
 
         <Constraint
             android:id="@id/guideline_selection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.65" />
+            app:layout_constraintGuide_percent="0.45" />
 
         <Constraint
             android:id="@id/fragment_selection"

@@ -20,10 +20,10 @@
     <color name="button_get_destination">#03DAC5</color>
     <color name="button_text_get_destination">#FFFFFF</color>
 
-    <color name="button_cancel">#FF0000</color>
+    <color name="button_cancel">#E87171</color>
     <color name="button_text_cancel">#FFFFFF</color>
 
-    <color name="button_add">#03DAC5</color>
+    <color name="button_add">#8BC34A</color>
     <color name="button_text_add">#FFFFFF</color>
 
     <color name="nav_bar_icon_unselected">#A8A1A1</color>
@@ -37,6 +37,11 @@
     <color name="img_current_location_tint">#2196F3</color>
 
     <color name="map_radius">#662196F3</color>
+
+    <color name="slider">#662196F3</color>
+
+    <color name="image_view_toggle_normal">#E87171</color>
+    <color name="image_view_toggle_selected">#8BC34A</color>
 
 
 </resources>

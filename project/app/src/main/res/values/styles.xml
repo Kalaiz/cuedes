@@ -54,10 +54,18 @@
     </style>
 
 
+    <style name="ThemeOverlay.CancelMaterialButton" parent="ThemeOverlay.MaterialButton">
+        <item name="colorPrimary">@color/button_cancel</item>
+    </style>
+
+
+    <style name="ThemeOverlay.StartMaterialButton" parent="ThemeOverlay.MaterialButton">
+        <item name="colorPrimary">@color/button_add</item>
+    </style>
     <style name="ThemeOverlay.MaterialSlider" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/img_current_location_tint</item>
         <item name="colorOnPrimary">@color/colorSurfaceDark</item>
-        <item name="colorOnSurface">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/slider</item>
 
     </style>
 

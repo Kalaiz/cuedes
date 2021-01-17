@@ -33,7 +33,7 @@ import com.kalai.cuedes.databinding.FragmentLocationBinding
 import com.kalai.cuedes.location.LocationViewModel.Companion.DEFAULT_RADIUS
 import com.kalai.cuedes.location.Status.*
 import com.kalai.cuedes.location.selection.SelectionFragment
-import kotlinx.coroutines.Job
+
 
 
 @SuppressLint("MissingPermission")
@@ -120,7 +120,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                 }
                 else if(binding.currentLocationButton.alpha == 1f){
                     binding.currentLocationButton.animate()?.alpha(0f)?.setDuration(1000)?.start()
-                    /*TODO find a more elegant way to put view infront*/
+                    /*TODO find a more elegant way to put view in-front*/
                     binding.currentLocationButton.elevation = binding.searchView.elevation-1
                 }
                 return true
@@ -197,6 +197,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                 onBackPressedCallback)
     }
 
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(googleMap: GoogleMap?) {
         Log.d(TAG,"onMapReady called")
         if (googleMap != null) {
@@ -215,6 +216,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                 locationViewModel.setCameraMoveAction(it)
                 locationViewModel.cameraMoving()
             }
+
         }
 
         googleMap?.isMyLocationEnabled = true
@@ -251,8 +253,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     override fun onPause() {
         super.onPause()
         Log.d(TAG,"OnPause")
-        onBackPressedCallback.isEnabled = false
-    }
+        onBackPressedCallback.isEnabled = false }
 
 
     private fun setSelectionMode(){
@@ -261,8 +262,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             add(R.id.fragment_selection, SelectionFragment(),SelectionFragment.TAG) }
         binding.motionLayoutContainer.transitionToEnd()
         binding.root.transitionToEnd()
-        mapLogoValueAnimator.start()
-    }
+        mapLogoValueAnimator.start() }
+
 
     private fun setNormalMode(){
         Log.d(TAG,"setNormalMode")

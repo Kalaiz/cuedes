@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.google.android.material.slider.Slider
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
 import com.kalai.cuedes.location.LocationFragment
@@ -37,15 +38,37 @@ class SelectionFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSelectionBinding.inflate(inflater, container, false)
-        childFragmentManager.commit {
-            setReorderingAllowed(true)
-            add(
-                R.id.selection_fragment_container_view,
-                LocationNameFragment(),
-                "LocationFragment"
-            )
-            addToBackStack(null)
+
+
+        selectionViewModel.selectedRadius.observe(viewLifecycleOwner, Observer {radius->
+            binding.radiusTextView.text = radius.toInt().toString()
+            binding.radiusSlider.value = radius.toFloat()})
+
+        binding.addImageButton.setOnClickListener {
+            selectionViewModel.selectedRadius.value?.let { radius ->
+                if(radius+1 <= binding.radiusSlider.valueTo)
+                    selectionViewModel.setRadius(radius+1) }
         }
+
+        binding.minusImageButton.setOnClickListener {
+            selectionViewModel.selectedRadius.value?.let { radius ->
+                if(radius-1 >= binding.radiusSlider.valueFrom)
+                    selectionViewModel.setRadius(radius-1) }
+        }
+
+        binding.radiusSlider.addOnChangeListener { _, value, _ ->
+            binding.radiusTextView.text = value.toInt().toString()
+        }
+
+        binding.radiusSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+            }
+            override fun onStopTrackingTouch(slider: Slider) {
+                Log.d(TAG,"Progress changed ${slider.value}")
+                selectionViewModel.setRadius(slider.value.toInt() )
+            }
+        })
+
         return binding.root
     }
 
@@ -53,18 +76,6 @@ class SelectionFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG,"onViewCreated")
-        childFragmentManager.addOnBackStackChangedListener {
-            if(childFragmentManager.backStackEntryCount == 0){
-                /*Last child fragment will clear the backstack */
-                val result = bundleOf("Successful" to true)
-                /*TODO need to make req key const*/
-
-                parentFragment?.parentFragmentManager?.setFragmentResult(LocationFragment.REQ_KEY,result)
-                onBackPressedCallback.remove()
-
-            }
-
-        }
 
 
 
@@ -77,7 +88,6 @@ class SelectionFragment : DialogFragment() {
                 }
             }
         }
-
         )
 
         locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer {
@@ -85,12 +95,19 @@ class SelectionFragment : DialogFragment() {
         })
 
         selectionViewModel.selectedRadius.observe(viewLifecycleOwner,Observer{
-
                 updatedRadius ->
             Log.d(TAG,"Updating selectedRadius in SelectionViewModel to $updatedRadius")
             if(updatedRadius != locationViewModel.selectedRadius.value)
             updatedRadius?.let { locationViewModel.setRadius(updatedRadius) }
         })
+
+        binding.cancelButton.setOnClickListener {
+            endSelection(false)
+        }
+
+        binding.startButton.setOnClickListener {
+            endSelection(true)
+        }
 
     }
 
@@ -106,23 +123,7 @@ class SelectionFragment : DialogFragment() {
         ) {
             override fun handleOnBackPressed() {
                 Log.d(TAG,"OnBackPressed")
-
-                if (childFragmentManager.fragments.size == 1) {
-                    Log.d(TAG,"Going to be dismissed")
-                    val result = bundleOf("Successful" to false)
-                    /*TODO need to make req key const*/
-
-                    parentFragment?.parentFragmentManager?.setFragmentResult("LocationFragmentReqKey",result)
-                    onBackPressedCallback.remove()
-                    this@SelectionFragment.onDestroy()
-                }
-                else {
-                    childFragmentManager.popBackStack()
-                    childFragmentManager.commit {
-                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        show(childFragmentManager.fragments.last())
-                    }
-                }
+                endSelection(false)
             }
         }
 
@@ -132,6 +133,15 @@ class SelectionFragment : DialogFragment() {
         )
     }
 
+
+    private fun endSelection(isSuccessful:Boolean){
+        Log.d(TAG,"Going to be dismissed")
+        val result = bundleOf("Successful" to isSuccessful)
+        /* TODO need to make req key const*/
+        parentFragment?.parentFragmentManager?.setFragmentResult("LocationFragmentReqKey",result)
+        onBackPressedCallback.remove()
+        this@SelectionFragment.onDestroy()
+    }
 
 }
 

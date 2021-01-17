@@ -1,53 +1,269 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_selection_fragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background_selection_fragment"
+    android:elevation="10dp"
+    android:paddingTop="20dp">
 
 
-    <LinearLayout
-        android:id="@+id/navigation_linear_layout"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/bookmark_outlined_image_view"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/selection_fragment_container_view"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="5dp"
+        android:src="@drawable/ic_bookmark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_weight="0.1">
+        app:layout_constraintEnd_toStartOf="@id/pin_outlined_image_view"
+        app:layout_constraintBottom_toBottomOf="@id/top_guide_line"/>
 
-        <ImageView
-            android:id="@+id/add_alarm_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_alarm_add" />
-
-        <ImageView
-            android:id="@+id/radius_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_radius" />
-
-        <ImageView
-            android:id="@+id/sound_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_sound" />
-    </LinearLayout>
-
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/selection_fragment_container_view"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/pin_outlined_image_view"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_pin"
+        app:layout_constraintStart_toEndOf="@id/bookmark_outlined_image_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cancel_button"
+        app:layout_constraintBottom_toBottomOf="@id/top_guide_line"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:theme="@style/ThemeOverlay.CancelMaterialButton"
+        app:layout_constraintEnd_toStartOf="@id/start_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/pin_outlined_image_view"
+        app:layout_constraintBottom_toBottomOf="@id/top_guide_line"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:theme="@style/ThemeOverlay.StartMaterialButton"
+        app:layout_constraintStart_toEndOf="@id/cancel_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/top_guide_line"/>
+
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guide_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <ImageView
+        android:id="@+id/radius_image_view"
+        app:layout_constraintTop_toBottomOf="@id/top_guide_line"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/navigation_linear_layout"
-        app:layout_constraintVertical_weight="0.9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_radius" />
+
+    <TextView
+        android:id="@+id/radius_name_text_view"
+        app:layout_constraintBottom_toBottomOf="@id/radius_image_view"
+        android:text="Radius"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/radius_image_view" />
+
+
+    <View
+        android:id="@+id/radius_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/radius_name_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/radius_name_text_view"
+        app:layout_constraintBottom_toBottomOf="@id/radius_name_text_view"
+        android:layout_margin="10dp"/>
+
+
+    <ImageButton
+        android:id="@+id/minus_image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_minus"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        android:padding="5dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/background_circle"
+        android:backgroundTint="@color/button_cancel"
+        app:layout_constraintBottom_toTopOf="@+id/radius_slider"
+        app:layout_constraintEnd_toStartOf="@id/radius_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radius_image_view" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/radius_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        tools:text = "10"
+        app:layout_constraintBottom_toTopOf="@id/radius_slider"
+        app:layout_constraintEnd_toStartOf="@id/dimension_text_view"
+        app:layout_constraintStart_toEndOf="@id/minus_image_button"
+        app:layout_constraintTop_toBottomOf="@id/radius_image_view" />
+
+    <TextView
+        android:id="@+id/dimension_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="meters"
+        app:layout_constraintStart_toEndOf="@id/radius_text_view"
+        app:layout_constraintBaseline_toBaselineOf="@id/radius_text_view"
+        app:layout_constraintEnd_toStartOf="@id/add_image_button" />
+
+
+    <ImageButton
+        android:id="@+id/add_image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add"
+        android:padding="5dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/background_circle"
+        android:backgroundTint="@color/button_add"
+        app:layout_constraintBottom_toTopOf="@id/radius_slider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dimension_text_view"
+        app:layout_constraintTop_toBottomOf="@id/radius_image_view" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/radius_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialSlider"
+        app:layout_constraintStart_toStartOf="@id/radius_image_view"
+        app:layout_constraintEnd_toEndOf="@id/radius_divider"
+        app:layout_constraintTop_toBottomOf="@id/radius_text_view"
+        app:layout_constraintBottom_toTopOf="@id/notification_text_view"
+        android:valueTo="@integer/max_radius_seek_bar"
+        android:valueFrom="@integer/min_radius_seek_bar"
+        app:labelBehavior="gone"/>
+
+
+    <ImageView
+        android:id="@+id/notification_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/radius_image_view"
+        app:layout_constraintTop_toBottomOf="@id/radius_slider"
+        app:layout_constraintBottom_toTopOf="@id/headphone_image_view"
+        app:srcCompat="@drawable/ic_notification" />
+
+
+    <TextView
+        android:id="@+id/notification_text_view"
+        app:layout_constraintBottom_toBottomOf="@id/notification_image_view"
+        android:text="Notification"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/notification_image_view" />
+
+    <View
+        android:id="@+id/notification_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/notification_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/notification_text_view"
+        app:layout_constraintBottom_toBottomOf="@id/notification_text_view"
+        android:layout_margin="10dp"/>
+
+
+    <ImageView
+        android:id="@+id/headphone_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/radius_image_view"
+        android:src="@drawable/ic_headphone"
+        app:layout_constraintTop_toBottomOf="@id/notification_image_view"
+        app:layout_constraintEnd_toStartOf="@id/speaker_image_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
+
+    <ImageView
+        android:id="@+id/speaker_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/headphone_image_view"
+        android:src="@drawable/ic_speaker"
+        app:layout_constraintEnd_toStartOf="@id/vibration_image_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notification_image_view" />
+
+    <ImageView
+        android:id="@+id/vibration_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/speaker_image_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_vibration"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notification_image_view"
+        />
+
+    <!--    <LinearLayout
+            android:id="@+id/navigation_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/selection_fragment_container_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="0.1">
+
+            <ImageView
+                android:id="@+id/add_alarm_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_alarm_add" />
+
+            <ImageView
+                android:id="@+id/radius_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_radius" />
+
+            <ImageView
+                android:id="@+id/sound_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_sound" />
+        </LinearLayout>
+
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/selection_fragment_container_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/navigation_linear_layout"
+            app:layout_constraintVertical_weight="0.9" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,8 +26,8 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
     companion object{
         private const val TAG = "LocationViewModel"
-        const val DEFAULT_ZOOM = 13f
-        const val DEFAULT_RADIUS = 250.0
+        const val DEFAULT_ZOOM = 12f
+        const val DEFAULT_RADIUS = 500
     }
 
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
@@ -159,7 +159,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         /* int width, int height, int padding*/
         Log.d(TAG,"CameraIdle")
        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,100)
-        _cameraMovement.value = CameraMovement(cameraUpdate,true,350)
+        _cameraMovement.value = CameraMovement(cameraUpdate,true,300)
     }
 
 }
