@@ -40,6 +40,7 @@ Note: I am still working on this personal project.
 - Used a Custom ViewPager2 Transition  via this [answer](https://stackoverflow.com/a/59235979/11200630). 
 - ~~Expanding `BottomSheetDialogFragment` to a custom height was done with the help of this [answer](https://stackoverflow.com/a/58067230/11200630)~~
 - The code for finding LatLng bounds of the area of interest from this [answer](https://stackoverflow.com/a/31029389/11200630) is used.
+- The method of persisting a single instance of the repository w/o singleton pattern is based on this [codelab](https://developer.android.com/codelabs/android-room-with-a-view-kotlin#12).
 
 ### ⚙️ Installation:
 Note: It will be easier to do the following via a phone. 

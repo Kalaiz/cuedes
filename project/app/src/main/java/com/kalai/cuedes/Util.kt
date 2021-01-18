@@ -5,15 +5,20 @@ import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.app.ActivityCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.SphericalUtil
+import com.kalai.cuedes.alarm.AlarmListAdapter
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -91,5 +96,10 @@ fun LatLng.toBounds(radius: Double): LatLngBounds? {
 
 fun getBoundLength(radius:Double) = radius * sqrt(2.0)
 
-
+fun getCameraUpdateBounds(circle: Circle, padding:Int): CameraUpdate {
+    val bounds = circle.center?.toBounds(circle.radius)
+    Log.d(AlarmListAdapter.TAG,bounds.toString())
+    /* int width, int height, int padding*/
+    return  CameraUpdateFactory.newLatLngBounds(bounds,padding)
+}
 

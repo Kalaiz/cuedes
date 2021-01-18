@@ -54,7 +54,6 @@
         app:layout_constraintBottom_toBottomOf="@id/top_guide_line"/>
 
 
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/top_guide_line"
         android:layout_width="wrap_content"
@@ -71,6 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_radius" />
+
 
     <TextView
         android:id="@+id/radius_name_text_view"

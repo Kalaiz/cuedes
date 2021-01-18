@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">CueDes</string>
 
-    <string name="alarm_item_alarm_name">Alarm:</string>
-    <string name="alarm_item_location_name">Location:</string>
+    <string name="alarm_item_alarm_name">Alarm Name:</string>
     <string name="alarm_item_radius_name">Radius:</string>
     <string name="alarm_item_latitude">Latitude:</string>
     <string name="alarm_item_longitude">Longitude:</string>

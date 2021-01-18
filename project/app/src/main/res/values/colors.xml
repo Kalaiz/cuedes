@@ -43,5 +43,9 @@
     <color name="image_view_toggle_normal">#E87171</color>
     <color name="image_view_toggle_selected">#8BC34A</color>
 
+    <color name="radius_alarm_active">#668BC34A</color>
+    <color name="radius_alarm_inactive">#66E87171</color>
+
+
 
 </resources>

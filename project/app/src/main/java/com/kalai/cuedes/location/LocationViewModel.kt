@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.kalai.cuedes.getCameraUpdateBounds
 import com.kalai.cuedes.location.Status.*
 import com.kalai.cuedes.toBounds
 
@@ -154,12 +155,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
 
    fun fitContent(circle: Circle){
-        val bounds = circle.center?.toBounds(circle.radius)
-        Log.d(TAG,bounds.toString())
-        /* int width, int height, int padding*/
-        Log.d(TAG,"CameraIdle")
-       val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,100)
-        _cameraMovement.value = CameraMovement(cameraUpdate,true,300)
+        _cameraMovement.value = CameraMovement(getCameraUpdateBounds(circle,100),true,300)
     }
 
 }

@@ -1,5 +1,6 @@
 package com.kalai.cuedes.location
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentLocationBinding
 import com.kalai.cuedes.location.LocationViewModel.Companion.DEFAULT_RADIUS
@@ -60,9 +63,10 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     private lateinit var onBackPressedCallback: OnBackPressedCallback
 
 
+    private val repository by lazy { (activity?.application as CueDesApplication).repository }
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentLocationBinding.inflate(layoutInflater, container, false)
         map = childFragmentManager.findFragmentById(R.id.fragment_map) as SupportMapFragment
@@ -95,7 +99,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         })
 
         locationViewModel.currentLocation.observe(viewLifecycleOwner, object :
-                Observer<Location> {
+            Observer<Location> {
             override fun onChanged(location: Location?) {
                 if (location != null) {
                     locationViewModel.setupCurrentLocation()
@@ -108,6 +112,28 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             locationViewModel.updateStatus(NORMAL)
             if (!bundle.getBoolean("Successful")) {
                 locationViewModel.setSelectedLocation(null) }
+            else{
+                if(binding.root.animation?.hasEnded() != true)
+                    binding.root.addTransitionListener(object:MotionLayout.TransitionListener{
+                        override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
+                        override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
+                        override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
+                        override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                            val color =context?.getColor(R.color.radius_alarm_active)
+                            val currentColor = currentSelectedRadius?.fillColor?:color
+                            if(currentColor !=null && color!=null) {
+                                val animator = ObjectAnimator.ofArgb(currentColor, color)
+                                animator.duration = 500
+                                animator.addUpdateListener { animation ->
+                                    currentSelectedRadius?.fillColor =
+                                        animation.animatedValue as Int
+                                }
+                                animator.start()
+                            }
+                            binding.root.removeTransitionListener(this)
+                        }
+                    })
+            }
         }
 
         binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
@@ -128,16 +154,16 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         })
 
         locationViewModel.status.observe(viewLifecycleOwner,
-                Observer { updatedStatus->
-                    Log.d(TAG,"UpdatedStatus  $updatedStatus")
-                    when(updatedStatus){
-                        INITIAL_SELECTION -> locationViewModel.selectedLatLng.value?.let {  setSelectionMode() }
-                        NORMAL-> { setNormalMode()  }
-                        else -> {}
-                    } })
+            Observer { updatedStatus->
+                Log.d(TAG,"UpdatedStatus  $updatedStatus")
+                when(updatedStatus){
+                    INITIAL_SELECTION -> locationViewModel.selectedLatLng.value?.let {  setSelectionMode() }
+                    NORMAL-> { setNormalMode()  }
+                    else -> {}
+                } })
 
         locationViewModel.selectedMarker.observe(viewLifecycleOwner,Observer {
-            marker ->
+                marker ->
             if(marker == null){
                 Log.d(TAG,"Observed Selected Marker changed to null")
                 removeMarkerRadius()
@@ -149,7 +175,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         })
 
         locationViewModel.selectedRadius.observe(viewLifecycleOwner, Observer {
-            updatedRadius ->
+                updatedRadius ->
             Log.d(TAG," Radius changed${currentSelectedRadius?.radius} $updatedRadius")
             if(updatedRadius!=null) {
                 currentSelectedRadius?.let { circle ->
@@ -158,17 +184,17 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                         val radiusAnimation = getAnimationRadius(circle, circle.radius.toInt(), updatedRadius)
                         radiusAnimation.start()
                         Log.d(TAG, "Radius Animation Started")
-                            radiusAnimation.doOnEnd {
-                                locationViewModel.isCameraIdle.observe(viewLifecycleOwner,object : Observer<Boolean> {
-                                    override fun onChanged(isCameraIdle: Boolean?) {
-                                        if(isCameraIdle == true){
-                                            locationViewModel.fitContent(circle)
-                                            locationViewModel.isCameraIdle.removeObserver(this)}
-                                    }
-                                })
-                                if(locationViewModel.status.value == INITIAL_SELECTION){
-                                    locationViewModel.updateStatus(SELECTION)
+                        radiusAnimation.doOnEnd {
+                            locationViewModel.isCameraIdle.observe(viewLifecycleOwner,object : Observer<Boolean> {
+                                override fun onChanged(isCameraIdle: Boolean?) {
+                                    if(isCameraIdle == true){
+                                        locationViewModel.fitContent(circle)
+                                        locationViewModel.isCameraIdle.removeObserver(this)}
                                 }
+                            })
+                            if(locationViewModel.status.value == INITIAL_SELECTION){
+                                locationViewModel.updateStatus(SELECTION)
+                            }
                         }
                     }
                 }
@@ -193,11 +219,11 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(
-                this,
-                onBackPressedCallback)
+            this,
+            onBackPressedCallback)
     }
 
-    @SuppressLint("PotentialBehaviorOverride")
+
     override fun onMapReady(googleMap: GoogleMap?) {
         Log.d(TAG,"onMapReady called")
         if (googleMap != null) {
@@ -226,7 +252,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         googleMap?.setOnMarkerClickListener { true }
 
         googleMap?.setOnMapLongClickListener {
-            latLng -> Log.d(TAG,latLng.toString())
+                latLng -> Log.d(TAG,latLng.toString())
             if(latLng!=null) {
                 locationViewModel.setSelectedLocation(googleMap.addMarker(MarkerOptions().position(latLng)))
                 val status = locationViewModel.status.value
@@ -259,7 +285,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     private fun setSelectionMode(){
         binding.searchView.clearFocus()
         childFragmentManager.commit {
-            add(R.id.fragment_selection, SelectionFragment(),SelectionFragment.TAG) }
+            add(R.id.fragment_selection, SelectionFragment(repository),SelectionFragment.TAG) }
         binding.motionLayoutContainer.transitionToEnd()
         binding.root.transitionToEnd()
         mapLogoValueAnimator.start() }
@@ -310,7 +336,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     }
 
 
-
     private fun setupMarkerRadius(marker:Marker) {
         if (marker.position != null) {
             Log.d(TAG, "marker position not null")
@@ -318,7 +343,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             currentSelectedRadius = googleMap.addCircle(CircleOptions().center(marker.position))
             currentSelectedRadius?.strokeColor = Color.TRANSPARENT
             context?.getColor(R.color.map_radius)?.let { currentSelectedRadius?.fillColor = it }
-            val optimalRadius = locationViewModel.selectedRadius.value ?: DEFAULT_RADIUS.toInt()
+            val optimalRadius = locationViewModel.selectedRadius.value ?: DEFAULT_RADIUS
             Log.d(TAG, "optimalRadius $optimalRadius")
             val radiusAnimator = getAnimationRadius(currentSelectedRadius as Circle, 0, optimalRadius)
             radiusAnimator.apply {
@@ -328,11 +353,10 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
 
             radiusAnimator.doOnEnd {
                 currentSelectedRadius?.let { circle -> locationViewModel.fitContent(circle) }
-            Log.d(TAG, "radiusAnimator End $currentSelectedRadius ${currentSelectedRadius?.radius}")
-            locationViewModel.setRadius(optimalRadius)
+                Log.d(TAG, "radiusAnimator End $currentSelectedRadius ${currentSelectedRadius?.radius}")
+                locationViewModel.setRadius(optimalRadius)
+            }
         }
-    }
-
     }
 
 

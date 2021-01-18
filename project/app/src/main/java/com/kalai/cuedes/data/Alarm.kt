@@ -7,6 +7,8 @@ import com.google.android.gms.maps.model.LatLng
 
 @Entity
 data class Alarm(@PrimaryKey var name:String,
-                 @ColumnInfo(name = "longitude") var longitude:Double,
-                 @ColumnInfo(name="latitude") var latitude:Double,
-                 @ColumnInfo(name = "radius")var radius:Float)
+                 @ColumnInfo(name="Latitude") var latitude:Double,
+                 @ColumnInfo(name = "Longitude") var longitude:Double,
+                 @ColumnInfo(name = "Radius")var radius:Int,
+                 @ColumnInfo(name ="IsActivated") var isActivated:Boolean = true)
+
