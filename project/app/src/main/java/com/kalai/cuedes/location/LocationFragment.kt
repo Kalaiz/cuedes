@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
@@ -11,10 +12,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -30,6 +31,9 @@ import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.R
 import com.kalai.cuedes.databinding.FragmentLocationBinding
@@ -49,6 +53,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         val locationRequestBalanced = LocationRequest().apply { fastestInterval = 60*1000
             interval = 60*1000*60}
         const val REQ_KEY= "LocationFragmentReqKey"
+        private const val AUTOCOMPLETE_REQUEST_CODE = 1
     }
 
 
@@ -61,6 +66,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     private var currentSelectedMarker: Marker? = null
     private var currentSelectedRadius: Circle? = null
     private lateinit var onBackPressedCallback: OnBackPressedCallback
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
+
 
 
     private val repository by lazy { (activity?.application as CueDesApplication).repository }
@@ -74,11 +81,20 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result -> Log.d(TAG,
+            result.toString()
+        )  }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         /* Due to Default Location Button being displaced*/
-        binding.currentLocationButton.setOnClickListener {
-            locationViewModel.getCurrentLocationUpdate() }
+
+        binding.findMeButton.setOnClickListener {
+            locationViewModel.getCurrentLocationUpdate()
+        }
 
         locationViewModel.cameraMovement.observe(viewLifecycleOwner, Observer { cameraMovement ->
             Log.d(TAG, "Camera Movement changed")
@@ -136,22 +152,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             }
         }
 
-        binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean { return true }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if(newText.isNullOrBlank()){
-                    binding.currentLocationButton.animate()?.alpha(1f)?.setDuration(1000)?.start()
-                    /*TODO find a more elegant way to put view behind*/
-                    binding.currentLocationButton.elevation = binding.searchView.elevation+1
-                }
-                else if(binding.currentLocationButton.alpha == 1f){
-                    binding.currentLocationButton.animate()?.alpha(0f)?.setDuration(1000)?.start()
-                    /*TODO find a more elegant way to put view in-front*/
-                    binding.currentLocationButton.elevation = binding.searchView.elevation-1
-                }
-                return true
-            }
-        })
+
+        binding.searchButton.setOnClickListener { startSearchActivity() }
 
         locationViewModel.status.observe(viewLifecycleOwner,
             Observer { updatedStatus->
@@ -283,7 +285,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
 
 
     private fun setSelectionMode(){
-        binding.searchView.clearFocus()
+        /* binding.searchView.clearFocus()*/
         childFragmentManager.commit {
             add(R.id.fragment_selection, SelectionFragment(repository),SelectionFragment.TAG) }
         binding.motionLayoutContainer.transitionToEnd()
@@ -369,6 +371,19 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         }
     }
 
+
+    private fun startSearchActivity(){
+        val fields = listOf(Place.Field.NAME)
+
+        val intent =
+            context?.let {
+                Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                    .build(it)
+            }
+
+        activityResultLauncher.launch(intent)
+
+    }
 }
 
 

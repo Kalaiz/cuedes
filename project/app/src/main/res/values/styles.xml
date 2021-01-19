@@ -54,6 +54,17 @@
     </style>
 
 
+
+    <style name="ThemeOverlay.SearchMaterialButton" parent="ThemeOverlay.MaterialButton">
+        <item name="colorPrimary">#2196F3</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+    </style>
+
+    <style name="ThemeOverlay.FindMeMaterialButton" parent="ThemeOverlay.MaterialButton">
+        <item name="colorPrimary">#EFEFEF</item>
+        <item name="colorOnPrimary">#2196F3</item>
+    </style>
+
     <style name="ThemeOverlay.CancelMaterialButton" parent="ThemeOverlay.MaterialButton">
         <item name="colorPrimary">@color/button_cancel</item>
     </style>
@@ -68,6 +79,7 @@
         <item name="colorOnSurface">@color/slider</item>
 
     </style>
+
 
 
 

@@ -19,7 +19,9 @@
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true"
         android:largeHeap="true"
-        tools:replace="android:icon">
+        android:resizeableActivity="false"
+        tools:replace="android:icon"
+        tools:targetApi="n">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

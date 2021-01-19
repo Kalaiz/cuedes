@@ -25,8 +25,11 @@
 - I have used `MotionLayout` for my `LocationFragment`, which resizes the map fragment and the selection fragment accordingly. However, I noticed that the map fragment was flickering on low end devices. Upon using the [GPU profiler](https://developer.android.com/topic/performance/rendering/inspect-gpu-rendering), I noticed that when the flickering happens , significant amount of time is spent on `onLayout` and `onMeasure` callbacks. Also, I noticed that the map was loading whenever the camera view is being moved, and my implementation( does a `CameraUpdate` and then immediately followed by an "split screen animation") did not account for this. I resolved ( to an extent) this by not doing any `CameraUpdate` while resizing the map view.
 
 - The `SelectionFragment` which has multiple child fragments ( `LocationNameFragment`,`RadiusFragment`,`NotificationMethodFragment` ) are merged into a single fragment, as I felt that it speedens up the process of setting an alarm. 
-- Learned about RecyclerView DiffUtil from this [codelab](https://developer.android.com/codelabs/kotlin-android-training-diffutil-databinding#1). TODO - I'll expand later.
+- Learned about RecyclerView DiffUtil from this [codelab](https://developer.android.com/codelabs/kotlin-android-training-diffutil-databinding#1). TODO - I'll need to expand later.
 
+- Learned that `Button` has a default margin. Tried to override it using this [solution](https://stackoverflow.com/a/43298421/11200630) which overrides the default background. However, the button's drawable's size [cannot](https://stackoverflow.com/questions/32656837/changing-the-drawable-size-inside-a-button) be changed.I eventually made my own button using a LinearLayout.
+
+- I was searching for various Place autocompletion APIs, however most of them were limited and were not free. I am planning to use wikipedi API to search for locations. -- TODO
 
 ### What I could have done better/will be doing
 

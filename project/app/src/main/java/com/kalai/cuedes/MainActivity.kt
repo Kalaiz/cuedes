@@ -40,6 +40,10 @@ class MainActivity : AppCompatActivity() {
         mainPagerAdapter = MainPagerAdapter(this, bottomNavigationView.menu.size())
         viewPager.adapter = mainPagerAdapter
 
+
+        /*Initialising Places*/
+        applicationContext?.getString(R.string.google_maps_key)?.let { Places.initialize(applicationContext, it) }
+
         /* Pre - fetching Fragments in advance */
         viewPager.offscreenPageLimit = 1
 

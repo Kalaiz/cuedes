@@ -1,0 +1,12 @@
+<resources>
+
+
+
+    <dimen name="status_bar_rounded_corner_radius">50dp</dimen>
+    <dimen name="button_icon_size">30dp</dimen>
+
+    <dimen name="button_padding">17.5dp</dimen>
+    <dimen name="bottom_nav_icon_size" >25dp</dimen>
+    <dimen name="recycler_view_map_size">300dp</dimen>
+
+</resources>
