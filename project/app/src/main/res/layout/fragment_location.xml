@@ -61,10 +61,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/guideline_status_bar"
         android:background="@drawable/background_status_bar"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp">
+        android:paddingStart="@dimen/status_bar_padding"
+        android:paddingEnd="@dimen/status_bar_padding">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/alarm_status_linear_layout"
             app:layout_constraintHorizontal_weight="2"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,16 +73,35 @@
             app:layout_constraintEnd_toStartOf="@id/search_button"
             android:layout_height="0dp"
             android:layout_width="0dp"
-            android:orientation="horizontal">
+            android:padding="2.5dp"
+            android:orientation="horizontal"
+            >
+
+            <View
+                android:id="@+id/status_view"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/active_alarm_text_view"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_width="@dimen/status_view_size"
+                android:layout_height="@dimen/status_view_size"
+                android:background="@drawable/background_circle"
+                android:backgroundTint="@color/colorSurface"/>
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="STATUS"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/active_alarm_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/status_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:maxLines="1"
+                android:text="active alarm(s)"
                 android:gravity="center"
-                app:autoSizeTextType="uniform"/>
+                app:autoSizeMaxTextSize="@dimen/selection_text_view_size"/>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/search_button"
@@ -138,40 +157,6 @@
 
 
 
-
-     <!--   <Button
-            android:theme="@style/ThemeOverlay.SearchMaterialButton"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="SEARCH"
-            android:textColor="@color/colorPrimary"
-            android:drawableStart="@drawable/ic_search"
-            android:background="?attr/selectableItemBackground" />-->
-        <!--        <LinearLayout
-                    android:orientation="horizontal"
-                    android:id="@+id/linear_layout_test"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:background="@color/colorPrimary"
-                    >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="">
-
-                    </TextView>
-                </LinearLayout>-->
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -179,7 +164,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.06"/>
+        app:layout_constraintGuide_percent="@dimen/status_bar_percent"/>
 
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

@@ -3,9 +3,32 @@
 
 
     <dimen name="status_bar_rounded_corner_radius">50dp</dimen>
-    <dimen name="button_icon_size">15dp</dimen>
 
-    <dimen name="button_padding">2.5dp</dimen>
+    <dimen name="button_icon_size">14dp</dimen>
+    <dimen name="button_padding">3.5dp</dimen>
+
     <dimen name="bottom_nav_icon_size" >17.5dp</dimen>
+
     <dimen name="recycler_view_map_size">150dp</dimen>
+
+    <dimen name="status_bar_padding">12.5dp</dimen>
+
+    <dimen name="selection_text_view_size">14sp</dimen>
+    <dimen name="selection_icon_size">20dp</dimen>
+    <dimen name="selection_selectable_icon_size">24dp</dimen>
+    <dimen name="selection_button_text_size">15sp</dimen>
+    <dimen name="selection_radius_text_size">40sp</dimen>
+    <dimen name="selection_meter_text_size">12sp</dimen>
+    <dimen name="alarm_list_text_view_size">13sp</dimen>
+
+
+    <item name="motion_layout_map_percent" format="float" type="dimen">0.525</item>
+    <item name="motion_layout_selection_percent" format="float" type="dimen">0.45</item>
+
+    <item name="status_bar_percent" format="float" type="dimen">0.06</item>
+
+    <item name="bottom_nav_bar_percent" format="float" type="dimen">0.06</item>
+    <item name="screen_percent" format="float" type="dimen">0.940</item>
+
+    <dimen name="status_view_size" >12.5sp</dimen>
 </resources>

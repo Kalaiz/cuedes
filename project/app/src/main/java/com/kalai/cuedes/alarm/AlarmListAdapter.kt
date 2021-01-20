@@ -33,10 +33,7 @@ class AlarmListAdapter (private val context:Context):
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindView(position)
-
     }
-
-
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),OnMapReadyCallback{
         private val alarmNameTextView: TextView = view.findViewById(R.id.alarm_identifier_text_view)
@@ -85,22 +82,26 @@ class AlarmListAdapter (private val context:Context):
         }
 
         private fun setMapLocation() {
-            if (!::map.isInitialized) return
-            with(map) {
-                addMarker(MarkerOptions().position(latLng))
-                mapType = GoogleMap.MAP_TYPE_NORMAL
+            if (::map.isInitialized) {
+                with(map) {
+                    addMarker(MarkerOptions().position(latLng))
+                    mapType = GoogleMap.MAP_TYPE_NORMAL
+                }
+                val color =
+                    if (isActivated) context.getColor(R.color.radius_alarm_active) else context.getColor(
+                        R.color.radius_alarm_inactive
+                    )
+                val circleOptions = CircleOptions()
+                    .radius(this@ViewHolder.radius)
+                    .center(latLng)
+                    .fillColor(color)
+                    .strokeColor(Color.TRANSPARENT)
+
+                val circle = map.addCircle(circleOptions)
+                val cameraUpdate = getCameraUpdateBounds(circle, 100)
+                map.moveCamera(cameraUpdate)
             }
-            val color = if(isActivated) context.getColor(R.color.radius_alarm_active) else context.getColor(R.color.radius_alarm_inactive)
-            val circleOptions = CircleOptions()
-                .radius(this@ViewHolder.radius)
-                .center(latLng)
-                .fillColor(color)
-                .strokeColor(Color.TRANSPARENT)
-
-            val circle = map.addCircle(circleOptions)
-            val cameraUpdate = getCameraUpdateBounds(circle,100)
-            map.moveCamera(cameraUpdate)
-
+            else{}
         }
 
 

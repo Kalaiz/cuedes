@@ -5,9 +5,7 @@ import android.app.Application
 import android.location.Location
 import android.os.Looper
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
@@ -16,9 +14,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.getCameraUpdateBounds
 import com.kalai.cuedes.location.Status.*
-import com.kalai.cuedes.toBounds
 
 
 @SuppressLint("MissingPermission")
@@ -30,6 +28,8 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         const val DEFAULT_ZOOM = 12f
         const val DEFAULT_RADIUS = 500
     }
+
+
 
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
     private val _currentLocation = MutableLiveData<Location>()
@@ -59,6 +59,20 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _selectedRadius = MutableLiveData<Int?>()
     val selectedRadius:LiveData<Int?> get() = _selectedRadius
 
+    private val _isAlarmActive = MutableLiveData<Boolean?>()
+    val isAlarmActive:LiveData<Boolean?> get() = _isAlarmActive
+
+    private lateinit var alarms:List<Alarm>
+
+
+
+    private val numOfActiveAlarm:Int  get(){
+        return if (::alarms.isInitialized) alarms.filter { alarm -> alarm.isActivated  }.count() else 0}
+
+    val alarmStatusText:String get(){
+        val numberOfActiveAlarm = numOfActiveAlarm
+        return "$numberOfActiveAlarm active alarm${if(numberOfActiveAlarm>1) "s" else ""}"
+    }
 
     fun requestLocation(){
         Log.d(TAG,"requesting Location")
@@ -81,7 +95,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         fusedLocationClient.requestLocationUpdates(LocationFragment.locationRequestHighAccuracy,locationCallback, Looper.myLooper())
     }
 
-    fun getCurrentLocationUpdate(){
+    fun currentLocationUpdate(){
         currentLocationCameraMovement(true)
     }
 
@@ -157,5 +171,15 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
    fun fitContent(circle: Circle){
         _cameraMovement.value = CameraMovement(getCameraUpdateBounds(circle,100),true,300)
     }
+
+    fun updateAlarms(alarms: List<Alarm>) {
+        this.alarms = alarms
+        val numberOfActiveAlarm = numOfActiveAlarm
+        _isAlarmActive.value = numberOfActiveAlarm > 0
+
+    }
+
+
+
 
 }

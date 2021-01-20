@@ -19,7 +19,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
-            app:layout_constraintVertical_weight="0.940" />
+            app:layout_constraintVertical_weight="@dimen/screen_percent" />
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -34,7 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_pager"
-            app:layout_constraintVertical_weight="0.06"
+            app:layout_constraintVertical_weight="@dimen/bottom_nav_bar_percent"
             app:menu="@menu/navigation_item"
             app:labelVisibilityMode="unlabeled"/>
 

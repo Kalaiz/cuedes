@@ -47,5 +47,9 @@
     <color name="radius_alarm_inactive">#66E87171</color>
 
 
+    <color name="status_view_inactive">#E87171</color>
+    <color name="status_view_active">#8BC34A</color>
+
+
 
 </resources>

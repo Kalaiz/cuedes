@@ -3,8 +3,10 @@ package com.kalai.cuedes.location
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
@@ -17,20 +19,19 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.animation.doOnEnd
+import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
@@ -40,7 +41,8 @@ import com.kalai.cuedes.databinding.FragmentLocationBinding
 import com.kalai.cuedes.location.LocationViewModel.Companion.DEFAULT_RADIUS
 import com.kalai.cuedes.location.Status.*
 import com.kalai.cuedes.location.selection.SelectionFragment
-
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 @SuppressLint("MissingPermission")
@@ -53,9 +55,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         val locationRequestBalanced = LocationRequest().apply { fastestInterval = 60*1000
             interval = 60*1000*60}
         const val REQ_KEY= "LocationFragmentReqKey"
-        private const val AUTOCOMPLETE_REQUEST_CODE = 1
     }
-
 
 
     private lateinit var  mapLogoValueAnimator: ValueAnimator
@@ -66,8 +66,9 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     private var currentSelectedMarker: Marker? = null
     private var currentSelectedRadius: Circle? = null
     private lateinit var onBackPressedCallback: OnBackPressedCallback
-    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-
+    private lateinit var searchActivityLauncher: ActivityResultLauncher<Intent>
+    private lateinit var statusViewActiveColorStateList: ColorStateList
+    private lateinit var statusViewInActiveColorStateList: ColorStateList
 
 
     private val repository by lazy { (activity?.application as CueDesApplication).repository }
@@ -83,9 +84,25 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result -> Log.d(TAG,
-            result.toString()
-        )  }
+
+
+        searchActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            Log.d(TAG, result.toString())
+            when(result.resultCode){
+                Activity.RESULT_OK ->{
+                    result.data?.let {
+                        val place = Autocomplete.getPlaceFromIntent(it)
+                        Log.i(TAG, "Place: ${place.name}, ${place.latLng}")
+                        place.latLng?.let { latLng -> setLocation(latLng) }
+                    }}
+                else -> { binding.root.transitionToStart()}
+            }
+
+        }
+        context?.let {
+            statusViewActiveColorStateList = ColorStateList.valueOf(getColor(it,R.color.status_view_active))
+            statusViewInActiveColorStateList = ColorStateList.valueOf(getColor(it,R.color.status_view_inactive))
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,7 +110,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         /* Due to Default Location Button being displaced*/
 
         binding.findMeButton.setOnClickListener {
-            locationViewModel.getCurrentLocationUpdate()
+            locationViewModel.currentLocationUpdate()
         }
 
         locationViewModel.cameraMovement.observe(viewLifecycleOwner, Observer { cameraMovement ->
@@ -127,17 +144,17 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         setFragmentResultListener(REQ_KEY) { _, bundle ->
             locationViewModel.updateStatus(NORMAL)
             if (!bundle.getBoolean("Successful")) {
-                locationViewModel.setSelectedLocation(null) }
-            else{
-                if(binding.root.animation?.hasEnded() != true)
-                    binding.root.addTransitionListener(object:MotionLayout.TransitionListener{
+                locationViewModel.setSelectedLocation(null)
+            } else {
+                if (binding.root.animation?.hasEnded() != true)
+                    binding.root.addTransitionListener(object : MotionLayout.TransitionListener {
                         override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
                         override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
                         override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
                         override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                            val color =context?.getColor(R.color.radius_alarm_active)
-                            val currentColor = currentSelectedRadius?.fillColor?:color
-                            if(currentColor !=null && color!=null) {
+                            val color = context?.getColor(R.color.radius_alarm_active)
+                            val currentColor = currentSelectedRadius?.fillColor ?: color
+                            if (currentColor != null && color != null) {
                                 val animator = ObjectAnimator.ofArgb(currentColor, color)
                                 animator.duration = 500
                                 animator.addUpdateListener { animation ->
@@ -156,45 +173,49 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         binding.searchButton.setOnClickListener { startSearchActivity() }
 
         locationViewModel.status.observe(viewLifecycleOwner,
-            Observer { updatedStatus->
-                Log.d(TAG,"UpdatedStatus  $updatedStatus")
-                when(updatedStatus){
-                    INITIAL_SELECTION -> locationViewModel.selectedLatLng.value?.let {  setSelectionMode() }
-                    NORMAL-> { setNormalMode()  }
-                    else -> {}
-                } })
+            Observer { updatedStatus ->
+                Log.d(TAG, "UpdatedStatus  $updatedStatus")
+                when (updatedStatus) {
+                    INITIAL_SELECTION -> locationViewModel.selectedLatLng.value?.let { setSelectionMode() }
+                    NORMAL -> {
+                        setNormalMode()
+                    }
+                    else -> {
+                    }
+                }
+            })
 
-        locationViewModel.selectedMarker.observe(viewLifecycleOwner,Observer {
-                marker ->
-            if(marker == null){
-                Log.d(TAG,"Observed Selected Marker changed to null")
+        locationViewModel.selectedMarker.observe(viewLifecycleOwner, Observer { marker ->
+            if (marker == null) {
+                Log.d(TAG, "Observed Selected Marker changed to null")
                 removeMarkerRadius()
-            }
-            else{
-                Log.d(TAG,"Observed Selected Marker changed $marker")
+            } else {
+                Log.d(TAG, "Observed Selected Marker changed $marker")
                 setupMarkerRadius(marker)
             }
         })
 
-        locationViewModel.selectedRadius.observe(viewLifecycleOwner, Observer {
-                updatedRadius ->
-            Log.d(TAG," Radius changed${currentSelectedRadius?.radius} $updatedRadius")
-            if(updatedRadius!=null) {
+        locationViewModel.selectedRadius.observe(viewLifecycleOwner, Observer { updatedRadius ->
+            Log.d(TAG, " Radius changed${currentSelectedRadius?.radius} $updatedRadius")
+            if (updatedRadius != null) {
                 currentSelectedRadius?.let { circle ->
                     if (circle.radius.toInt() != updatedRadius) {
-                        Log.d(TAG,"Circle radius ${circle.radius} $updatedRadius")
-                        val radiusAnimation = getAnimationRadius(circle, circle.radius.toInt(), updatedRadius)
+                        Log.d(TAG, "Circle radius ${circle.radius} $updatedRadius")
+                        val radiusAnimation =
+                            getAnimationRadius(circle, circle.radius.toInt(), updatedRadius)
                         radiusAnimation.start()
                         Log.d(TAG, "Radius Animation Started")
                         radiusAnimation.doOnEnd {
-                            locationViewModel.isCameraIdle.observe(viewLifecycleOwner,object : Observer<Boolean> {
-                                override fun onChanged(isCameraIdle: Boolean?) {
-                                    if(isCameraIdle == true){
-                                        locationViewModel.fitContent(circle)
-                                        locationViewModel.isCameraIdle.removeObserver(this)}
-                                }
-                            })
-                            if(locationViewModel.status.value == INITIAL_SELECTION){
+                            locationViewModel.isCameraIdle.observe(viewLifecycleOwner,
+                                object : Observer<Boolean> {
+                                    override fun onChanged(isCameraIdle: Boolean?) {
+                                        if (isCameraIdle == true) {
+                                            locationViewModel.fitContent(circle)
+                                            locationViewModel.isCameraIdle.removeObserver(this)
+                                        }
+                                    }
+                                })
+                            if (locationViewModel.status.value == INITIAL_SELECTION) {
                                 locationViewModel.updateStatus(SELECTION)
                             }
                         }
@@ -202,7 +223,19 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                 }
             }
         })
+        lifecycleScope.launch {
+            repository.alarms.collect { alarms ->
+                locationViewModel.updateAlarms(alarms)
+                binding.activeAlarmTextView.text = locationViewModel.alarmStatusText
+            }
+        }
+        locationViewModel.isAlarmActive.observe(viewLifecycleOwner, Observer { isActive ->
+            context?.let {
+                binding.statusView.backgroundTintList = if(isActive== true)statusViewActiveColorStateList else statusViewInActiveColorStateList
+            }
+        })
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -236,7 +269,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             googleMap.setOnCameraIdleListener {
                 Log.d(TAG,"Camera Idle")
                 locationViewModel.cameraIdle()
-                googleMap.setOnMapLoadedCallback(this);
+                googleMap.setOnMapLoadedCallback(this)
             }
 
             googleMap.setOnCameraMoveStartedListener {
@@ -256,11 +289,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         googleMap?.setOnMapLongClickListener {
                 latLng -> Log.d(TAG,latLng.toString())
             if(latLng!=null) {
-                locationViewModel.setSelectedLocation(googleMap.addMarker(MarkerOptions().position(latLng)))
-                val status = locationViewModel.status.value
-                val optimalUpdatedStatus =  if( status == null || status == NORMAL) INITIAL_SELECTION else SELECTION
-                Log.d(TAG,"OptimalUpdatedStatus $optimalUpdatedStatus")
-                locationViewModel.updateStatus(optimalUpdatedStatus)
+                setLocation(latLng)
             }
         }
 
@@ -289,7 +318,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         childFragmentManager.commit {
             add(R.id.fragment_selection, SelectionFragment(repository),SelectionFragment.TAG) }
         binding.motionLayoutContainer.transitionToEnd()
-        binding.root.transitionToEnd()
+        if(binding.root.currentState == binding.root.startState)
+            binding.root.transitionToEnd()
         mapLogoValueAnimator.start() }
 
 
@@ -373,7 +403,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
 
 
     private fun startSearchActivity(){
-        val fields = listOf(Place.Field.NAME)
+        val fields = listOf(Place.Field.NAME,Place.Field.LAT_LNG)
 
         val intent =
             context?.let {
@@ -381,8 +411,25 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                     .build(it)
             }
 
-        activityResultLauncher.launch(intent)
+        binding.root.addTransitionListener(object :MotionLayout.TransitionListener{
+            override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
+            override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
+            override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
+            override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                searchActivityLauncher.launch(intent)
+                binding.root.removeTransitionListener(this)}
+        })
+        binding.root.transitionToEnd()
 
+
+    }
+
+    private fun setLocation(latLng: LatLng){
+        locationViewModel.setSelectedLocation(googleMap.addMarker(MarkerOptions().position(latLng)))
+        val status = locationViewModel.status.value
+        val optimalUpdatedStatus =  if( status == null || status == NORMAL) INITIAL_SELECTION else SELECTION
+        Log.d(TAG,"OptimalUpdatedStatus $optimalUpdatedStatus")
+        locationViewModel.updateStatus(optimalUpdatedStatus)
     }
 }
 

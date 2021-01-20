@@ -2,4 +2,5 @@
 <resources>
     <integer name="min_radius_seek_bar">25</integer>
     <integer name="max_radius_seek_bar">5000</integer>
+
 </resources>
