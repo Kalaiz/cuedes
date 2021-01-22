@@ -15,7 +15,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.kalai.cueloc"
+        applicationId "com.kalai.cuedes"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
