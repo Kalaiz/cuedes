@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
                     else -> 2
                 }
 
-
                 val fadeIn = ObjectAnimator.ofFloat(viewPager, "alpha", 0.4f).apply {
                     duration = 150
                 }
@@ -90,10 +89,5 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    private fun startCueDesService(){
-        val cueDesServiceIntent= Intent(this, CueDesService::class.java)
-        ContextCompat.startForegroundService(this, cueDesServiceIntent)
-    }
 }
 

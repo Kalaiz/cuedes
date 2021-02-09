@@ -24,7 +24,7 @@ Note: I am still working on this personal project.
 ### 🛠️ Tools Used:
  - ViewBinding, LiveData, DataStore, Room, ViewModel, FragmentStateAdapter, Foreground and Bound Service, Property Animation Framework
  - Views: Motion, Constraint, Linear and Frame Layouts, ~~Spinner~~, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompat, OnBoardSupportFragment
-  - Google Maps SDK
+  - Google Maps SDK (FusedLocationProvider API, Geofencing API)
   - Kotlin: Scope functions, Flow, Co-routines
 
 

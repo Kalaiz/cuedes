@@ -316,7 +316,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     private fun setSelectionMode(){
         /* binding.searchView.clearFocus()*/
         childFragmentManager.commit {
-            add(R.id.fragment_selection, SelectionFragment(repository),SelectionFragment.TAG) }
+            add(R.id.fragment_selection, SelectionFragment(),SelectionFragment.TAG) }
         binding.motionLayoutContainer.transitionToEnd()
         if(binding.root.currentState == binding.root.startState)
             binding.root.transitionToEnd()
@@ -420,8 +420,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                 binding.root.removeTransitionListener(this)}
         })
         binding.root.transitionToEnd()
-
-
     }
 
     private fun setLocation(latLng: LatLng){

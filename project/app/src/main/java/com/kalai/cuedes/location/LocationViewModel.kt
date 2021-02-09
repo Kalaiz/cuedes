@@ -14,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.getCameraUpdateBounds
 import com.kalai.cuedes.location.Status.*
@@ -64,8 +65,6 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
     private lateinit var alarms:List<Alarm>
 
-
-
     private val numOfActiveAlarm:Int  get(){
         return if (::alarms.isInitialized) alarms.filter { alarm -> alarm.isActivated  }.count() else 0}
 
@@ -88,7 +87,6 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
                         Log.d(TAG,"Current LngLat is  ${it.longitude} ${it.latitude}")
                         fusedLocationClient.removeLocationUpdates(this)
                     }
-
                 }
             }
         }

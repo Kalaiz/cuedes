@@ -11,18 +11,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.slider.Slider
-import com.kalai.cuedes.data.Alarm
-import com.kalai.cuedes.data.AlarmRepository
 import com.kalai.cuedes.databinding.FragmentSelectionBinding
 import com.kalai.cuedes.location.LocationViewModel
-import com.kalai.cuedes.location.selection.SelectionViewModel.SelectionViewModelFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
-class SelectionFragment(private val repository: AlarmRepository) : DialogFragment() {
+class SelectionFragment() : DialogFragment() {
 
 
     companion object {
@@ -33,19 +27,16 @@ class SelectionFragment(private val repository: AlarmRepository) : DialogFragmen
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     private lateinit var binding: FragmentSelectionBinding
     private val locationViewModel: LocationViewModel by viewModels({requireParentFragment()})
-    private val selectionViewModel: SelectionViewModel by viewModels {
-        SelectionViewModelFactory(repository) }
+    private val selectionViewModel: SelectionViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSelectionBinding.inflate(inflater, container, false)
 
-        selectionViewModel.selectedRadius.observe(viewLifecycleOwner, Observer {radius->
-            binding.radiusTextView.text = radius.toInt().toString()
-            binding.radiusSlider.value = radius.toFloat()})
+
 
         binding.addImageButton.setOnClickListener {
             selectionViewModel.selectedRadius.value?.let { radius ->
@@ -80,6 +71,10 @@ class SelectionFragment(private val repository: AlarmRepository) : DialogFragmen
         super.onViewCreated(view, savedInstanceState)
         Log.d(TAG,"onViewCreated")
 
+        selectionViewModel.selectedRadius.observe(viewLifecycleOwner, Observer {radius->
+            binding.radiusTextView.text = radius.toInt().toString()
+            binding.radiusSlider.value = radius.toFloat()})
+
         locationViewModel.selectedRadius.observe(viewLifecycleOwner,object :Observer< Int?> {
             override fun onChanged(radius: Int?) {
                 Log.d(TAG,"Updating selectedRadius to $radius")
@@ -103,25 +98,15 @@ class SelectionFragment(private val repository: AlarmRepository) : DialogFragmen
         })
 
         binding.cancelButton.setOnClickListener {
-            endSelection(false)
-        }
+            endSelection(false) }
 
         binding.startButton.setOnClickListener {
+        selectionViewModel.postSelection() }
 
-           val job =  lifecycleScope.launch(Dispatchers.IO) {
-               val name = "alarm"+repository.getCount()
-               val latLng = selectionViewModel.selectedLocation.value
-               val radius = selectionViewModel.selectedRadius.value
-               if(latLng!=null && radius!=null) {
-                   val latitude = latLng.latitude
-                   val longitude = latLng.longitude
-                   repository.insert(Alarm(name,latitude,longitude,radius))
-               }}
-            job.invokeOnCompletion {
-                lifecycleScope.launch {
-                endSelection(true)}
-            }
-        }
+        selectionViewModel.isAlarmSet.observe(this, Observer {
+                isAlarmSet->
+            isAlarmSet?.let { endSelection(it) }
+        })
     }
 
     override fun onDestroy() {

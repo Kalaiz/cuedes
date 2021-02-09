@@ -6,9 +6,11 @@ class AlarmRepository(private val alarmDao: AlarmDao) {
 
     val alarms:Flow<List<Alarm>> = alarmDao.getAll()
 
-
     fun insert(alarm:Alarm) {
-        alarmDao.insertAll(alarm)}
+        alarmDao.insertAll(alarm)
+
+
+    }
 
 
     fun getCount() =  alarmDao.count()
