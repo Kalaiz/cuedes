@@ -1,6 +1,7 @@
 package com.kalai.cuedes
 
 import android.animation.ObjectAnimator
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.libraries.places.api.Places
@@ -30,11 +32,16 @@ class MainActivity : AppCompatActivity() {
     companion object{
         private const val TAG =  "MainActivity" }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
+
+            with(NotificationManagerCompat.from(this)) {
+                cancelAll()
+
+        }
         viewPager = binding.viewPager
         bottomNavigationView = binding.bottomNavigationView
         mainPagerAdapter = MainPagerAdapter(this, bottomNavigationView.menu.size())

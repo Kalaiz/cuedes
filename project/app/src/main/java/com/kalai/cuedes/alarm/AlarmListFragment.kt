@@ -29,7 +29,7 @@ class AlarmListFragment : Fragment() {
     private lateinit var alarmRecyclerView: RecyclerView
     private lateinit var adapter: ListAdapter<Alarm,AlarmListAdapter.ViewHolder>
     private val repository by lazy { (activity?.application as CueDesApplication).repository }
-  /*  private lateinit var onBackPressedCallback: OnBackPressedCallback*/
+
 
     private val recycleListener = RecyclerView.RecyclerListener { holder ->
         val mapHolder = holder as AlarmListAdapter.ViewHolder
@@ -40,7 +40,7 @@ class AlarmListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAlarmListBinding.inflate(inflater)
 
         context?.let { adapter = AlarmListAdapter(it) }

@@ -22,7 +22,8 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
         tools:targetApi="n">
-        <receiver android:name=".GeofenceBroadcastReceiver"/>
+        <receiver android:name=".GeofenceBroadcastReceiver"
+            android:enabled="true" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

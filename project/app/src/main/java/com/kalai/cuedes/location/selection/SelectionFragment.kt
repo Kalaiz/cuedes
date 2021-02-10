@@ -82,9 +82,7 @@ class SelectionFragment() : DialogFragment() {
                     selectionViewModel.setRadius(radius)
                     locationViewModel.selectedRadius.removeObserver(this)
                 }
-            }
-        }
-        )
+            } })
 
         locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer {
                 updatedLatLng-> updatedLatLng?.let{selectionViewModel.setLatLng(it)}
@@ -124,7 +122,6 @@ class SelectionFragment() : DialogFragment() {
                 endSelection(false)
             }
         }
-
         requireActivity().onBackPressedDispatcher.addCallback(
             this,
             onBackPressedCallback

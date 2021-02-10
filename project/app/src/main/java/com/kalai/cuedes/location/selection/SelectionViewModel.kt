@@ -50,7 +50,7 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
 
     private val geofencePendingIntent: PendingIntent by lazy {
         val intent = Intent(getApplication(), GeofenceBroadcastReceiver::class.java)
-        PendingIntent.getBroadcast(getApplication(), 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        PendingIntent.getBroadcast(getApplication(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
 

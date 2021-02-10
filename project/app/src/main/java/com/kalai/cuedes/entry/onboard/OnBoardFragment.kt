@@ -10,8 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.preferencesKey
+
 import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.activityViewModels
 import androidx.leanback.app.OnboardingSupportFragment
@@ -175,7 +176,7 @@ class OnBoardFragment :OnboardingSupportFragment()  {
 
     private suspend fun setOnBoardCompleted(){
         val dataStore = context?.createDataStore("settings")
-        val isOnBoardingKey = preferencesKey<Boolean>("isOnBoard")
+        val isOnBoardingKey = booleanPreferencesKey("isOnBoard")
         dataStore?.edit { settings->
             settings[isOnBoardingKey]= false
         }

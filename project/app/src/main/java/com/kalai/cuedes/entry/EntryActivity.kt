@@ -3,7 +3,7 @@ package com.kalai.cuedes.entry
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.createDataStore
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
@@ -28,7 +28,7 @@ class EntryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val dataStore = applicationContext?.createDataStore("settings")
-        val isOnBoardingKey = preferencesKey<Boolean>("isOnBoard")
+        val isOnBoardingKey = booleanPreferencesKey("isOnBoard")
         val isOnBoardFlow = dataStore?.data?.map { preferences -> preferences[isOnBoardingKey] ?: true }
         lifecycleScope.launch {
             if(isOnBoard(isOnBoardFlow)){
