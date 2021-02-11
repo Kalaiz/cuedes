@@ -36,8 +36,8 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
 
 
     private val repository by lazy { (getApplication<Application>() as CueDesApplication).repository }
-
     private val geofencingClient by lazy { (getApplication<Application>() as CueDesApplication).geofencingClient }
+
     private var _selectedRadius = MutableLiveData<Int>()
     val selectedRadius: LiveData<Int> = _selectedRadius
 

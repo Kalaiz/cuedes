@@ -1,9 +1,6 @@
 package com.kalai.cuedes.data
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 
@@ -17,6 +14,8 @@ interface AlarmDao {
     @Insert
     fun insertAll(vararg alarms:Alarm)
 
+    @Query("UPDATE Alarm SET IsActivated = :isActivated  WHERE name = :alarmName")
+    fun updateIsActivated(alarmName:String,isActivated:Boolean)
 
     @Delete
     fun delete(alarm:Alarm)

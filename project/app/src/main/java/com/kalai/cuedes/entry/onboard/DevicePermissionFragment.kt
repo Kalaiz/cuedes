@@ -3,6 +3,7 @@ package com.kalai.cuedes.entry.onboard
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -24,11 +25,15 @@ import com.kalai.cuedes.show
 
 class DevicePermissionFragment : Fragment() {
 
-    companion object{
-        private val PERMISSION_CODES = arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION)
+
+
+    private val permissionCode = listOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION).apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            plusElement(Manifest.permission.ACCESS_BACKGROUND_LOCATION) }
     }
+
 
     private lateinit var binding:FragmentOnboardDevicePermissionBinding
     private lateinit var  requestPermission: ActivityResultLauncher<Array<(String)>>
@@ -45,7 +50,7 @@ class DevicePermissionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentOnboardDevicePermissionBinding.inflate(inflater,container,false)
         binding.devicePermissionButton.setOnClickListener { getDevicePermissions() }
         return binding.root
@@ -68,7 +73,7 @@ class DevicePermissionFragment : Fragment() {
             if(activityResult.values.any{it==false}){
                 activity?.findViewById<View>(android.R.id.content)?.let {
                     val snackBar = Snackbar.make(it, getString(R.string.onboard_permission_msg), Snackbar.LENGTH_SHORT)
-                    if(!PERMISSION_CODES.fold(true,{ acc, permissionCode-> acc && shouldShowRequestPermissionRationale(permissionCode)})) {
+                    if(!permissionCode.fold(true,{ acc, permissionCode-> acc && shouldShowRequestPermissionRationale(permissionCode)})) {
                         snackBar.addCallback(deviceSnackBarCallback)
                         snackBar.show()
                     }
@@ -77,11 +82,11 @@ class DevicePermissionFragment : Fragment() {
         }
 
 
+
     }
 
     private fun permissionUpdate(){
-
-        if (context.isDevicePermissionGranted(PERMISSION_CODES)) {
+        if (context.isDevicePermissionGranted(permissionCode)) {
             binding.devicePermissionButton.hide()
             binding.okImageView.show()
             if(viewModel.isPageNavigationViewable.value?.get(DEVICE_PERMISSION) != true)
@@ -91,15 +96,14 @@ class DevicePermissionFragment : Fragment() {
             binding.devicePermissionButton.show()
             if(viewModel.isPageNavigationViewable.value?.get(DEVICE_PERMISSION) != false)
                 viewModel.updateIsPageNavigationViewable(DEVICE_PERMISSION,false)
-
         }
 
     }
 
     private fun getDevicePermissions(){
         /*Getting  Relevant Permissions*/
-        if(!context.isDevicePermissionGranted(PERMISSION_CODES)){
-            requestPermission.launch(PERMISSION_CODES)
+        if(!context.isDevicePermissionGranted(permissionCode)){
+            requestPermission.launch(permissionCode.toTypedArray())
         }
     }
 

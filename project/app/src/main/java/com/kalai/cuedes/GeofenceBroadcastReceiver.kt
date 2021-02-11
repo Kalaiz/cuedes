@@ -9,7 +9,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.location.GeofencingEvent
 import com.kalai.cuedes.CueDesApplication.Companion.CHANNEL_ID
-import com.kalai.cuedes.entry.EntryActivity
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
@@ -19,11 +20,13 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     private var notificationID:Int =0
 
+    private lateinit var cueDesApplication: CueDesApplication
 
     override fun onReceive(context: Context, intent: Intent) {
         val geofencingEvent = GeofencingEvent.fromIntent(intent)
         Log.d(TAG,"Recived something ${geofencingEvent.triggeringLocation}" )
 
+        cueDesApplication = (context.applicationContext as CueDesApplication)
         val appIntent = Intent(context, MainActivity::class.java).apply {
             notificationID = System.currentTimeMillis().toInt()
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -32,7 +35,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         }
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, appIntent, 0)
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_alarm)
                 .setContentTitle("You are about to reach your destination.")
                 .setContentText("Press off to clear notification.")
@@ -42,9 +45,19 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                         pendingIntent)
 
         with(NotificationManagerCompat.from(context)) {
-            notify(notificationID, builder.build())
+            notify(notificationID, notificationBuilder.build())
         }
-        val triggeringGeofences = geofencingEvent.triggeringGeofences.map { it.requestId }
-        (context.applicationContext as CueDesApplication).geofencingClient.removeGeofences(triggeringGeofences)
+
+
+        val triggeringGeofences = geofencingEvent.triggeringGeofences.map {
+            GlobalScope.launch {
+            cueDesApplication.repository.updateIsActivated(it.requestId,false) }
+            it.requestId
+        }
+
+        Log.d(TAG,"Triggering Geofences $triggeringGeofences")
+        cueDesApplication.geofencingClient.removeGeofences(triggeringGeofences)
+
+
     }
 }

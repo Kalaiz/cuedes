@@ -72,6 +72,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
 
 
     private val repository by lazy { (activity?.application as CueDesApplication).repository }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

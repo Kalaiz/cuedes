@@ -38,7 +38,7 @@ fun View.show(){
     }
 }
 
-fun Context?.isDevicePermissionGranted(permissionCodes: Array<String>):Boolean = if(this!=null)(permissionCodes.fold(true,
+fun Context?.isDevicePermissionGranted(permissionCodes: List<String>):Boolean = if(this!=null)(permissionCodes.fold(true,
     { acc, it ->
         acc && ActivityCompat.checkSelfPermission(
             this,

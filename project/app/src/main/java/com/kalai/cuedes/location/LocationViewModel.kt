@@ -65,13 +65,10 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
     private lateinit var alarms:List<Alarm>
 
-    private val numOfActiveAlarm:Int  get(){
-        return if (::alarms.isInitialized) alarms.filter { alarm -> alarm.isActivated  }.count() else 0}
+    private val numOfActiveAlarm:Int  get()= if (::alarms.isInitialized) alarms.filter { alarm -> alarm.isActivated  }.count() else 0
 
-    val alarmStatusText:String get(){
-        val numberOfActiveAlarm = numOfActiveAlarm
-        return "$numberOfActiveAlarm active alarm${if(numberOfActiveAlarm>1) "s" else ""}"
-    }
+    val alarmStatusText:String get()="$numOfActiveAlarm active alarm${if(numOfActiveAlarm>1) "s" else ""}"
+
 
     fun requestLocation(){
         Log.d(TAG,"requesting Location")
@@ -171,9 +168,10 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun updateAlarms(alarms: List<Alarm>) {
+        Log.d(TAG,"Updating alarms")
         this.alarms = alarms
-        val numberOfActiveAlarm = numOfActiveAlarm
-        _isAlarmActive.value = numberOfActiveAlarm > 0
+        Log.d(TAG,"number of active alarms $numOfActiveAlarm $alarms")
+        _isAlarmActive.value = numOfActiveAlarm > 0
 
     }
 
