@@ -5,22 +5,27 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Switch
-import  androidx.recyclerview.widget.ListAdapter
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.R
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.getCameraUpdateBounds
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class AlarmListAdapter (private val context:Context):
-    ListAdapter<Alarm,AlarmListAdapter.ViewHolder>(AlarmListDiffCallback()){
+class AlarmListAdapter ():
+        ListAdapter<Alarm,AlarmListAdapter.ViewHolder>(AlarmListDiffCallback()){
 
     companion object{
         const val TAG = "MainAdapter"
@@ -28,14 +33,14 @@ class AlarmListAdapter (private val context:Context):
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_alarm_list,parent,false))
+                .inflate(R.layout.item_alarm_list,parent,false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindView(position)
     }
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),OnMapReadyCallback{
+    inner class ViewHolder(var view: View) : RecyclerView.ViewHolder(view),OnMapReadyCallback{
         private val alarmNameTextView: TextView = view.findViewById(R.id.alarm_identifier_text_view)
         private val mapView: MapView = view.findViewById(R.id.map_view)
         private val radiusTextView:TextView = view.findViewById(R.id.radius_text_view)
@@ -44,7 +49,20 @@ class AlarmListAdapter (private val context:Context):
         private lateinit var latLng: LatLng
         private var radius = 0.0
         private var isActivated = false
+        private var isMapLoaded = false
+        private  val color get() =
+                if (isActivated)
+                    view.context.getColor(R.color.radius_alarm_active)
+                else
+                    view.context.getColor(R.color.radius_alarm_inactive)
 
+        private val circleOptions get() = CircleOptions()
+                .radius(this@ViewHolder.radius)
+                .center(latLng)
+                .fillColor(color)
+                .strokeColor(Color.TRANSPARENT)
+
+        lateinit var circle: Circle
         init{
             with(mapView) {
                 onCreate(null)
@@ -54,6 +72,7 @@ class AlarmListAdapter (private val context:Context):
         }
 
         fun bindView(position: Int){
+            Timber.d("BindingView at $position")
             getItem(position).run{
                 alarmNameTextView.text= name
                 this@ViewHolder.latLng = LatLng(latitude, longitude)
@@ -65,54 +84,70 @@ class AlarmListAdapter (private val context:Context):
                         alarmSwitch.toggle()
                     }
                 }
-               else{
+                else{
                     if(isActivated)
                         alarmSwitch.toggle()
                 }
-                setMapLocation()
+                setMapLocation(view.context)
             }
+            alarmSwitch.setOnCheckedChangeListener { _, isChecked ->
+                /*TODO will move to viewmodel later*/
+                isActivated = isChecked
+                updateIsActivated(isChecked)
+            }
+        }
+
+        private fun updateIsActivated(isActivated:Boolean) {
+            CoroutineScope(Dispatchers.IO).launch{
+            ( view.context.applicationContext as CueDesApplication).repository.updateIsActivated(alarmNameTextView.text.toString(),isActivated)
+            }
+            CoroutineScope(Dispatchers.Main).launch { circle.fillColor = color}
+
         }
 
         fun clearView() {
             with(map) {
                 /* Clear the map and free up resources by changing the map type to none*/
+                Timber.d("Clearing ${alarmNameTextView.text}")
                 clear()
                 mapType = GoogleMap.MAP_TYPE_NONE
             }
         }
 
-        private fun setMapLocation() {
+        private fun setMapLocation(context: Context) {
             if (::map.isInitialized) {
                 with(map) {
                     addMarker(MarkerOptions().position(latLng))
                     mapType = GoogleMap.MAP_TYPE_NORMAL
                 }
-                val color =
-                    if (isActivated) context.getColor(R.color.radius_alarm_active) else context.getColor(
-                        R.color.radius_alarm_inactive
-                    )
-                val circleOptions = CircleOptions()
-                    .radius(this@ViewHolder.radius)
-                    .center(latLng)
-                    .fillColor(color)
-                    .strokeColor(Color.TRANSPARENT)
 
-                val circle = map.addCircle(circleOptions)
+
+               circle = map.addCircle(circleOptions)
                 val cameraUpdate = getCameraUpdateBounds(circle, 100)
-                map.moveCamera(cameraUpdate)
+              CoroutineScope(Dispatchers.Main).launch {
+                    map.moveCamera(cameraUpdate)
+                }
+
+                map.setOnMapLoadedCallback { Timber.d("Map loaded ${alarmNameTextView.text}") }
+
+
             }
-            else{}
         }
 
 
 
         override fun onMapReady(googleMap: GoogleMap?) {
-            MapsInitializer.initialize(context)
+            MapsInitializer.initialize(view.context)
             /*If map is not initialised properly*/
-            map = googleMap ?: return
-            setMapLocation()
+            mapView.getMapAsync {
+                loadedGoogleMap ->
+                Timber.d("Map loadeded")
+                map = loadedGoogleMap
+                setMapLocation(view.context)
+            }
         }
     }
+
 
 
     class AlarmListDiffCallback: DiffUtil.ItemCallback<Alarm>() {

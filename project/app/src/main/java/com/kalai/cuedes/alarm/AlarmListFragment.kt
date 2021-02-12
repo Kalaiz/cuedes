@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 
 class AlarmListFragment : Fragment() {
-/*TODO Handle onBackPressed; Maybe something like onbackpress send to  home fragment*/
+    /*TODO Handle onBackPressed; Maybe something like onbackpress send to  home fragment*/
     companion object {
         private const val TAG = "AlarmListFragment"
     }
@@ -38,21 +38,21 @@ class AlarmListFragment : Fragment() {
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = FragmentAlarmListBinding.inflate(inflater)
-
-        context?.let { adapter = AlarmListAdapter(it) }
+        adapter = AlarmListAdapter()
         alarmRecyclerView = binding.recyclerView.apply {
             adapter = this@AlarmListFragment.adapter
             addRecyclerListener(recycleListener)
         }
 
+
         lifecycleScope.launch {
             repository.alarms.collect { data ->
                 adapter.submitList(data)
-         }
+            }
         }
 
         return binding.root

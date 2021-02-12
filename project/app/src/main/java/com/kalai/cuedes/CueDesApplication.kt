@@ -1,46 +1,41 @@
 package com.kalai.cuedes
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Looper
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.LocationServices
 import com.kalai.cuedes.data.AlarmDatabase
 import com.kalai.cuedes.data.AlarmRepository
-import com.kalai.cuedes.location.LocationFragment
-import com.kalai.cuedes.location.LocationViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import timber.log.Timber.Tree
+import timber.log.Timber.DebugTree
 
 class CueDesApplication: Application() {
 
     companion object{
-        const val CHANNEL_ID = "0"
+        const val CHANNEL_ID = "562104"
     }
 
 
-    private val fusedLocationClient: FusedLocationProviderClient by lazy {  LocationServices.getFusedLocationProviderClient(this) }
     private val database by lazy {  AlarmDatabase.getDatabase(this)  }
     val repository by lazy { AlarmRepository(database.alarmDao()) }
     val geofencingClient: GeofencingClient by lazy {  LocationServices.getGeofencingClient(this) }
     private val cueDesServiceIntent  by lazy {  Intent(this,CueDesService::class.java) }
 
+    private val fusedLocationClient: FusedLocationProviderClient  by lazy { LocationServices.getFusedLocationProviderClient(this) }
+
 
     @SuppressLint("MissingPermission")
     override fun onCreate() {
         super.onCreate()
-        Timber.plant()
+        Timber.plant(DebugTree())
         createNotificationChannel()
         GlobalScope.launch {
             repository.alarms.collect { alarms ->
@@ -51,6 +46,7 @@ class CueDesApplication: Application() {
                     stopService(cueDesServiceIntent)
             }
         }
+
     }
 
 
@@ -59,12 +55,14 @@ class CueDesApplication: Application() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Timber.d("Notification channel created")
             val name = getString(R.string.app_name)
             val descriptionText = getString(R.string.channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
 
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
+
             }
 
             val notificationManager: NotificationManager =

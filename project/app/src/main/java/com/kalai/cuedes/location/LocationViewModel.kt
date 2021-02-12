@@ -2,6 +2,7 @@ package com.kalai.cuedes.location
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.graphics.Color
 import android.location.Location
 import android.os.Looper
 import android.util.Log
@@ -12,9 +13,10 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.kalai.cuedes.CueDesApplication
+import com.kalai.cuedes.R
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.getCameraUpdateBounds
 import com.kalai.cuedes.location.Status.*
@@ -63,9 +65,14 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _isAlarmActive = MutableLiveData<Boolean?>()
     val isAlarmActive:LiveData<Boolean?> get() = _isAlarmActive
 
-    private lateinit var alarms:List<Alarm>
+    private val _needUpdateCircles = MutableLiveData<List<CircleOptions>>()
+    val needUpdateCircles:LiveData<List<CircleOptions>> get() = _needUpdateCircles
 
-    private val numOfActiveAlarm:Int  get()= if (::alarms.isInitialized) alarms.filter { alarm -> alarm.isActivated  }.count() else 0
+
+
+    private  var alarms = listOf<Alarm>()
+
+    private val numOfActiveAlarm:Int  get()=  alarms.filter { alarm -> alarm.isActivated  }.count()
 
     val alarmStatusText:String get()="$numOfActiveAlarm active alarm${if(numOfActiveAlarm>1) "s" else ""}"
 
@@ -110,6 +117,8 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
                 CameraMovement(cameraUpdate, animated,duration)
         }
     }
+
+
 
     fun setupCurrentLocation(){
         currentLocationCameraMovement(false)
@@ -169,13 +178,35 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
     fun updateAlarms(alarms: List<Alarm>) {
         Log.d(TAG,"Updating alarms")
+        updateCircles(alarms.subtract(this.alarms))
         this.alarms = alarms
         Log.d(TAG,"number of active alarms $numOfActiveAlarm $alarms")
         _isAlarmActive.value = numOfActiveAlarm > 0
 
+
     }
 
 
+    private fun updateCircles(alarms: Set<Alarm>) {
+        val needUpdateCircles = mutableListOf<CircleOptions>()
+        alarms.forEach { alarm ->
+            with(alarm) {
+            val color = if (isActivated)
+                getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_active)
+            else
+                getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_inactive)
+
+                needUpdateCircles.add(CircleOptions()
+                        .radius(radius.toDouble())
+                        .center(LatLng(latitude,longitude))
+                        .strokeColor(Color.TRANSPARENT)
+                        .fillColor(color)
+                )
+            }
+            _needUpdateCircles.value = needUpdateCircles
+
+         }
+    }
 
 
 }

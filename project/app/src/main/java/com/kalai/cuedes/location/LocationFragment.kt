@@ -54,6 +54,10 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             interval = 5000}
         val locationRequestBalanced = LocationRequest().apply { fastestInterval = 60*1000
             interval = 60*1000*60}
+        val locationRequestFastLowAccuracy = LocationRequest().apply { priority=LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+            fastestInterval = 1000
+            interval=2000
+        }
         const val REQ_KEY= "LocationFragmentReqKey"
     }
 
@@ -86,7 +90,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         searchActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             Log.d(TAG, result.toString())
             when(result.resultCode){
@@ -104,6 +107,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             statusViewActiveColorStateList = ColorStateList.valueOf(getColor(it,R.color.status_view_active))
             statusViewInActiveColorStateList = ColorStateList.valueOf(getColor(it,R.color.status_view_inactive))
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -235,6 +239,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                 binding.statusView.backgroundTintList = if(isActive== true)statusViewActiveColorStateList else statusViewInActiveColorStateList
             }
         })
+
+
     }
 
 
@@ -263,6 +269,12 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     override fun onMapReady(googleMap: GoogleMap?) {
         Log.d(TAG,"onMapReady called")
         if (googleMap != null) {
+            /*TODO need to actually update just the color of the circle when isactivated toggled*/
+            locationViewModel.needUpdateCircles.observe(viewLifecycleOwner, Observer {
+                    circleOptions-> circleOptions.forEach {googleMap.addCircle(it)
+                googleMap.addMarker(MarkerOptions().position(it.center))}
+
+            })
             this.googleMap = googleMap
             locationViewModel.mapReady()
             locationViewModel.requestLocation()
@@ -348,6 +360,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     override fun onMapLoaded() {
         Log.d(TAG,"Map loaded")
         locationViewModel.mapLoaded()
+
+
     }
 
     private fun removeMarkerRadius(){

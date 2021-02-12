@@ -9,7 +9,7 @@ import com.kalai.cuedes.R
 
 
 
-
+/*TODO need to migrate to Jetpack navigation*/
 class IntroFragment : Fragment() {
 
     override fun onCreateView(

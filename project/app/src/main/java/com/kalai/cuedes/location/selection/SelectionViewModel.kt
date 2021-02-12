@@ -37,7 +37,6 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
 
     private val repository by lazy { (getApplication<Application>() as CueDesApplication).repository }
     private val geofencingClient by lazy { (getApplication<Application>() as CueDesApplication).geofencingClient }
-
     private var _selectedRadius = MutableLiveData<Int>()
     val selectedRadius: LiveData<Int> = _selectedRadius
 
@@ -48,9 +47,9 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
     private val _isAlarmSet = MutableLiveData<Boolean?>()
     val isAlarmSet: LiveData<Boolean?> = _isAlarmSet
 
-    private val geofencePendingIntent: PendingIntent by lazy {
+    private val geofencePendingIntent: PendingIntent get() {
         val intent = Intent(getApplication(), GeofenceBroadcastReceiver::class.java)
-        PendingIntent.getBroadcast(getApplication(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return  PendingIntent.getBroadcast(getApplication(), System.currentTimeMillis().toInt(), intent, PendingIntent.FLAG_ONE_SHOT)
     }
 
 
@@ -84,11 +83,12 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
                 .setRequestId(name)
                 .setCircularRegion(latitude,longitude,radius)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
                 .build()
             val geofencingRequest = GeofencingRequest.Builder()
                 .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                .addGeofence(geofence).build()
+                .addGeofence(geofence)
+                .build()
 
             geofencingClient.addGeofences(geofencingRequest,geofencePendingIntent)?.run {
                 addOnSuccessListener {

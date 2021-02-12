@@ -29,7 +29,11 @@
 
 - Learned that `Button` has a default margin. Tried to override it using this [solution](https://stackoverflow.com/a/43298421/11200630) which overrides the default background. However, the button's drawable's size [cannot](https://stackoverflow.com/questions/32656837/changing-the-drawable-size-inside-a-button) be changed.I eventually made my own button using a LinearLayout.
 
-- I was searching for various Place autocompletion APIs, however most of them were limited and were not free. I am planning to use wikipedi API to search for locations. -- TODO
+- I was searching for various Place autocompletion APIs, however most of them were limited and were not free. I am planning to use wikipedia API to search for locations. -- TODO
+
+
+-  Polling location periodically  and expanded "configuration" of geofencing request since sometimes geofencing fails to trigger.
+
 
 ### What I could have done better/will be doing
 
