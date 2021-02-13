@@ -17,10 +17,7 @@ import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.GeofenceBroadcastReceiver
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.location.DistanceUnit
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -35,8 +32,6 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
     private val selectedLocation: LiveData<LatLng> = _selectedLocation
 
 
-    private val repository by lazy { (getApplication<Application>() as CueDesApplication).repository }
-    private val geofencingClient by lazy { (getApplication<Application>() as CueDesApplication).geofencingClient }
     private var _selectedRadius = MutableLiveData<Int>()
     val selectedRadius: LiveData<Int> = _selectedRadius
 
@@ -44,66 +39,30 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
     private val _selectedDistanceUnit = MutableLiveData<DistanceUnit>()
     val selectedDistanceUnit: LiveData<DistanceUnit> = _selectedDistanceUnit
 
-    private val _isAlarmSet = MutableLiveData<Boolean?>()
-    val isAlarmSet: LiveData<Boolean?> = _isAlarmSet
+    private val _alarmSet = MutableLiveData<Alarm?>()
+    val alarmSet: LiveData<Alarm?> = _alarmSet
 
-    private val geofencePendingIntent: PendingIntent get() {
-        val intent = Intent(getApplication(), GeofenceBroadcastReceiver::class.java)
-        return  PendingIntent.getBroadcast(getApplication(), System.currentTimeMillis().toInt(), intent, PendingIntent.FLAG_ONE_SHOT)
-    }
+    private val cueDesApplication by lazy { getApplication<Application>() as CueDesApplication }
+
 
 
     fun postSelection(){
         viewModelScope.launch{
-            val name = async {
+            val alarm:Deferred<Alarm?> = async {
                 withContext(Dispatchers.IO){
-                    insertIntoRepository() }
+                    val latLng = selectedLocation.value
+                    val radius = _selectedRadius.value
+                    if(latLng!=null && radius!=null )
+                        cueDesApplication.insertIntoRepository(latLng, radius)
+                    else
+                        null
+                }
             }
-            _isAlarmSet.value =setAlarm(name.await())
-
+            _alarmSet.value = cueDesApplication.setAlarm(alarm.await())
         }
     }
 
 
-    private fun insertIntoRepository():String{
-        val name = "alarm"+repository.getCount()
-        val latLng = selectedLocation.value
-        val radius = selectedRadius.value
-        if(latLng!=null && radius!=null) {
-            val latitude = latLng.latitude
-            val longitude = latLng.longitude
-            repository.insert(Alarm(name,latitude,longitude,radius))}
-        return  name
-    }
-
-    private suspend fun setAlarm(name:String) :Boolean = suspendCoroutine { cont->
-        _selectedLocation.value?.run{
-            val radius:Float = selectedRadius.value?.toFloat() ?:0f
-            val geofence =  Geofence.Builder()
-                .setRequestId(name)
-                .setCircularRegion(latitude,longitude,radius)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build()
-            val geofencingRequest = GeofencingRequest.Builder()
-                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                .addGeofence(geofence)
-                .build()
-
-            geofencingClient.addGeofences(geofencingRequest,geofencePendingIntent)?.run {
-                addOnSuccessListener {
-                    cont.resume(true)
-                    Log.d(TAG,"Alarm set successfully")
-                }
-                addOnFailureListener {
-                    cont.resume(false)
-                    Log.d(TAG,"Alarm not set successfully")
-                }
-            }
-        }
-
-
-    }
 
     fun setLatLng(latLng: LatLng) {
         _selectedLocation.value = latLng

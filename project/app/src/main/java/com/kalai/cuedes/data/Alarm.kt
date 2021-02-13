@@ -10,5 +10,6 @@ data class Alarm(@PrimaryKey var name:String,
                  @ColumnInfo(name="Latitude") var latitude:Double,
                  @ColumnInfo(name = "Longitude") var longitude:Double,
                  @ColumnInfo(name = "Radius")var radius:Int,
-                 @ColumnInfo(name ="IsActivated") var isActivated:Boolean = true)
+                 @ColumnInfo(name ="IsActivated") var isActivated:Boolean = true){
+}
 

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.location.Location
 import android.os.Looper
 import android.util.Log
+import android.util.TimeFormatException
 import androidx.lifecycle.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationAvailability
@@ -20,6 +21,7 @@ import com.kalai.cuedes.R
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.getCameraUpdateBounds
 import com.kalai.cuedes.location.Status.*
+import timber.log.Timber
 
 
 @SuppressLint("MissingPermission")
@@ -32,6 +34,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         const val DEFAULT_RADIUS = 500
     }
 
+    private var recentlyAddedAlarm: Alarm? = null
 
 
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
@@ -65,10 +68,10 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private val _isAlarmActive = MutableLiveData<Boolean?>()
     val isAlarmActive:LiveData<Boolean?> get() = _isAlarmActive
 
-    private val _needUpdateCircles = MutableLiveData<List<CircleOptions>>()
-    val needUpdateCircles:LiveData<List<CircleOptions>> get() = _needUpdateCircles
+    private val _needUpdateCircles = MutableLiveData<HashMap<Alarm,CircleOptions>>()
+    val needUpdateCircles:LiveData<HashMap<Alarm,CircleOptions>> get() = _needUpdateCircles
 
-
+    private val alarmCircleMap = hashMapOf<Alarm,Circle?>()
 
     private  var alarms = listOf<Alarm>()
 
@@ -114,7 +117,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
             val latLng = LatLng(latitude,longitude)
             val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM)
             _cameraMovement.value =
-                CameraMovement(cameraUpdate, animated,duration)
+                    CameraMovement(cameraUpdate, animated,duration)
         }
     }
 
@@ -149,6 +152,11 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
             _status.value = status
     }
 
+
+    fun addAlarmCircle(alarmCircle:Pair<Alarm,Circle>){
+        alarmCircleMap[alarmCircle.first] = alarmCircle.second
+    }
+
     fun setSelectedLocation(marker: Marker?) {
         Log.d(TAG,"setSelectedLocation")
         val status = _status.value
@@ -172,40 +180,77 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-   fun fitContent(circle: Circle){
+    fun fitContent(circle: Circle){
         _cameraMovement.value = CameraMovement(getCameraUpdateBounds(circle,100),true,300)
+    }
+
+    fun addAlarm(alarm:Alarm){
+        alarmCircleMap[alarm]=null
+        recentlyAddedAlarm = alarm
     }
 
     fun updateAlarms(alarms: List<Alarm>) {
         Log.d(TAG,"Updating alarms")
-        updateCircles(alarms.subtract(this.alarms))
+        addCircles(alarms.subtract(this.alarms))
+        removeCircles(this.alarms.subtract(alarms))
+
         this.alarms = alarms
         Log.d(TAG,"number of active alarms $numOfActiveAlarm $alarms")
         _isAlarmActive.value = numOfActiveAlarm > 0
+    }
 
+    private fun removeCircles(alarms: Set<Alarm>) {
+        Timber.d("Removing Circles $alarms")
+        alarms.forEach {
 
+            alarmCircleMap[it]?.remove()
+            alarmCircleMap.remove(it) }
     }
 
 
-    private fun updateCircles(alarms: Set<Alarm>) {
-        val needUpdateCircles = mutableListOf<CircleOptions>()
-        alarms.forEach { alarm ->
-            with(alarm) {
-            val color = if (isActivated)
-                getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_active)
-            else
-                getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_inactive)
+    private fun addCircles(alarms: Set<Alarm>) {
+        val needUpdateCircles = hashMapOf<Alarm,CircleOptions>()
+        val refinedAlarmCircles = updateIsActivatedCircles(alarms)
 
-                needUpdateCircles.add(CircleOptions()
+        refinedAlarmCircles.forEach { alarm ->
+            with(alarm) {
+                val color = if (isActivated)
+                    getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_active)
+                else
+                    getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_inactive)
+
+                needUpdateCircles[alarm]=CircleOptions()
                         .radius(radius.toDouble())
                         .center(LatLng(latitude,longitude))
                         .strokeColor(Color.TRANSPARENT)
                         .fillColor(color)
-                )
             }
-            _needUpdateCircles.value = needUpdateCircles
 
-         }
+            /*This will be drawn by UI later*/
+            alarmCircleMap[alarm] = null
+            _needUpdateCircles.value = needUpdateCircles
+        }
+    }
+
+    private fun circleColour(isActivated:Boolean):Int=
+            if(isActivated) getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_active)
+            else getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_inactive)
+
+    private fun updateIsActivatedCircles(alarms: Set<Alarm>):List<Alarm> {
+        val refinedAlarms = mutableSetOf<Alarm>()
+        alarms.groupBy {it.name}
+                .filter {entry -> entry.value.size>1 }
+                .forEach{(name,alarms)->
+                    val alarm = alarmCircleMap.keys.filter { alarm -> alarm.name == name }[0]
+                    refinedAlarms.add(alarm)
+                    alarmCircleMap[alarm]?.fillColor = circleColour(alarms[0].isActivated)}//[0] Due to alarms.subtract(this.alarms) preserving order
+      return alarms.filter { alarm-> refinedAlarms.none { refinedAlarm -> alarm.name == refinedAlarm.name } }
+
+    }
+
+    fun addRecentCircle(circle:Circle) {
+        recentlyAddedAlarm?.let { addAlarmCircle(Pair(it,circle))  }
+
     }
 
 

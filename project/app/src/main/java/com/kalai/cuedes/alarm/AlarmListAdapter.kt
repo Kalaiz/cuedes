@@ -31,6 +31,8 @@ class AlarmListAdapter ():
         const val TAG = "MainAdapter"
     }
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_alarm_list,parent,false))
@@ -93,6 +95,8 @@ class AlarmListAdapter ():
             alarmSwitch.setOnCheckedChangeListener { _, isChecked ->
                 /*TODO will move to viewmodel later*/
                 isActivated = isChecked
+                val alarmName = alarmNameTextView.text.toString()
+                (view.context.applicationContext as CueDesApplication).removeGeoFence(alarmName)
                 updateIsActivated(isChecked)
             }
         }

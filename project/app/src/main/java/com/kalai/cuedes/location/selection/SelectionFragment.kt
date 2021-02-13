@@ -30,9 +30,9 @@ class SelectionFragment() : DialogFragment() {
     private val selectionViewModel: SelectionViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         binding = FragmentSelectionBinding.inflate(inflater, container, false)
 
@@ -85,25 +85,27 @@ class SelectionFragment() : DialogFragment() {
             } })
 
         locationViewModel.selectedLatLng.observe(viewLifecycleOwner, Observer {
-                updatedLatLng-> updatedLatLng?.let{selectionViewModel.setLatLng(it)}
+            updatedLatLng-> updatedLatLng?.let{selectionViewModel.setLatLng(it)}
         })
 
         selectionViewModel.selectedRadius.observe(viewLifecycleOwner,Observer{
-                updatedRadius ->
+            updatedRadius ->
             Log.d(TAG,"Updating selectedRadius in SelectionViewModel to $updatedRadius")
             if(updatedRadius != locationViewModel.selectedRadius.value)
-            updatedRadius?.let { locationViewModel.setRadius(updatedRadius) }
+                updatedRadius?.let { locationViewModel.setRadius(updatedRadius) }
         })
 
         binding.cancelButton.setOnClickListener {
             endSelection(false) }
 
         binding.startButton.setOnClickListener {
-        selectionViewModel.postSelection() }
+            selectionViewModel.postSelection() }
 
-        selectionViewModel.isAlarmSet.observe(this, Observer {
-                isAlarmSet->
-            isAlarmSet?.let { endSelection(it) }
+        selectionViewModel.alarmSet.observe(this, Observer {
+            alarm->
+            if(alarm!=null)
+                locationViewModel.addAlarm(alarm)
+            endSelection(alarm!=null)
         })
     }
 
@@ -115,7 +117,7 @@ class SelectionFragment() : DialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         onBackPressedCallback = object : OnBackPressedCallback(
-            true
+                true
         ) {
             override fun handleOnBackPressed() {
                 Log.d(TAG,"OnBackPressed")
@@ -123,8 +125,8 @@ class SelectionFragment() : DialogFragment() {
             }
         }
         requireActivity().onBackPressedDispatcher.addCallback(
-            this,
-            onBackPressedCallback
+                this,
+                onBackPressedCallback
         )
     }
 

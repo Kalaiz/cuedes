@@ -150,7 +150,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             locationViewModel.updateStatus(NORMAL)
             if (!bundle.getBoolean("Successful")) {
                 locationViewModel.setSelectedLocation(null)
-            } else {
+            } else { /*Successful*/
+
                 if (binding.root.animation?.hasEnded() != true)
                     binding.root.addTransitionListener(object : MotionLayout.TransitionListener {
                         override fun onTransitionTrigger(p0: MotionLayout?, p1: Int, p2: Boolean, p3: Float) {}
@@ -167,6 +168,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                                         animation.animatedValue as Int
                                 }
                                 animator.start()
+                                animator.doOnEnd {    currentSelectedRadius?.let { locationViewModel.addRecentCircle(it) } }
+
                             }
                             binding.root.removeTransitionListener(this)
                         }
@@ -230,6 +233,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         })
         lifecycleScope.launch {
             repository.alarms.collect { alarms ->
+                /*For drawing repo stored circles ( Excluding ones which were recently drawn )*/
                 locationViewModel.updateAlarms(alarms)
                 binding.activeAlarmTextView.text = locationViewModel.alarmStatusText
             }
@@ -271,8 +275,10 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         if (googleMap != null) {
             /*TODO need to actually update just the color of the circle when isactivated toggled*/
             locationViewModel.needUpdateCircles.observe(viewLifecycleOwner, Observer {
-                    circleOptions-> circleOptions.forEach {googleMap.addCircle(it)
-                googleMap.addMarker(MarkerOptions().position(it.center))}
+                    circleOptions-> circleOptions.forEach{(alarm,circleOption)-> locationViewModel.addAlarmCircle(Pair(alarm,googleMap.addCircle(circleOption) ))
+                googleMap.addMarker(MarkerOptions().position(circleOption.center))
+
+                    }
 
             })
             this.googleMap = googleMap

@@ -37,7 +37,9 @@ class CueDesService : Service(),LocationListener{
         super.onCreate()
         Timber.d("onCreate")
         locationManager =  getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 20000, 5f, this)
+
+
         val notification: Notification = NotificationCompat.Builder(
             this,
             CueDesApplication.CHANNEL_ID
@@ -54,8 +56,16 @@ class CueDesService : Service(),LocationListener{
         return START_STICKY
     }
 
-    override fun onLocationChanged(location: Location) {
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d("OnDestroy")
+        locationManager.removeUpdates(this)
+    }
 
+    @SuppressLint("MissingPermission")
+    override fun onLocationChanged(location: Location) {
+        locationManager.removeUpdates(this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 20000, 5f, this)
     }
 
     /*Need to override them as well since it is causing crashes; https://stackoverflow.com/a/64643361/11200630*/
