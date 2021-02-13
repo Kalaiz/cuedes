@@ -6,25 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kalai.cuedes.CueDesApplication
+import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.databinding.FragmentAlarmListBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-class AlarmListFragment : Fragment() {
+class AlarmListFragment : Fragment(),AlarmListOpsListener {
     /*TODO Handle onBackPressed; Maybe something like onbackpress send to  home fragment*/
-    companion object {
-        private const val TAG = "AlarmListFragment"
-    }
 
 
-    private val viewModelAlarm: AlarmListViewModel by viewModels()
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var binding: FragmentAlarmListBinding
     private lateinit var alarmRecyclerView: RecyclerView
     private lateinit var adapter: ListAdapter<Alarm,AlarmListAdapter.ViewHolder>
@@ -42,7 +42,7 @@ class AlarmListFragment : Fragment() {
             savedInstanceState: Bundle?
     ): View {
         binding = FragmentAlarmListBinding.inflate(inflater)
-        adapter = AlarmListAdapter()
+        adapter = AlarmListAdapter(this)
         alarmRecyclerView = binding.recyclerView.apply {
             adapter = this@AlarmListFragment.adapter
             addRecyclerListener(recycleListener)
@@ -52,17 +52,14 @@ class AlarmListFragment : Fragment() {
         lifecycleScope.launch {
             repository.alarms.collect { data ->
                 adapter.submitList(data)
+                adapter.notifyDataSetChanged()
             }
         }
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
-
-    }
 
 
 /*    override fun onAttach(context: Context) {
@@ -80,10 +77,16 @@ class AlarmListFragment : Fragment() {
         )
     }*/
 
-    override fun onStart() {
-        super.onStart()
+
+
+    override fun deleteAlarm(alarmName:String) {
+        sharedViewModel.deleteAlarm(alarmName)
     }
 
+    override fun updateIsActivated(alarmName:String,isActivated: Boolean) {
+        sharedViewModel.updateIsActivated(alarmName,isActivated)
+
+    }
 
 
 }

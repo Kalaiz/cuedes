@@ -1,27 +1,18 @@
 package com.kalai.cuedes.location.selection
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.app.PendingIntent
-import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-
-import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.maps.model.LatLng
 import com.kalai.cuedes.CueDesApplication
-import com.kalai.cuedes.GeofenceBroadcastReceiver
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.location.DistanceUnit
-import kotlinx.coroutines.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
-@SuppressLint("MissingPermission")
 class SelectionViewModel(application: Application)  : AndroidViewModel(application) {
 
 
@@ -45,23 +36,21 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
     private val cueDesApplication by lazy { getApplication<Application>() as CueDesApplication }
 
 
-
     fun postSelection(){
-        viewModelScope.launch{
-            val alarm:Deferred<Alarm?> = async {
-                withContext(Dispatchers.IO){
-                    val latLng = selectedLocation.value
+        with(cueDesApplication){
+            viewModelScope.launch{
+                val alarm:Deferred<Alarm?> = async {
+                    val latLng = _selectedLocation.value
                     val radius = _selectedRadius.value
                     if(latLng!=null && radius!=null )
-                        cueDesApplication.insertIntoRepository(latLng, radius)
+                        insertIntoRepository(latLng, radius)
                     else
                         null
                 }
+                _alarmSet.value = createGeoFence(alarm.await())
             }
-            _alarmSet.value = cueDesApplication.setAlarm(alarm.await())
         }
     }
-
 
 
     fun setLatLng(latLng: LatLng) {

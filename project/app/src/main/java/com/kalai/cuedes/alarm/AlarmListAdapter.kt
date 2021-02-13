@@ -1,6 +1,5 @@
 package com.kalai.cuedes.alarm
 
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.R
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.getCameraUpdateBounds
@@ -24,13 +22,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class AlarmListAdapter ():
+class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
         ListAdapter<Alarm,AlarmListAdapter.ViewHolder>(AlarmListDiffCallback()){
-
-    companion object{
-        const val TAG = "MainAdapter"
-    }
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -53,10 +46,10 @@ class AlarmListAdapter ():
         private var isActivated = false
         private var isMapLoaded = false
         private  val color get() =
-                if (isActivated)
-                    view.context.getColor(R.color.radius_alarm_active)
-                else
-                    view.context.getColor(R.color.radius_alarm_inactive)
+            if (isActivated)
+                view.context.getColor(R.color.radius_alarm_active)
+            else
+                view.context.getColor(R.color.radius_alarm_inactive)
 
         private val circleOptions get() = CircleOptions()
                 .radius(this@ViewHolder.radius)
@@ -90,24 +83,17 @@ class AlarmListAdapter ():
                     if(isActivated)
                         alarmSwitch.toggle()
                 }
-                setMapLocation(view.context)
+                setMapLocation()
             }
             alarmSwitch.setOnCheckedChangeListener { _, isChecked ->
-                /*TODO will move to viewmodel later*/
                 isActivated = isChecked
                 val alarmName = alarmNameTextView.text.toString()
-                (view.context.applicationContext as CueDesApplication).removeGeoFence(alarmName)
-                updateIsActivated(isChecked)
+                alarmListOpsListener.updateIsActivated(alarmName,isActivated)
+                CoroutineScope(Dispatchers.Main).launch { circle.fillColor = color}
             }
         }
 
-        private fun updateIsActivated(isActivated:Boolean) {
-            CoroutineScope(Dispatchers.IO).launch{
-            ( view.context.applicationContext as CueDesApplication).repository.updateIsActivated(alarmNameTextView.text.toString(),isActivated)
-            }
-            CoroutineScope(Dispatchers.Main).launch { circle.fillColor = color}
 
-        }
 
         fun clearView() {
             with(map) {
@@ -118,26 +104,21 @@ class AlarmListAdapter ():
             }
         }
 
-        private fun setMapLocation(context: Context) {
+        private fun setMapLocation() {
             if (::map.isInitialized) {
                 with(map) {
                     addMarker(MarkerOptions().position(latLng))
                     mapType = GoogleMap.MAP_TYPE_NORMAL
                 }
 
-
-               circle = map.addCircle(circleOptions)
+                circle = map.addCircle(circleOptions)
                 val cameraUpdate = getCameraUpdateBounds(circle, 100)
-              CoroutineScope(Dispatchers.Main).launch {
-                    map.moveCamera(cameraUpdate)
-                }
-
+                CoroutineScope(Dispatchers.Main).launch {
+                    map.moveCamera(cameraUpdate) }
                 map.setOnMapLoadedCallback { Timber.d("Map loaded ${alarmNameTextView.text}") }
-
 
             }
         }
-
 
 
         override fun onMapReady(googleMap: GoogleMap?) {
@@ -147,7 +128,7 @@ class AlarmListAdapter ():
                 loadedGoogleMap ->
                 Timber.d("Map loadeded")
                 map = loadedGoogleMap
-                setMapLocation(view.context)
+                setMapLocation()
             }
         }
     }

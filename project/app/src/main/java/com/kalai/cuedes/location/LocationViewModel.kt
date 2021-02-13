@@ -5,9 +5,9 @@ import android.app.Application
 import android.graphics.Color
 import android.location.Location
 import android.os.Looper
-import android.util.Log
-import android.util.TimeFormatException
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
@@ -17,11 +17,27 @@ import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.R
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.getCameraUpdateBounds
 import com.kalai.cuedes.location.Status.*
 import timber.log.Timber
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.Set
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.count
+import kotlin.collections.filter
+import kotlin.collections.forEach
+import kotlin.collections.groupBy
+import kotlin.collections.hashMapOf
+import kotlin.collections.listOf
+import kotlin.collections.mutableSetOf
+import kotlin.collections.none
+import kotlin.collections.set
+import kotlin.collections.subtract
 
 
 @SuppressLint("MissingPermission")
@@ -37,7 +53,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     private var recentlyAddedAlarm: Alarm? = null
 
 
-    private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(application)
+
     private val _currentLocation = MutableLiveData<Location>()
     val currentLocation:LiveData<Location> get() = _currentLocation
 
@@ -80,18 +96,25 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     val alarmStatusText:String get()="$numOfActiveAlarm active alarm${if(numOfActiveAlarm>1) "s" else ""}"
 
 
+    private val repository by lazy { (getApplication<Application>() as CueDesApplication).repository }
+
+    val alarmFlow = repository.alarms
+    private  val fusedLocationClient  by lazy { (getApplication<Application>() as CueDesApplication).fusedLocationClient}
+
+
+    /*TODO need to move to CueDesApplication */
     fun requestLocation(){
-        Log.d(TAG,"requesting Location")
+        Timber.d( "requesting Location")
         val locationCallback =  object: LocationCallback(){
             override fun onLocationAvailability(locationAvailability: LocationAvailability?) {
                 super.onLocationAvailability(locationAvailability)
-                Log.d(TAG,"Location available? ${locationAvailability?.isLocationAvailable}")
+                Timber.d( "Location available? ${locationAvailability?.isLocationAvailable}")
                 fusedLocationClient.lastLocation.addOnSuccessListener {location ->
-                    Log.d(TAG,"Success")
+                    Timber.d( "Success")
                     location?.let {
                         _currentLocation.value = it
-                        Log.d(TAG,"Current Location is  $it")
-                        Log.d(TAG,"Current LngLat is  ${it.longitude} ${it.latitude}")
+                        Timber.d( "Current Location is  $it")
+                        Timber.d( "Current LngLat is  ${it.longitude} ${it.latitude}")
                         fusedLocationClient.removeLocationUpdates(this)
                     }
                 }
@@ -100,13 +123,15 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         fusedLocationClient.requestLocationUpdates(LocationFragment.locationRequestHighAccuracy,locationCallback, Looper.myLooper())
     }
 
+
+
     fun currentLocationUpdate(){
         currentLocationCameraMovement(true)
     }
 
 
     fun cameraIdle() {
-        Log.d(TAG,"cameraIdle() called")
+        Timber.d( "cameraIdle() called")
         _isCameraIdle.value = true
     }
 
@@ -132,7 +157,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun cameraMoving() {
-        Log.d(TAG,"CameraMoving")
+        Timber.d( "CameraMoving")
         _isCameraIdle.value = false
         _mapLoaded.value = false
     }
@@ -158,10 +183,10 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setSelectedLocation(marker: Marker?) {
-        Log.d(TAG,"setSelectedLocation")
+        Timber.d( "setSelectedLocation")
         val status = _status.value
         if(status == SELECTION || status == INITIAL_SELECTION ||(status == NORMAL && marker == null)){
-            Log.d(TAG,"SELECTION or INITIAL_SELECTION or (NORMAL AND marker null)")
+            Timber.d( "SELECTION or INITIAL_SELECTION or (NORMAL AND marker null)")
             /* So that the removing animation occurs*/
             _selectedMarker.value = null
             /*Removing for the record*/
@@ -169,7 +194,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
         }
         /*If in SELECTION mode, need to assist in animating the removal of marker ( as did above) and then animate the new one */
         if(marker!=null ){
-            Log.d(TAG,"marker not null $marker")
+            Timber.d( "marker not null $marker")
             _selectedMarker.value = marker
             _selectedLatLng.value = marker.position
         }
@@ -190,19 +215,18 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun updateAlarms(alarms: List<Alarm>) {
-        Log.d(TAG,"Updating alarms")
+        Timber.d( "Updating alarms")
         addCircles(alarms.subtract(this.alarms))
         removeCircles(this.alarms.subtract(alarms))
 
         this.alarms = alarms
-        Log.d(TAG,"number of active alarms $numOfActiveAlarm $alarms")
+        Timber.d( "number of active alarms $numOfActiveAlarm $alarms")
         _isAlarmActive.value = numOfActiveAlarm > 0
     }
 
     private fun removeCircles(alarms: Set<Alarm>) {
         Timber.d("Removing Circles $alarms")
         alarms.forEach {
-
             alarmCircleMap[it]?.remove()
             alarmCircleMap.remove(it) }
     }
@@ -214,6 +238,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
         refinedAlarmCircles.forEach { alarm ->
             with(alarm) {
+                /*TODO Make this available in cuedesapplication*/
                 val color = if (isActivated)
                     getApplication<Application>().applicationContext.getColor(R.color.radius_alarm_active)
                 else
@@ -244,7 +269,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
                     val alarm = alarmCircleMap.keys.filter { alarm -> alarm.name == name }[0]
                     refinedAlarms.add(alarm)
                     alarmCircleMap[alarm]?.fillColor = circleColour(alarms[0].isActivated)}//[0] Due to alarms.subtract(this.alarms) preserving order
-      return alarms.filter { alarm-> refinedAlarms.none { refinedAlarm -> alarm.name == refinedAlarm.name } }
+        return alarms.filter { alarm-> refinedAlarms.none { refinedAlarm -> alarm.name == refinedAlarm.name } }
 
     }
 

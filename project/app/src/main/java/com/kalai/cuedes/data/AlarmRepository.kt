@@ -12,7 +12,11 @@ class AlarmRepository(private val alarmDao: AlarmDao) {
     fun updateIsActivated(alarmName:String,isActivated:Boolean)
             = alarmDao.updateIsActivated(alarmName,isActivated)
 
+    fun delete(alarm:Alarm)
+            = alarmDao.delete(alarm)
 
-    fun getCount() =  alarmDao.count()
+
+    fun getCount()
+            =  alarmDao.count()
 
 }
