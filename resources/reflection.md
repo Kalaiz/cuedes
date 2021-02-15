@@ -34,10 +34,13 @@
 
 -  Polling location periodically  and expanded "configuration" of geofencing request since sometimes geofencing fails to trigger.
 
-
 ### What I could have done better/will be doing
 
-- In regards to `entry` package, I need to follow MVVM, logic is currently tangled with the views and can be transferred  to the viewmodel. 
-- I am planning to make use of [Geofencing API](https://developers.google.com/location-context/geofencing) to know when the user is within an area of interest.
+- In regards to `entry` package, I need to follow MVVM, logic is currently tangled with the views and can be transferred  to the viewmodel. **15/02** Planning to use Jetpack Navigation for onBoarding. 
+- Segregate logic in `locationViewModel` into models such as `AlarmMapManager` and `CameraManager`.
+- Implement Settings and various other mode of notification.
+- Testing
+- I could have used dependency injection.
+
 
 [:arrow_backward: Back](https://github.com/Kalaiz/cuedes#%EF%B8%8F-reflection)

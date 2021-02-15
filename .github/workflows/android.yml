@@ -19,9 +19,9 @@ jobs:
         java-version: 1.8
 
     - name: Giving Permission for Access
-      run: chmod +x ./project/gradlew 
+      run: chmod +x ./cuedes/gradlew 
 
     - name: Compiling Project using Gradle
-      run: ./project/gradlew build
+      run: ./cuedes/gradlew build
 
    

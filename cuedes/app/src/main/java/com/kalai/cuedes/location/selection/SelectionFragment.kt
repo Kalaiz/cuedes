@@ -111,7 +111,7 @@ class SelectionFragment : DialogFragment() {
                 locationViewModel.addAlarm(alarm)
                 lifecycleScope.launch {
                     sharedViewModel.processAlarm(alarm) }.invokeOnCompletion {
-                    endSelection(it == null)
+                    endSelection(it == null,alarm.isActivated)
                 }
             }
             else
@@ -140,9 +140,10 @@ class SelectionFragment : DialogFragment() {
     }
 
 
-    private fun endSelection(isSuccessful:Boolean){
+    private fun endSelection(isSuccessful:Boolean, isActivated:Boolean = false){
         Timber.d("Going to be dismissed")
-        val result = bundleOf("Successful" to isSuccessful)
+        val result = bundleOf("Successful" to isSuccessful,"Activated" to isActivated)
+
         /* TODO need to make req key const*/
         parentFragment?.parentFragmentManager?.setFragmentResult("LocationFragmentReqKey",result)
         onBackPressedCallback.remove()

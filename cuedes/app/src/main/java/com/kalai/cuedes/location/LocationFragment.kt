@@ -162,7 +162,8 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                             override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {}
                             override fun onTransitionChange(p0: MotionLayout?, p1: Int, p2: Int, p3: Float) {}
                             override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
-                                val color = context?.getColor(R.color.radius_alarm_active)
+                                val isActivated =  bundle.getBoolean("Activated")
+                                val color = context?.run{if(isActivated) getColor(R.color.radius_alarm_active) else getColor(R.color.radius_alarm_inactive)}
                                 val currentColor = currentSelectedRadius?.fillColor ?: color
                                 if (currentColor != null && color != null) {
                                     val animator = ObjectAnimator.ofArgb(currentColor, color)
@@ -250,8 +251,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
                 }
             })
         }
-
-
     }
 
 

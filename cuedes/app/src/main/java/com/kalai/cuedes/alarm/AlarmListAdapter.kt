@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
-    ListAdapter<Alarm,AlarmListAdapter.ViewHolder>(AlarmListDiffCallback()){
+    ListAdapter<Alarm,AlarmListAdapter.ViewHolder>(AlarmDiffCallback()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context)
@@ -124,7 +124,10 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
     }
 
 
-
+    class AlarmDiffCallback: DiffUtil.ItemCallback<Alarm>() {
+        override fun areItemsTheSame(oldItem: Alarm, newItem: Alarm): Boolean = oldItem.name == newItem.name
+        override fun areContentsTheSame(oldItem: Alarm, newItem: Alarm): Boolean = oldItem == newItem
+    }
 
 
 }

@@ -14,7 +14,9 @@ A simple Android App which rings an alarm when one is about to reach a destinati
 <p align="center">
 A slight peek at the progress so far.</p>
 <p align="center">
-<img src="resources/app_overview.gif" width="25%" height="25%" /> 
+<img src="resources/onboard.gif" width="25%" height="25%" /> 
+<img src="resources/alarm_trigger.gif" width="25%" height="25%" /> 
+<img src="resources/radius_manipulation.gif" width="25%" height="25%" /> 
 </p>
 <p align="center">
 Note: I am still working on this personal project. 
@@ -25,6 +27,8 @@ Note: I am still working on this personal project.
  - ViewBinding, LiveData, DataStore, Room, ViewModel, FragmentStateAdapter, Foreground and Bound Service, Property Animation Framework
  - Views: Motion, Constraint, Linear and Frame Layouts, ~~Spinner~~, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompat, OnBoardSupportFragment
   - Google Maps SDK (FusedLocationProvider API, Geofencing API)
+  - Timber
+  - TSnackbar
   - Kotlin: Scope functions, Flow, Co-routines
 
 

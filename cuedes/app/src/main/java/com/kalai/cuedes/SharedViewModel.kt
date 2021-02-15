@@ -50,11 +50,25 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
 
     fun updateIsActivated(alarmName: String,isActivated: Boolean) {
         with(cueDesApplication){
-            viewModelScope.launch(Dispatchers.IO){ repository.updateIsActivated(alarmName,isActivated) }
-            if(isActivated)
-                viewModelScope.launch { findAlarm(alarmName)?.let { createGeoFence(it) } }
-            else
-                removeGeoFence(alarmName)
+            var processedIsActivated:Boolean
+            viewModelScope.launch {
+                if (isActivated && numOfActiveAlarms.await() >= 5) {
+                    _error.value =
+                            "Activation failed. There are already 5 active alarms. Please turn one of them off"
+                    processedIsActivated = !isActivated
+                }
+                else {
+                    processedIsActivated = isActivated
+                    if (isActivated)
+                        findAlarm(alarmName)?.let { createGeoFence(it) }
+                    else
+                        removeGeoFence(alarmName)
+                }
+
+                viewModelScope.launch(Dispatchers.IO){
+                    repository.updateIsActivated(alarmName,processedIsActivated)
+                }
+            }
         }
     }
 
@@ -89,7 +103,7 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
             val latLng = location.let { LatLng(it.latitude, it.longitude) }
             val alarmLatLng = LatLng(alarm.latitude,alarm.longitude)
             val isWithinBound = latLng.checkIsInBounds(alarm.radius,alarmLatLng)
-            if(numOfActiveAlarms.await()==5){
+            if(numOfActiveAlarms.await()>=5){
                 alarm.isActivated = false
                 repository.insert(alarm)
                 viewModelScope.launch {
@@ -121,15 +135,15 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
     private suspend fun createGeoFence(alarm: Alarm) : Alarm? = suspendCoroutine { cont->
         alarm.run{
             val geofence =  Geofence.Builder()
-                .setRequestId(name)
-                .setCircularRegion(latitude,longitude,radius.toFloat())
-                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
-                .build()
+                    .setRequestId(name)
+                    .setCircularRegion(latitude,longitude,radius.toFloat())
+                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build()
             val geofencingRequest = GeofencingRequest.Builder()
-                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
-                .addGeofence(geofence)
-                .build()
+                    .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                    .addGeofence(geofence)
+                    .build()
 
             geofencingClient.addGeofences(geofencingRequest,geofencePendingIntent)?.run {
                 addOnSuccessListener {
