@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <Preference
+        android:key="clear_alarm"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Clear all Alarms."
+        android:icon="@drawable/ic_clear"/>
+</PreferenceScreen>

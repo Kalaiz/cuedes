@@ -48,17 +48,13 @@ class AlarmListFragment : Fragment(),AlarmListOpsListener {
             addRecyclerListener(recycleListener)
         }
 
-
         lifecycleScope.launch {
             repository.alarms.collect { data ->
                 adapter.submitList(data)
             }
         }
-
         return binding.root
     }
-
-
 
 
 /*    override fun onAttach(context: Context) {
@@ -76,16 +72,13 @@ class AlarmListFragment : Fragment(),AlarmListOpsListener {
         )
     }*/
 
-
-
     override fun deleteAlarm(alarmName:String) {
         sharedViewModel.deleteAlarm(alarmName)
     }
 
-    override fun updateIsActivated(alarmName:String,isActivated: Boolean) {
-        sharedViewModel.updateIsActivated(alarmName,isActivated)
+    override suspend fun updateIsActivated(alarmName:String,isActivated: Boolean):Boolean
+    = sharedViewModel.updateIsActivated(alarmName,isActivated)
 
-    }
 
 
 }

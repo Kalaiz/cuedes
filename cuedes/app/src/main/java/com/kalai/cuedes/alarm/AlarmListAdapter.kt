@@ -17,17 +17,15 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.kalai.cuedes.R
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.getCameraUpdateBounds
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 
 class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
-    ListAdapter<Alarm,AlarmListAdapter.ViewHolder>(AlarmDiffCallback()){
-
+        ListAdapter<Alarm,AlarmListAdapter.ViewHolder>(AlarmDiffCallback()){
+    private val adapterScope = CoroutineScope(Dispatchers.Main)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_alarm_list,parent,false))
+                .inflate(R.layout.item_alarm_list,parent,false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -44,6 +42,10 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
         private var radius = 0.0
         private var isActivated = false
         private var isMapLoaded = false
+        private val alarmName get() = alarmNameTextView.text.toString()
+        var changeLocked = false
+
+        private lateinit var updateJob:Job
         private  val color get() =
             if (isActivated)
                 view.context.getColor(R.color.radius_alarm_active)
@@ -51,10 +53,10 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
                 view.context.getColor(R.color.radius_alarm_inactive)
 
         private val circleOptions get() = CircleOptions()
-            .radius(this@ViewHolder.radius)
-            .center(latLng)
-            .fillColor(color)
-            .strokeColor(Color.TRANSPARENT)
+                .radius(this@ViewHolder.radius)
+                .center(latLng)
+                .fillColor(color)
+                .strokeColor(Color.TRANSPARENT)
 
         lateinit var circle: Circle
         init{
@@ -67,6 +69,8 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
 
         fun bindView(position: Int){
             Timber.d("BindingView at $position")
+            if(::updateJob.isInitialized)
+                updateJob.cancel()
             getItem(position).run{
                 alarmNameTextView.text= name
                 this@ViewHolder.latLng = LatLng(latitude, longitude)
@@ -77,9 +81,22 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
                 setMapLocation()
             }
 
+
             alarmSwitch.setOnCheckedChangeListener { _, isChecked ->
-                val alarmName = alarmNameTextView.text.toString()
-                alarmListOpsListener.updateIsActivated(alarmName, isChecked)
+                Timber.d("Called $alarmName  ChangeLocked $changeLocked")
+                updateJob =  adapterScope.launch{
+                    if(!changeLocked){
+                        val isSuccessfulChange =  alarmListOpsListener.updateIsActivated(alarmName, isChecked)
+                        if(!isSuccessfulChange) {
+                            Timber.d("toggling")
+                            alarmSwitch.toggle()
+                            changeLocked = true
+                        }
+                    }
+                    else
+                        changeLocked = false
+                }
+
             }
         }
 
@@ -95,7 +112,7 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
         }
 
         private fun setMapLocation() {
-            if (::map.isInitialized) {
+            if (::map.isInitialized and ::latLng.isInitialized) {
                 with(map) {
                     addMarker(MarkerOptions().position(latLng))
                     mapType = GoogleMap.MAP_TYPE_NORMAL
@@ -115,7 +132,7 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
             MapsInitializer.initialize(view.context)
             /*If map is not initialised properly*/
             mapView.getMapAsync {
-                    loadedGoogleMap ->
+                loadedGoogleMap ->
                 Timber.d("Map loadeded")
                 map = loadedGoogleMap
                 setMapLocation()

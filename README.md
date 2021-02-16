@@ -48,7 +48,7 @@ Note: I am still working on this personal project.
 
 ### ⚙️ Installation:
 Note: It will be easier to do the following via a phone. 
-1) Install the [APK](project/app/build/outputs/apk/debug/app-debug.apk).
+1) Install the [APK](cuedes/app/build/outputs/apk/debug/app-debug.apk).
 2) Allow App Installations from Unknown Sources, if requested.
 
 

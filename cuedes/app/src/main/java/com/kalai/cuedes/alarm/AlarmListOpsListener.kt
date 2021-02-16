@@ -2,7 +2,7 @@ package com.kalai.cuedes.alarm
 
 interface AlarmListOpsListener {
 
-   fun updateIsActivated(alarmName: String,isActivated:Boolean)
+  suspend fun updateIsActivated(alarmName: String,isActivated:Boolean):Boolean
    fun deleteAlarm(alarmName: String)
 
 }

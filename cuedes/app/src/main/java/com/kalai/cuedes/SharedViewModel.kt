@@ -17,6 +17,8 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.model.LatLng
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.location.LocationFragment
+import com.kalai.cuedes.notification.Notification
+import com.kalai.cuedes.notification.NotificationConfig
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import timber.log.Timber
@@ -30,13 +32,43 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
     private val repository by lazy {cueDesApplication.repository}
     private val geofencingClient by lazy { cueDesApplication.geofencingClient }
     private val fusedLocationClient by lazy { cueDesApplication.fusedLocationClient }
+    private val applicationContext get() =  getApplication<Application>().applicationContext
+    private val _notificationConfig= MutableLiveData<NotificationConfig>()
+    val notificationConfig:LiveData<NotificationConfig> = _notificationConfig
 
-    private val _error= MutableLiveData<String>()
-    val error:LiveData<String> = _error
 
     private val numOfActiveAlarms get()
     = viewModelScope.async { fetchAlarms().filter { it.isActivated}.size}
 
+    private val warningFiveAlarmMessage = applicationContext.getString(R.string.warning_too_many_alarm)
+
+    private val warningNearVicinityMessage = applicationContext.getString(R.string.warning_alarm_at_destination)
+
+    private val errorMessage = applicationContext.getString(R.string.error_repo_insert)
+
+    private val errorConfig = NotificationConfig.Builder
+            .create(Notification.ERROR,errorMessage)
+            .addIcon(R.drawable.ic_error)
+            .build()
+
+    private val warningFiveAlarmConfig = NotificationConfig.Builder
+            .create(Notification.WARNING,warningFiveAlarmMessage)
+            .addIcon(R.drawable.ic_notification_off)
+            .build()
+
+    private val warningNearVicinityConfig = NotificationConfig.Builder
+            .create(Notification.WARNING,warningNearVicinityMessage)
+            .addIcon(R.drawable.ic_notification_off)
+            .build()
+
+    private val geofencePendingIntent: PendingIntent
+        get() {
+            val intent = Intent(getApplication(), GeofenceBroadcastReceiver::class.java)
+            return  PendingIntent.getBroadcast(getApplication(), System.currentTimeMillis().toInt(), intent, PendingIntent.FLAG_ONE_SHOT)
+        }
+
+    private val _currentLocation = MutableLiveData<Location>()
+    val currentLocation:LiveData<Location> get() = _currentLocation
 
     private suspend fun fetchAlarms()= suspendCoroutine<List<Alarm>>{
         viewModelScope.launch(Dispatchers.IO)
@@ -45,32 +77,59 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
         }
     }
 
-    private val _currentLocation = MutableLiveData<Location>()
-    val currentLocation:LiveData<Location> get() = _currentLocation
 
-    fun updateIsActivated(alarmName: String,isActivated: Boolean) {
+    suspend fun updateIsActivated(alarmName: String, isActivated: Boolean):Boolean = suspendCoroutine{ cont->
         with(cueDesApplication){
-            var processedIsActivated:Boolean
             viewModelScope.launch {
-                if (isActivated && numOfActiveAlarms.await() >= 5) {
-                    _error.value =
-                            "Activation failed. There are already 5 active alarms. Please turn one of them off"
-                    processedIsActivated = !isActivated
+                val alarm = findAlarm(alarmName)
+                if (alarm != null) {
+                    if (alarm.isActivated != isActivated) {
+                        when {
+                            isActivated and (numOfActiveAlarms.await() >= 5) -> {
+                                _notificationConfig.value = warningFiveAlarmConfig
+                                cont.resume(false)
+                            }
+                            isActivated and isCurrentLocationWithinAlarmBound(alarm) -> {
+                                _notificationConfig.value = warningNearVicinityConfig
+                                cont.resume(false)
+                            }
+                            else -> {
+                                if(isActivated)
+                                    createGeoFence(alarm)
+                                else
+                                    removeGeoFence(alarmName)
+                                viewModelScope.launch(Dispatchers.IO) { repository.updateIsActivated(alarmName, isActivated)
+                                }.invokeOnCompletion { handler ->
+                                    val hasError = handler != null
+                                    if (hasError)
+                                        viewModelScope.launch(Dispatchers.Main) {
+                                            _notificationConfig.value = errorConfig
+                                        }
+                                    cont.resume(!hasError)
+                                }
+                            }
+                        }
+                    } else
+                        cont.resume(true)
                 }
-                else {
-                    processedIsActivated = isActivated
-                    if (isActivated)
-                        findAlarm(alarmName)?.let { createGeoFence(it) }
-                    else
-                        removeGeoFence(alarmName)
-                }
-
-                viewModelScope.launch(Dispatchers.IO){
-                    repository.updateIsActivated(alarmName,processedIsActivated)
-                }
+                else
+                    cont.resume(false)
             }
+
         }
     }
+
+
+    private suspend fun isCurrentLocationWithinAlarmBound(alarm: Alarm):Boolean = suspendCoroutine {  cont->
+        viewModelScope.launch {
+            val location = fetchLocation()
+            val latLng = location.let { LatLng(it.latitude, it.longitude) }
+            val alarmLatLng = LatLng(alarm.latitude,alarm.longitude)
+            cont.resume(latLng.checkIsInBounds(alarm.radius,alarmLatLng))
+        }
+
+    }
+
 
     fun deleteAlarm(alarmName: String) {
         viewModelScope.launch(Dispatchers.IO){
@@ -81,51 +140,32 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
     }
 
 
-    /*TODO: Moving to SharedViewModel instead?*/
-    private val geofencePendingIntent: PendingIntent
-        get() {
-            val intent = Intent(getApplication(), GeofenceBroadcastReceiver::class.java)
-            return  PendingIntent.getBroadcast(getApplication(), System.currentTimeMillis().toInt(), intent, PendingIntent.FLAG_ONE_SHOT)
-        }
-
     /*Returns alarm if successful or else null*/
     @SuppressLint("MissingPermission")
-    private suspend fun insertIntoRepository(alarm: Alarm): Alarm {
-        /*        val handler = CoroutineExceptionHandler { _, exception ->
-            Timber.d("Exception ${exception.message}")
-            _error.value = exception.message
-        }*/
-        val location = fetchLocation()
-        Timber.d("inserting into repo")
-        /*TODO: throwing exceptions would be better and catching them would be better */
-        return withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
-            Timber.d("location ${location}")
-            val latLng = location.let { LatLng(it.latitude, it.longitude) }
-            val alarmLatLng = LatLng(alarm.latitude,alarm.longitude)
-            val isWithinBound = latLng.checkIsInBounds(alarm.radius,alarmLatLng)
-            if(numOfActiveAlarms.await()>=5){
-                alarm.isActivated = false
-                repository.insert(alarm)
-                viewModelScope.launch {
-                    _error.value = "Alarm de-activated. There are already 5 alarms activated, please turn one of them off." }
-            }
-            else if (!isWithinBound){
-                Timber.d("Within bounds")
-                repository.insert(alarm)}
-            else if(isWithinBound)
-            {
-                Timber.d("location within bound")
-                alarm.isActivated = false
-                repository.insert(alarm)
-                viewModelScope.launch {
-                    _error.value = "Alarm de-activated. You are trying to set an alarm for a location which you are currently in." }
+    private suspend fun insertIntoRepository(alarm: Alarm): Alarm =
+            withContext(viewModelScope.coroutineContext + Dispatchers.IO) {
+                Timber.d("inserting into repo")
+                val isWithinBound = isCurrentLocationWithinAlarmBound(alarm)
+                if(numOfActiveAlarms.await()>=5){
+                    alarm.isActivated = false
+                    repository.insert(alarm)
+                    viewModelScope.launch {
+                        _notificationConfig.value = warningFiveAlarmConfig }
+                }
+                else if (!isWithinBound){
+                    Timber.d("Within bounds")
+                    repository.insert(alarm)}
+                else if(isWithinBound)
+                {
+                    Timber.d("location within bound")
+                    alarm.isActivated = false
+                    repository.insert(alarm)
+                    viewModelScope.launch {
+                        _notificationConfig.value =  warningNearVicinityConfig }
 
+                }
+                alarm
             }
-            alarm
-        }
-    }
-
-    /*TODO: Check whether is in bound or not before triggering alarm*/
 
 
 
@@ -158,6 +198,7 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
         }
     }
 
+
     private suspend fun findAlarm(alarmName: String): Alarm? = suspendCoroutine { cont->
         CoroutineScope(Dispatchers.IO).launch{
             repository.alarms.collect { alarms->
@@ -166,6 +207,7 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
             }
         }
     }
+
 
     private fun removeGeoFence(alarmName:String){
         geofencingClient.removeGeofences(mutableListOf(alarmName))
@@ -177,11 +219,13 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
             createGeoFence(repoAlarm.await())
     }
 
+
     fun requestLocation()  {
         viewModelScope.launch {
             _currentLocation.value =   fetchLocation()
         }
     }
+
 
     @SuppressLint("MissingPermission")
     private suspend fun fetchLocation():Location = suspendCoroutine { cont ->

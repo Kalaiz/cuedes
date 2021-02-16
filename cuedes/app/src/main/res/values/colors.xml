@@ -52,4 +52,8 @@
     <color name="error">#EB6359</color>
 
 
+    <color name="notification_warning">#FF8F00</color>
+    <color name="notification_success">#558B2F</color>
+    <color name="notification_error">#C62828</color>
+
 </resources>

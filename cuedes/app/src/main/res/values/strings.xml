@@ -40,5 +40,10 @@
     <string name="onboard_permission_msg">Please provide the relevant permission </string>
     <string name="channel_description">Notifications for Cuedes.</string>
 
+    <string name="warning_too_many_alarm">Too many active alarms!</string>
+    <string name="warning_alarm_at_destination">You are already at your destination!</string>
+
+    <string name="error_repo_insert"> Something has gone wrong. Try restarting the app. </string>
+
 
 </resources>

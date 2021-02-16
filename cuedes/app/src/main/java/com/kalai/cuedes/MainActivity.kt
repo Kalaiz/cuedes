@@ -13,12 +13,13 @@ import androidx.core.animation.doOnEnd
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
+import com.androidadvance.topsnackbar.R.*
 import com.androidadvance.topsnackbar.TSnackbar
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.kalai.cuedes.databinding.ActivityMainBinding
-import timber.log.Timber
+import com.kalai.cuedes.notification.Notification
+import com.kalai.cuedes.notification.NotificationConfig
 
 
 /*TODO need to migrate to timber*/
@@ -50,8 +51,8 @@ class MainActivity : AppCompatActivity() {
 
         /*Initialising Places*/
         applicationContext?.getString(R.string.google_maps_key)?.let { Places.initialize(
-            applicationContext,
-            it
+                applicationContext,
+                it
         ) }
 
         /* Pre - fetching Fragments in advance */
@@ -85,33 +86,40 @@ class MainActivity : AppCompatActivity() {
             return@setOnNavigationItemSelectedListener true
         }
 
-        sharedViewModel.error.observe(this, Observer { errorMessage ->
-            Timber.d(errorMessage)
-            if (errorMessage != null)
-                showErrorSnackBar(errorMessage)
+        sharedViewModel.notificationConfig.observe(this, Observer { notificationConfig ->
+            if (notificationConfig != null)
+                showSnackBar(notificationConfig)
 
         })
 
 
     }
 
-    private fun showErrorSnackBar(errorMessage: String) {
+    private fun showSnackBar(notificationConfig: NotificationConfig) {
 
-        /*TODO: Changing it to native one*/
+        val duration = notificationConfig.duration?: TSnackbar.LENGTH_LONG
         val snackBar = TSnackbar.make(
-            binding.coordinatorLayout,
-            errorMessage,
-            TSnackbar.LENGTH_LONG
-        )
+                binding.coordinatorLayout,
+                notificationConfig.message,
+                duration)
+        notificationConfig.resourceId?.let {
+            snackBar.setIconLeft(it,24f) }
         snackBar.setActionTextColor(Color.WHITE)
         val snackBarView: View = snackBar.view
-        snackBarView.setBackgroundColor(getColor(R.color.error))
-        snackBarView.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
-        val textView = snackBarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text) as TextView
+        snackBar.setIconPadding(10)
+        snackBarView.setBackgroundColor(snackBarColor(notificationConfig.type))
+        val textView = snackBarView.findViewById(id.snackbar_text) as TextView
         textView.setTextColor(getColor(R.color.colorLight))
-        textView.gravity = TextView.TEXT_ALIGNMENT_CENTER
+        textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
         snackBar.show()
+        snackBar.setAction("hide"){}
 
+    }
+
+    private fun snackBarColor(type:Notification)  = when(type){
+        Notification.WARNING -> getColor(R.color.notification_warning)
+        Notification.ERROR -> getColor(R.color.notification_error)
+        Notification.SUCCESS -> getColor(R.color.notification_success)
     }
 
     override fun onBackPressed() {
