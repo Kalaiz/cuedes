@@ -6,9 +6,12 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
@@ -17,6 +20,7 @@ import com.androidadvance.topsnackbar.R.*
 import com.androidadvance.topsnackbar.TSnackbar
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.kalai.cuedes.databinding.ActivityMainBinding
 import com.kalai.cuedes.notification.Notification
 import com.kalai.cuedes.notification.NotificationConfig
@@ -103,8 +107,9 @@ class MainActivity : AppCompatActivity() {
                 notificationConfig.message,
                 duration)
         notificationConfig.resourceId?.let {
-            snackBar.setIconLeft(it,24f) }
+            snackBar.setIconLeft(it, 24f) }
         snackBar.setActionTextColor(Color.WHITE)
+        snackBar.setMaxWidth(0)
         val snackBarView: View = snackBar.view
         snackBar.setIconPadding(10)
         snackBarView.setBackgroundColor(snackBarColor(notificationConfig.type))
@@ -116,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun snackBarColor(type:Notification)  = when(type){
+    private fun snackBarColor(type: Notification)  = when(type){
         Notification.WARNING -> getColor(R.color.notification_warning)
         Notification.ERROR -> getColor(R.color.notification_error)
         Notification.SUCCESS -> getColor(R.color.notification_success)
