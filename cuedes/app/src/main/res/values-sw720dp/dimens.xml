@@ -19,7 +19,7 @@
     <dimen name="selection_meter_text_size">15sp</dimen>
     <dimen name="alarm_list_text_view_size">17.5sp</dimen>
 
-    <dimen name="status_view_size" >12.5sp</dimen>
+
 
     <item name="motion_layout_map_percent" format="float" type="dimen">0.755</item>
     <item name="motion_layout_selection_percent" format="float" type="dimen">0.680</item>

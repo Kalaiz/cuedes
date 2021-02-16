@@ -27,5 +27,5 @@
 
     <item name="status_bar_percent" format="float" type="dimen">0.0575</item>
 
-    <dimen name="status_view_size" >12.5sp</dimen>
+
 </resources>

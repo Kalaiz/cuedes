@@ -30,5 +30,4 @@
     <item name="bottom_nav_bar_percent" format="float" type="dimen">0.06</item>
     <item name="screen_percent" format="float" type="dimen">0.940</item>
 
-    <dimen name="status_view_size" >12.5sp</dimen>
 </resources>

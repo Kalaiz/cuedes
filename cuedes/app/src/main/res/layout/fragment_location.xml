@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:map="http://schemas.android.com/tools"
     app:layoutDescription="@xml/fragment_location_scene_overlay">
 
 
@@ -64,8 +63,9 @@
         android:paddingStart="@dimen/status_bar_padding"
         android:paddingEnd="@dimen/status_bar_padding">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/alarm_status_linear_layout"
+            android:id="@+id/alarm_status_constraint_layout"
             app:layout_constraintHorizontal_weight="2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -83,21 +83,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/active_alarm_text_view"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_width="@dimen/status_view_size"
-                android:layout_height="@dimen/status_view_size"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.0725"
                 android:background="@drawable/background_circle"
-                android:backgroundTint="@color/colorSurface"/>
+                android:backgroundTint="@color/colorSurface"
+                app:layout_constraintHorizontal_chainStyle="packed"/>
 
             <TextView
-                app:layout_constraintTop_toTopOf="parent"
                 android:id="@+id/active_alarm_text_view"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginStart="5dp"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.6"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/status_view"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:maxLines="1"
+                app:autoSizeTextType="uniform"
                 android:text="active alarm(s)"
+                android:padding="2.5dp"
+                app:autoSizeMinTextSize="5sp"
                 android:gravity="center"
                 app:autoSizeMaxTextSize="@dimen/selection_text_view_size"/>
 
@@ -121,9 +131,10 @@
             android:maxLines="1"
             app:iconPadding="2.5dp"
             app:iconSize="@dimen/button_icon_size"
+            app:autoSizeMinTextSize="5sp"
             app:autoSizeTextType="uniform"
             android:padding="@dimen/button_padding"
-            app:layout_constraintStart_toEndOf="@id/alarm_status_linear_layout"
+            app:layout_constraintStart_toEndOf="@id/alarm_status_constraint_layout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/find_me_button">
@@ -143,6 +154,7 @@
             app:cornerRadius="@dimen/status_bar_rounded_corner_radius"
             app:autoSizeTextType="uniform"
             app:iconGravity="start"
+            app:autoSizeMinTextSize="5sp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:insetRight="0dp"
