@@ -9,23 +9,27 @@
     android:paddingTop="20dp">
 
 
-    <ImageView
-        android:id="@+id/bookmark_image_view"
+    <ToggleButton
+        android:id="@+id/star_toggle_button"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:padding="5dp"
-        android:src="@drawable/ic_bookmark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/pin_image_view"
+        app:layout_constraintEnd_toStartOf="@id/pin_toggle_button"
+        android:drawableStart="@drawable/selector_ic_star"
+        android:padding="10dp"
+        style="@style/image_toggle_button"
         app:layout_constraintBottom_toBottomOf="@id/top_guide_line"/>
 
-    <ImageView
-        android:id="@+id/pin_image_view"
+    <ToggleButton
+        android:id="@+id/pin_toggle_button"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:src="@drawable/ic_pin"
-        app:layout_constraintStart_toEndOf="@id/bookmark_image_view"
+        android:drawableStart="@drawable/selector_ic_pin"
+        android:padding="15dp"
+        style="@style/image_toggle_button"
+        app:layout_constraintStart_toEndOf="@id/star_toggle_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/cancel_button"
         app:layout_constraintBottom_toBottomOf="@id/top_guide_line"/>
@@ -39,7 +43,7 @@
         android:theme="@style/ThemeOverlay.CancelMaterialButton"
         app:layout_constraintEnd_toStartOf="@id/start_button"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/pin_image_view"
+        app:layout_constraintStart_toEndOf="@id/pin_toggle_button"
         app:layout_constraintBottom_toBottomOf="@id/top_guide_line"/>
 
 
@@ -170,7 +174,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/radius_image_view"
         app:layout_constraintTop_toBottomOf="@id/radius_slider"
-        app:layout_constraintBottom_toTopOf="@id/headphone_image_view"
+        app:layout_constraintBottom_toTopOf="@id/speaker_toggle_button"
         app:srcCompat="@drawable/ic_notification" />
 
 
@@ -197,36 +201,32 @@
         android:layout_margin="10dp"/>
 
 
-    <ImageView
-        android:id="@+id/headphone_image_view"
+    <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/speaker_toggle_button"
         app:layout_constraintStart_toStartOf="@id/radius_image_view"
-        android:src="@drawable/ic_headphone"
         app:layout_constraintTop_toBottomOf="@id/notification_image_view"
-        app:layout_constraintEnd_toStartOf="@id/speaker_image_view"
+        app:layout_constraintEnd_toStartOf="@id/vibration_toggle_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        android:drawableStart="@drawable/selector_ic_speaker"
+        android:checked="true"
+        android:padding="15dp"
+        style="@style/image_toggle_button" />
 
-    <ImageView
-        android:id="@+id/speaker_image_view"
+
+    <ToggleButton
+        android:id="@+id/vibration_toggle_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/headphone_image_view"
-        android:src="@drawable/ic_speaker"
-        app:layout_constraintEnd_toStartOf="@id/vibration_image_view"
+        app:layout_constraintStart_toEndOf="@id/speaker_toggle_button"
+        style="@style/image_toggle_button"
+        android:checked="false"
+        android:padding="15dp"
+        android:drawableStart="@drawable/selector_ic_vibration"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/notification_image_view" />
 
-    <ImageView
-        android:id="@+id/vibration_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/speaker_image_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:src="@drawable/ic_vibration"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notification_image_view"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

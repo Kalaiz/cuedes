@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -14,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.widget.TextViewCompat
+import androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration
 import androidx.lifecycle.Observer
 import androidx.viewpager2.widget.ViewPager2
 import com.androidadvance.topsnackbar.R.*
@@ -114,6 +117,8 @@ class MainActivity : AppCompatActivity() {
         snackBar.setIconPadding(10)
         snackBarView.setBackgroundColor(snackBarColor(notificationConfig.type))
         val textView = snackBarView.findViewById(id.snackbar_text) as TextView
+        textView.maxLines=1
+        setAutoSizeTextTypeUniformWithConfiguration(textView, 8,17,1,TypedValue.COMPLEX_UNIT_SP)
         textView.setTextColor(getColor(R.color.colorLight))
         textView.textAlignment = TextView.TEXT_ALIGNMENT_TEXT_START
         snackBar.show()

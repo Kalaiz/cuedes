@@ -199,14 +199,7 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
     }
 
 
-    private suspend fun findAlarm(alarmName: String): Alarm? = suspendCoroutine { cont->
-        CoroutineScope(Dispatchers.IO).launch{
-            repository.alarms.collect { alarms->
-                cont.resume(alarms.find { alarm -> alarm.name == alarmName })
-                this.cancel()
-            }
-        }
-    }
+
 
 
     private fun removeGeoFence(alarmName:String){

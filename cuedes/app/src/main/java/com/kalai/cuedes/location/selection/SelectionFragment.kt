@@ -53,6 +53,7 @@ class SelectionFragment : DialogFragment() {
                     selectionViewModel.setRadius(radius-1) }
         }
 
+
         binding.radiusSlider.addOnChangeListener { _, value, _ ->
             binding.radiusTextView.text = value.toInt().toString()
         }
@@ -117,6 +118,20 @@ class SelectionFragment : DialogFragment() {
             else
                 endSelection(false)
         })
+
+        updateSelection()
+
+        binding.vibrationToggleButton.setOnCheckedChangeListener { _, isChecked ->
+            selectionViewModel.updateNeedVibration(isChecked)
+        }
+        binding.speakerToggleButton.setOnCheckedChangeListener { _, isChecked ->
+            selectionViewModel.updateNeedSound(isChecked)
+        }
+    }
+
+    private fun updateSelection() {
+        selectionViewModel.updateNeedSound(binding.speakerToggleButton.isChecked)
+        selectionViewModel.updateNeedVibration(binding.vibrationToggleButton.isChecked)
     }
 
     override fun onDestroy() {
@@ -138,6 +153,7 @@ class SelectionFragment : DialogFragment() {
             onBackPressedCallback
         )
     }
+
 
 
     private fun endSelection(isSuccessful:Boolean, isActivated:Boolean = false){

@@ -55,5 +55,6 @@
     <color name="notification_warning">#FF8F00</color>
     <color name="notification_success">#558B2F</color>
     <color name="notification_error">#C62828</color>
+    <color name="toggle_button_enabled">#2196F3</color>
 
 </resources>

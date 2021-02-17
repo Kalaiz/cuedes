@@ -1,10 +1,11 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/selection_selectable_icon_size"
-    android:height="@dimen/selection_selectable_icon_size"
+    android:width="24dp"
+    android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24"
-    android:tint="?attr/colorControlNormal">
+    android:tint="?attr/colorControlNormal"
+    android:autoMirrored="true">
   <path
       android:fillColor="@android:color/white"
-      android:pathData="M7,7.07L8.43,8.5c0.91,-0.91 2.18,-1.48 3.57,-1.48s2.66,0.57 3.57,1.48L17,7.07C15.72,5.79 13.95,5 12,5s-3.72,0.79 -5,2.07zM12,1C8.98,1 6.24,2.23 4.25,4.21l1.41,1.41C7.28,4 9.53,3 12,3s4.72,1 6.34,2.62l1.41,-1.41C17.76,2.23 15.02,1 12,1zM14.86,10.01L9.14,10C8.51,10 8,10.51 8,11.14v9.71c0,0.63 0.51,1.14 1.14,1.14h5.71c0.63,0 1.14,-0.51 1.14,-1.14v-9.71c0.01,-0.63 -0.5,-1.13 -1.13,-1.13zM15,20L9,20v-8h6v8z"/>
+      android:pathData="M3,9v6h4l5,5L12,4L7,9L3,9zM16.5,12c0,-1.77 -1.02,-3.29 -2.5,-4.03v8.05c1.48,-0.73 2.5,-2.25 2.5,-4.02zM14,3.23v2.06c2.89,0.86 5,3.54 5,6.71s-2.11,5.85 -5,6.71v2.06c4.01,-0.91 7,-4.49 7,-8.77s-2.99,-7.86 -7,-8.77z"/>
 </vector>

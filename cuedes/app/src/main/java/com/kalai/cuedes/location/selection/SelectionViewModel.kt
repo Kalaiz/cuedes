@@ -32,6 +32,12 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
     private val cueDesApplication by lazy { getApplication<Application>() as CueDesApplication }
     private val repository by lazy { cueDesApplication.repository }
 
+    private var needVibration = false
+
+    private var needSound = false
+
+
+
 
    fun createAlarm(){
         viewModelScope.launch {
@@ -40,7 +46,7 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
             val longitude = _selectedLocation.value?.longitude
             val radius = _selectedRadius.value
             if(latitude!=null && longitude!=null && radius!= null)
-                _alarm.value = Alarm(alarmName.await(), latitude, longitude, radius)
+                _alarm.value = Alarm(alarmName.await(), latitude, longitude, radius,hasVibration = needVibration,hasSound = needSound)
             else
                _alarm.value = null
         }
@@ -55,6 +61,10 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
         _selectedRadius.value = radius
     }
 
+
+    fun updateNeedVibration(needVibration:Boolean){this.needVibration = needVibration}
+
+    fun updateNeedSound(needSound:Boolean) { this.needSound = needSound }
 
 
 }

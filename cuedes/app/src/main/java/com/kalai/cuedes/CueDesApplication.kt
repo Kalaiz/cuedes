@@ -7,8 +7,12 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.location.Location
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.RingtoneManager
 import android.os.Build
 import android.os.Looper
+import android.provider.MediaStore
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil
@@ -27,6 +31,8 @@ class CueDesApplication: Application() {
 
     companion object {
         const val CHANNEL_ID = "562104"
+        val VIBRATION_PATTERN = longArrayOf(250,500,500,750,500,1000,500,1250,500,1500,500,1750,500,2000)
+        val RINGTONE_URI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
     }
 
 
@@ -35,9 +41,7 @@ class CueDesApplication: Application() {
     val geofencingClient: GeofencingClient by lazy { LocationServices.getGeofencingClient(this) }
     private val cueDesServiceIntent by lazy { Intent(this, CueDesService::class.java) }
     val fusedLocationClient: FusedLocationProviderClient by lazy {
-        LocationServices.getFusedLocationProviderClient(
-            this
-        )
+        LocationServices.getFusedLocationProviderClient(this)
     }
 
 
@@ -66,11 +70,24 @@ class CueDesApplication: Application() {
 
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
+                enableLights(true)
+                enableVibration(true)
+                vibrationPattern = VIBRATION_PATTERN
+                setSound(RINGTONE_URI,AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).setLegacyStreamType(AudioManager.STREAM_MUSIC).build())
             }
 
             val notificationManager: NotificationManager =
                 getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    suspend fun findAlarm(alarmName: String): Alarm? = suspendCoroutine { cont->
+        CoroutineScope(Dispatchers.IO).launch{
+            repository.alarms.collect { alarms->
+                cont.resume(alarms.find { alarm -> alarm.name == alarmName })
+                this.cancel()
+            }
         }
     }
 
