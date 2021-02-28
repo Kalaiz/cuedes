@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory
+        android:layout="@layout/title_settings">
 
     <Preference
         android:key="clear_alarm"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="Clear all Alarms."
-        android:icon="@drawable/ic_clear"/>
-</PreferenceScreen>
+        android:title="Clear all Alarms"
+        android:icon="@drawable/ic_clear"
+        android:summary="Get rid of all the alarms, irrespective of whether they are active or not."/>
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

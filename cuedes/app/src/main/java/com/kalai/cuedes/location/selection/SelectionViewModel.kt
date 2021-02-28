@@ -16,7 +16,6 @@ class SelectionViewModel(application: Application)  : AndroidViewModel(applicati
 
 
     private val _selectedLocation = MutableLiveData<LatLng>()
-    private val selectedLocation: LiveData<LatLng> = _selectedLocation
 
 
     private var _selectedRadius = MutableLiveData<Int>()

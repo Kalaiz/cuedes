@@ -200,7 +200,6 @@
         app:layout_constraintBottom_toBottomOf="@id/notification_text_view"
         android:layout_margin="10dp"/>
 
-
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -210,10 +209,9 @@
         app:layout_constraintEnd_toStartOf="@id/vibration_toggle_button"
         app:layout_constraintBottom_toBottomOf="parent"
         android:drawableStart="@drawable/selector_ic_speaker"
-        android:checked="true"
         android:padding="15dp"
-        style="@style/image_toggle_button" />
-
+        style="@style/image_toggle_button"
+        />
 
     <ToggleButton
         android:id="@+id/vibration_toggle_button"
@@ -221,12 +219,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/speaker_toggle_button"
         style="@style/image_toggle_button"
-        android:checked="false"
         android:padding="15dp"
         android:drawableStart="@drawable/selector_ic_vibration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/notification_image_view" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

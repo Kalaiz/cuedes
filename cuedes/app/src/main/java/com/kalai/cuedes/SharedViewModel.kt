@@ -46,6 +46,20 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
 
     private val errorMessage = applicationContext.getString(R.string.error_repo_insert)
 
+    private val successDeleteAllMessage = "Successfully deleted all alarms."
+
+    private val failedDeleteAllMessage = "Deletion Failed!"
+
+    private val failedDeleteAllConfig = NotificationConfig.Builder
+            .create(Notification.ERROR,failedDeleteAllMessage)
+            .addIcon(R.drawable.ic_error)
+            .build()
+
+    private val successDeleteAllConfig = NotificationConfig.Builder
+            .create(Notification.SUCCESS,successDeleteAllMessage)
+            .addIcon(R.drawable.ic_done)
+            .build()
+
     private val errorConfig = NotificationConfig.Builder
             .create(Notification.ERROR,errorMessage)
             .addIcon(R.drawable.ic_error)
@@ -239,6 +253,18 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
             }
         }
         fusedLocationClient.requestLocationUpdates(LocationFragment.locationRequestHighAccuracy,locationCallback, Looper.myLooper())
+    }
+
+    fun clearAllAlarms() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAll() }.invokeOnCompletion { handler ->
+            viewModelScope.launch(Dispatchers.Main) {
+                if(handler==null)
+                    _notificationConfig.value = successDeleteAllConfig
+                else
+                    _notificationConfig.value = failedDeleteAllConfig
+            }
+        }
     }
 
 

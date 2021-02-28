@@ -23,4 +23,7 @@ interface AlarmDao {
     @Query("SELECT COUNT(name) FROM Alarm")
     fun count() : Long
 
+    @Query("DELETE FROM Alarm")
+    fun deleteAll()
+
 }

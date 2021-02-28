@@ -118,6 +118,7 @@ class SelectionFragment : DialogFragment() {
             else
                 endSelection(false)
         })
+        
 
         updateSelection()
 

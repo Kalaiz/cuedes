@@ -19,4 +19,7 @@ class AlarmRepository(private val alarmDao: AlarmDao) {
     fun getCount()
             =  alarmDao.count()
 
+    fun deleteAll()
+            = alarmDao.deleteAll()
+
 }

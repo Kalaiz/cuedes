@@ -19,13 +19,13 @@ A slight peek at the progress so far.</p>
 <img src="resources/radius_manipulation.gif" width="25%" height="25%" /> 
 </p>
 <p align="center">
-Note: I am still working on this personal project. 
+Note: I am still working on this personal project. The Video to GIF convertor made the GIF skip the video frames (look laggy). 
  </p>
 
 
 ### 🛠️ Tools Used:
- - ViewBinding, LiveData, DataStore, Room, ViewModel, FragmentStateAdapter, Foreground and Bound Service, Property Animation Framework
- - Views: Motion, Constraint, Linear and Frame Layouts, ~~Spinner~~, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompat, OnBoardSupportFragment
+ - ViewBinding, LiveData, DataStore, Room, ViewModel, FragmentStateAdapter, Foreground and Bound Service, Property Animation Framework and Preference library.
+ - Views: Motion, Constraint, Linear and Frame Layouts, ~~Spinner~~, RecyclerView, SearchView, ~~TabLayout~~ BottomNavigationView,  ViewPager2, SwitchCompatand OnBoardSupportFragment.
   - Google Maps SDK (FusedLocationProvider API, Geofencing API)
   - Timber
   - TSnackbar
@@ -45,6 +45,7 @@ Note: I am still working on this personal project.
 - ~~Expanding `BottomSheetDialogFragment` to a custom height was done with the help of this [answer](https://stackoverflow.com/a/58067230/11200630)~~
 - The code for finding LatLng bounds of the area of interest from this [answer](https://stackoverflow.com/a/31029389/11200630) is used.
 - The method of persisting a single instance of the repository w/o singleton pattern is based on this [codelab](https://developer.android.com/codelabs/android-room-with-a-view-kotlin#12).
+- [Flaticon](flaticon.com) for a few awesome icons.
 
 ### ⚙️ Installation:
 Note: It will be easier to do the following via a phone. 

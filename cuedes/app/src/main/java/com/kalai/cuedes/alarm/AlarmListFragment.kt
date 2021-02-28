@@ -15,6 +15,8 @@ import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.data.Alarm
 import com.kalai.cuedes.databinding.FragmentAlarmListBinding
+import com.kalai.cuedes.hide
+import com.kalai.cuedes.show
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -50,6 +52,11 @@ class AlarmListFragment : Fragment(),AlarmListOpsListener {
 
         lifecycleScope.launch {
             repository.alarms.collect { data ->
+                if(data.isEmpty())
+                    showEmptyMessage()
+                else
+                    hideEmptyMessage()
+
                 adapter.submitList(data)
             }
         }
@@ -77,8 +84,22 @@ class AlarmListFragment : Fragment(),AlarmListOpsListener {
     }
 
     override suspend fun updateIsActivated(alarmName:String,isActivated: Boolean):Boolean
-    = sharedViewModel.updateIsActivated(alarmName,isActivated)
+            = sharedViewModel.updateIsActivated(alarmName,isActivated)
 
 
+    private fun showEmptyMessage(){
+        with(binding){
+            mapImageView.show()
+            addAlarmTextView.show()
+        }
+    }
+
+    private fun hideEmptyMessage(){
+        with(binding){
+            mapImageView.hide()
+            addAlarmTextView.hide()
+        }
+
+    }
 
 }

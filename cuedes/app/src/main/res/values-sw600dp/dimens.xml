@@ -20,6 +20,9 @@
     <dimen name="selection_radius_text_size">40sp</dimen>
     <dimen name="selection_meter_text_size">12sp</dimen>
     <dimen name="alarm_list_text_view_size">16sp</dimen>
+    <dimen name="settings_title">20sp</dimen>
+
+    <dimen name="alarm_list_fab_margin">10dp</dimen>
 
     <item name="motion_layout_map_percent" format="float" type="dimen">0.7</item>
     <item name="motion_layout_selection_percent" format="float" type="dimen">0.625</item>
