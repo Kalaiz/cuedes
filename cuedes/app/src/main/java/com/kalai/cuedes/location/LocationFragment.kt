@@ -1,5 +1,6 @@
 package com.kalai.cuedes.location
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -9,7 +10,10 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.location.Location
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -32,10 +36,13 @@ import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.kalai.cuedes.CueDesApplication
 import com.kalai.cuedes.R
 import com.kalai.cuedes.SharedViewModel
 import com.kalai.cuedes.databinding.FragmentLocationBinding
+import com.kalai.cuedes.isDevicePermissionGranted
 import com.kalai.cuedes.location.LocationViewModel.Companion.DEFAULT_RADIUS
 import com.kalai.cuedes.location.Status.*
 import com.kalai.cuedes.location.selection.SelectionFragment
@@ -44,8 +51,26 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
-@SuppressLint("MissingPermission")
+
 class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
+
+    // TODO: BUG fix: find me not working during an unusual scenario:
+    //  User uses one time permission access, then user gives permission later,
+    //  but does not show current location despite pressing find me, unless the app is restarted.
+    // TODO: refactor the process of requesting permission so to remove redundancies with DevicePermissionFragment; Possibly a different class.
+    private val permissionCode = listOf(
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION).apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            plusElement(Manifest.permission.ACCESS_BACKGROUND_LOCATION) }
+    }
+
+    private val deviceSnackBarCallback =  object: BaseTransientBottomBar.BaseCallback<Snackbar>(){
+        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+            super.onDismissed(transientBottomBar, event)
+            userNeverAskAgainIntent()
+        }
+    }
 
     companion object {
 
@@ -60,7 +85,6 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         const val REQ_KEY= "LocationFragmentReqKey"
     }
 
-
     private lateinit var  mapLogoValueAnimator: ValueAnimator
     private val locationViewModel: LocationViewModel by viewModels()
     private val sharedViewModel: SharedViewModel by activityViewModels()
@@ -70,14 +94,12 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     private var currentSelectedMarker: Marker? = null
     private var currentSelectedRadius: Circle? = null
 
-
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     private lateinit var searchActivityLauncher: ActivityResultLauncher<Intent>
     private lateinit var statusViewActiveColorStateList: ColorStateList
     private lateinit var statusViewInActiveColorStateList: ColorStateList
 
-
-
+    private lateinit var  requestPermission: ActivityResultLauncher<Array<(String)>>
 
 
     override fun onCreateView(
@@ -90,9 +112,34 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
         return binding.root
     }
 
+    @SuppressLint("MissingPermission") //
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        requestPermission =  registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+                activityResult->
+            if(activityResult.values.any{it==false}){
+                activity?.findViewById<View>(android.R.id.content)?.let {
+                    val snackBar = Snackbar.make(
+                        it,
+                        getString(R.string.onboard_permission_msg),
+                        Snackbar.LENGTH_SHORT
+                    )
+                    if (!permissionCode.fold(true,
+                            { acc, permissionCode ->
+                                acc && shouldShowRequestPermissionRationale(permissionCode)
+                            })) {
+                        snackBar.addCallback(deviceSnackBarCallback)
+                        snackBar.show()
+                    } else if(context.isDevicePermissionGranted(permissionCode)){
+                        googleMap.isMyLocationEnabled = true
+                        googleMap.uiSettings?.isMyLocationButtonEnabled = false
+                        sharedViewModel.requestLocation()
+                    }
+
+                }
+            }
+        }
         searchActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             Timber.d(  result.toString())
             when(result.resultCode){
@@ -106,11 +153,21 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
             }
 
         }
+
+
         context?.let {
             statusViewActiveColorStateList = ColorStateList.valueOf(getColor(it,R.color.status_view_active))
             statusViewInActiveColorStateList = ColorStateList.valueOf(getColor(it,R.color.status_view_inactive))
         }
 
+    }
+
+    private fun userNeverAskAgainIntent(){
+        // TODO: Need to consider when no permission is updated after request permission process when permission is not given
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri= Uri.fromParts("package", context?.packageName, null)
+        intent.data = uri
+        startActivity(intent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -276,6 +333,7 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
     }
 
 
+    @SuppressLint("MissingPermission") // Linter is not able to check that the extension function is doing the permission check or not.
     override fun onMapReady(googleMap: GoogleMap?) {
         Timber.d( "onMapReady called")
         if (googleMap != null) {
@@ -308,8 +366,13 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
 
         }
 
-        googleMap?.isMyLocationEnabled = true
-        googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+        if(context.isDevicePermissionGranted(permissionCode)) {
+            googleMap?.isMyLocationEnabled = true
+            googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+        }
+        else{
+            requestPermission.launch(permissionCode.toTypedArray())
+        }
 
         /*Overriding default behaviour*/
         googleMap?.setOnMarkerClickListener { true }
