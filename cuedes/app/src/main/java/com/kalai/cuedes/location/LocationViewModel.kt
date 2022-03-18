@@ -186,7 +186,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun fitContent(circle: Circle){
-        _cameraMovement.value = CameraMovement(getCameraUpdateBounds(circle,100),true,300)
+        _cameraMovement.value = getCameraUpdateBounds(circle,100)?.let { CameraMovement(it,true,300) }
     }
 
 

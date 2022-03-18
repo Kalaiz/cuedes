@@ -25,7 +25,11 @@ class PlayServiceFragment : Fragment() {
     ): View? {
         googleApiAvailability = GoogleApiAvailability.getInstance()
         binding = FragmentOnboardPlayServiceBinding.inflate(inflater,container,false)
-        binding.playServiceRequirementButton.setOnClickListener { googleApiAvailability.makeGooglePlayServicesAvailable(activity) }
+        binding.playServiceRequirementButton.setOnClickListener { activity?.let { fragmentActivity ->
+            googleApiAvailability.makeGooglePlayServicesAvailable(
+                fragmentActivity
+            )
+        } }
         return binding.root
     }
 

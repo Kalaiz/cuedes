@@ -36,7 +36,7 @@ class DevicePermissionFragment : Fragment() {
 
 
     private lateinit var binding:FragmentOnboardDevicePermissionBinding
-    private lateinit var  requestPermission: ActivityResultLauncher<Array<(String)>>
+    private lateinit var requestPermission: ActivityResultLauncher<Array<(String)>>
     private val viewModel: OnBoardViewModel by activityViewModels()
 
 

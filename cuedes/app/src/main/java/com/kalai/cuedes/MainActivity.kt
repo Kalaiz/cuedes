@@ -1,8 +1,10 @@
 package com.kalai.cuedes
 
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
     private val sharedViewModel: SharedViewModel by viewModels()
 
+
     companion object{
         private const val TAG =  "MainActivity" }
 
@@ -48,7 +51,6 @@ class MainActivity : AppCompatActivity() {
 
         with(NotificationManagerCompat.from(this)) {
             cancelAll()
-
         }
         viewPager = binding.viewPager
         bottomNavigationView = binding.bottomNavigationView

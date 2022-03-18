@@ -121,14 +121,17 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
                 circle = map.addCircle(circleOptions)
                 val cameraUpdate = getCameraUpdateBounds(circle, 100)
                 CoroutineScope(Dispatchers.Main).launch {
-                    map.moveCamera(cameraUpdate) }
+                    if (cameraUpdate != null) {
+                        map.moveCamera(cameraUpdate)
+                    }
+                }
                 map.setOnMapLoadedCallback { Timber.d("Map loaded ${alarmNameTextView.text}") }
 
             }
         }
 
 
-        override fun onMapReady(googleMap: GoogleMap?) {
+        override fun onMapReady(googleMap: GoogleMap) {
             MapsInitializer.initialize(view.context)
             /*If map is not initialised properly*/
             mapView.getMapAsync {
@@ -138,6 +141,8 @@ class AlarmListAdapter (val alarmListOpsListener: AlarmListOpsListener):
                 setMapLocation()
             }
         }
+
+
     }
 
 

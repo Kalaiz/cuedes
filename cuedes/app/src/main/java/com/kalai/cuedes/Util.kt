@@ -95,11 +95,11 @@ fun LatLng.toBounds(radius: Double): LatLngBounds? {
 
 fun getBoundLength(radius:Double) = radius * sqrt(2.0)
 
-fun getCameraUpdateBounds(circle: Circle, padding:Int): CameraUpdate {
+fun getCameraUpdateBounds(circle: Circle, padding:Int): CameraUpdate? {
     val bounds = circle.center?.toBounds(circle.radius)
     Timber.d(bounds.toString())
     /* int width, int height, int padding*/
-    return  CameraUpdateFactory.newLatLngBounds(bounds,padding)
+    return bounds?.let { CameraUpdateFactory.newLatLngBounds(it,padding) }
 }
 
 fun LatLng.checkIsInBounds(radius: Int,center: LatLng)=

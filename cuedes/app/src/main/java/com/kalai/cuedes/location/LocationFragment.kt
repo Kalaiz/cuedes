@@ -334,12 +334,13 @@ class LocationFragment : Fragment() ,OnMapReadyCallback, OnMapLoadedCallback{
 
 
     @SuppressLint("MissingPermission") // Linter is not able to check that the extension function is doing the permission check or not.
-    override fun onMapReady(googleMap: GoogleMap?) {
+    override fun onMapReady(googleMap: GoogleMap) {
         Timber.d( "onMapReady called")
         if (googleMap != null) {
             locationViewModel.needUpdateCircles.observe(viewLifecycleOwner, Observer {
                 circleOptions-> circleOptions.forEach{(alarm,circleOption)-> locationViewModel.addAlarmCircle(Pair(alarm,googleMap.addCircle(circleOption) ))
-                googleMap.addMarker(MarkerOptions().position(circleOption.center))
+                circleOption.center?.let { MarkerOptions().position(it) }
+                    ?.let { googleMap.addMarker(it) }
 
             }
 

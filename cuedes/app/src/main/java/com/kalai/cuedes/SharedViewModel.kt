@@ -238,7 +238,7 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
     private suspend fun fetchLocation():Location = suspendCoroutine { cont ->
         Timber.d( "requesting Location")
         val locationCallback =  object: LocationCallback(){
-            override fun onLocationAvailability(locationAvailability: LocationAvailability?) {
+            override fun onLocationAvailability(locationAvailability: LocationAvailability) {
                 super.onLocationAvailability(locationAvailability)
                 Timber.d( "Location available? ${locationAvailability?.isLocationAvailable}")
                 fusedLocationClient.lastLocation.addOnSuccessListener {location ->
@@ -252,7 +252,9 @@ class SharedViewModel(application:Application) : AndroidViewModel(application) {
                 }
             }
         }
-        fusedLocationClient.requestLocationUpdates(LocationFragment.locationRequestHighAccuracy,locationCallback, Looper.myLooper())
+        fusedLocationClient.requestLocationUpdates(LocationFragment.locationRequestHighAccuracy,locationCallback,
+            Looper.myLooper()!!
+        )
     }
 
     fun clearAllAlarms() {
