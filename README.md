@@ -12,14 +12,16 @@
 A simple Android App which rings an alarm when one is about to reach a destination.
 
 <p align="center">
-A slight peek at the progress so far.</p>
+<sub>A slight peek at the progress so far.</sub></p>
+
 <p align="center">
-<img src="resources/onboard.gif" width="25%" height="25%" /> 
-<img src="resources/alarm_trigger.gif" width="25%" height="25%" /> 
-<img src="resources/radius_manipulation.gif" width="25%" height="25%" /> 
+<img width="300" src="resources/onboard.gif" />  
+<img width="300" src="resources/alarm_trigger.gif" /> 
+<img width="300" src="resources/radius_manipulation.gif"/> 
 </p>
+
 <p align="center">
-Note: I am still working on this personal project. The Video to GIF convertor made the GIF skip the video frames (look laggy). 
+<sub>Note: The Video to GIF convertor made the GIF skip the video frames (look laggy). </sub>
  </p>
 
 
