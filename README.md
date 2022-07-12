@@ -15,9 +15,9 @@ A simple Android App which rings an alarm when one is about to reach a destinati
 <sub>A slight peek at the progress so far.</sub></p>
 
 <p align="center">
-<img width="300" src="resources/onboard.gif" />  
-<img width="300" src="resources/alarm_trigger.gif" /> 
-<img width="300" src="resources/radius_manipulation.gif"/> 
+<img width="250" src="resources/onboard.gif" />  
+<img width="250" src="resources/alarm_trigger.gif" /> 
+<img width="250" src="resources/radius_manipulation.gif"/> 
 </p>
 
 <p align="center">
